@@ -21,3 +21,13 @@ router.get('/:id', (req, res) => {
         }    
 });
 
+// Create a task
+router.post('/', (req, res) => {
+    const newTask = req.query;
+    if (newTask) {
+        res.send('Task created');
+    } else {
+        res.status(400).send();
+    }
+});
+
