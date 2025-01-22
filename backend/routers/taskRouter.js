@@ -31,3 +31,14 @@ router.post('/', (req, res) => {
     }
 });
 
+// Update a task
+router.put('/:id', (req, res) => {
+    const task = getTaskById(req.params.id, tasks);
+    if (task !==- 1) {
+        updateElementById(req.params.id, req.query, tasks);
+        res.send('Task updated');
+    } else {
+        res.status(404).send();
+    }
+});
+
