@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 // Read all tasks
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
     try{
         res.send('Get all tasks');
     }
@@ -11,4 +11,13 @@ router.get('/', (req, res, next) => {
     }
 });
 
+// Read a task
+router.get('/:id', (req, res) => {
+        const task = getTaskById(req.params.id, tasks);
+        if (task) {
+            res.send('Got one task');
+        } else {
+            res.status(404).send();
+        }    
+});
 
