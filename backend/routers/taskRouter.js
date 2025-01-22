@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 
 // Read a task
 router.get('/:id', (req, res) => {
-        const task = getTaskById(req.params.id, tasks);
+        const taskIndex = getIndexById(req.params.id, tasks);
         if (task) {
             res.send('Got one task');
         } else {
@@ -33,10 +33,21 @@ router.post('/', (req, res) => {
 
 // Update a task
 router.put('/:id', (req, res) => {
-    const task = getTaskById(req.params.id, tasks);
-    if (task !==- 1) {
+    const taskIndex = getIndexById(req.params.id, tasks);
+    if (taskIndex !==- 1) {
         updateElementById(req.params.id, req.query, tasks);
         res.send('Task updated');
+    } else {
+        res.status(404).send();
+    }
+});
+
+// Delete a task
+router.delete('/:id', (req, res) => {
+    const taskIndex = getIndexById(req.params.id, tasks);
+    if (taskIndex !== -1) {
+        deleteElementById(req.params.id, tasks);
+        res.status(204).send('Task deleted');
     } else {
         res.status(404).send();
     }
