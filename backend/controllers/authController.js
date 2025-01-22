@@ -1,1 +1,1 @@
-// Placeholder
+const placeholder = null;
