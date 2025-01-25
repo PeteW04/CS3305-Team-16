@@ -1,13 +1,20 @@
-import logo from './logo.svg';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import './Login';
+import Landing from './Landing';
 import Login from './Login';
-import './Login.css';
+import Header from './components/header'; 
 
 function App() {
   // Render only the Login component
   return (
-    <Login />
+    <Router>
+      <Header />
+      <Routes>
+        <Route path="/" element={<Landing />} /> 
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </Router>
   );
 }
 
