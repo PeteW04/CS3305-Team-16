@@ -1,9 +1,17 @@
 import express from 'express';
-import { registerManager, login } from '../controllers/authController.js';
+import dotenv from 'dotenv';
+import connectDB from './config/db.js';
 
-const authRouter = express.Router()
+dotenv.config();
 
-router.post('/register', registerManager);
-router.post('/login', login)
+const app = express();
+app.use(express.json());
 
-export default authRouter;
+connectDB();
+
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
