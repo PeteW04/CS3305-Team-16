@@ -4,7 +4,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
   const location = useLocation();
-  const isAuthPage = ['/login'].includes(location.pathname);
+  const isAuthPage = false;
 
   return (
     <header className="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50 pb-2">
