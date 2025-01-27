@@ -52,7 +52,7 @@ const Login = () => {
             <span>OR</span>
           </div>
           <a href="/signup">
-            <button className="signup-button" type="button">
+            <button type="button" className="signup-button-loginpage">
               Signup Now
             </button>
           </a>
