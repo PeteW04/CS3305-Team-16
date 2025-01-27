@@ -4,10 +4,10 @@ import { Link, useLocation } from 'react-router-dom';
 
 function Header() {
   const location = useLocation();
-  const isAuthPage = ['/login'].includes(location.pathname);
+  const isAuthPage = false ;
 
   return (
-    <header className="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50">
+    <header className="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50 pb-2">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
