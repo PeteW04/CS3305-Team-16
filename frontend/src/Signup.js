@@ -30,14 +30,7 @@ const Signup = () => {
     <div className="signup-container">
       <div className="signup-form-container">
         <div className="signup-form">
-          <div className="logo-container">
-            <div className="logo-circles">
-              <div className="circle circle-1"></div>
-              <div className="circle circle-2"></div>
-              <div className="circle circle-3"></div>
-            </div>
-            <h1 className="logo-text">DFM</h1>
-          </div>
+        {/* logo goes here if needed */}
           <h2 className="form-title">Create your account</h2>
           <form onSubmit={handleSubmit}>
             <div className="name-row">
