@@ -14,14 +14,6 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-form">
-        <div className="logo-container">
-          <div className="logo-circles">
-            <div className="circle circle-1"></div>
-            <div className="circle circle-2"></div>
-            <div className="circle circle-3"></div>
-          </div>
-          <h1 className="logo-text">DFM</h1>
-        </div>
         <h2 className="form-title">Login into your account</h2>
         <form onSubmit={handleSubmit}>
           <div className="input-group">
@@ -59,9 +51,11 @@ const Login = () => {
           <div className="divider">
             <span>OR</span>
           </div>
-          <button className="signup-button" type="button">
-            Signup Now
-          </button>
+          <a href="/signup">
+            <button className="signup-button" type="button">
+              Signup Now
+            </button>
+          </a>
           <button className="google-button" type="button">
             <img src="https://www.google.com/favicon.ico" alt="Google" />
             Continue with Google
@@ -74,7 +68,6 @@ const Login = () => {
           alt="Login illustration"
           className="illustration"
         />
-        <h3 className="info-text"></h3>
       </div>
     </div>
   )
