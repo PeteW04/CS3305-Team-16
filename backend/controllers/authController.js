@@ -2,6 +2,7 @@ import User from "../models/User";
 import Organization from "../models/Organization";
 import Invite from "../models/Invite";
 import { hashPassword, checkPassword } from "../utils/passwordHash";
+import { sendEmail } from "../utils/email";
 
 export const registerManager = async (req, res) => {
     const { firstName, lastName, email, password, organizationName, description } = req.body;
@@ -57,6 +58,7 @@ export const login = async (req, res) => {
 export const inviteEmployee = async (req, res) => {
     const { email } = req.body;
     const organizationId = req.user.organizationId;
+    const organization = Organization.findOne({ organizationId });
 
     try {
         const doesUserExist = User.findOne({ email });
@@ -70,8 +72,14 @@ export const inviteEmployee = async (req, res) => {
 
         const invite = await Invite.create({ email, token, expires, organizationId });
         const link = `http://localhost:3000/employeeSignup?token=${token}`
-
-        // Implement send email with link
+        const subject = `You have been invited to join ${organization.name}!`
+        const html = `
+            <p>Hello,</p>
+            <p>You have been invited to join ${organization.names}'s workspace. Click the link below to accept the invitation:</p>
+            <a href="${link}">Accept Invitation</a>
+            <p>The link will expire in 7 days.</p>
+        `
+        await sendEmail(email, subject, html);
 
         return res.status(200).json({ message: "Invite sent successfully" });
     } catch (e) {
