@@ -9,16 +9,17 @@ export const hashPassword = async (password) => {
         return hashedPassword;
     }
     catch (e) {
-        console.error("Hash Password Error", e.message)
+        console.error("Hash Password Error:", e.message)
         throw new Error('Error hashing password');
     }
 }
 
 export const checkPassword = async (password, hashedPassword) => {
     try {
-        isCorrect = await bcrypt.compare(password, hashedPassword);
+        const isCorrect = await bcrypt.compare(password, hashedPassword);
+        return isCorrect;
     } catch (e) {
-        console.error("Check Password Error", e.message)
+        console.error("Check Password Error:", e.message)
         throw new Error('Error verifying password');
     }
 }

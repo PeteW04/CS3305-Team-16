@@ -1,16 +1,12 @@
-import mongodb from 'mongodb';
-
-const MongoClient = mongodb.MongoClient;
-const uri = "mongodb+srv://pete:CS3305-Team16%23%23@team-16.eny86.mongodb.net/?retryWrites=true&w=majority&appName=Team-16";
-const client = new MongoClient(uri);
+import mongoose from "mongoose";
 
 const connectDB = async () => {
     try {
-        await client.connect(); // Connect to the database
-        console.log('MongoDB connected...');
-    } catch (err) {
-        console.error('Error connecting to MongoDB:', err.message);
-        process.exit(1); // Exit with failure
+        const conn = await mongoose.connect("mongodb+srv://pete:CS3305-Team16%23%23@team-16.eny86.mongodb.net/Team-16-Project-Database?retryWrites=true&w=majority");
+        console.log(`MongoDB Connected: ${conn.connection.host}`);
+    } catch (error) {
+        console.error(`Error connecting to MongoDB: ${error.message}`);
+        process.exit(1); // Exit process with failure
     }
 };
 

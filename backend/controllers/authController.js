@@ -1,17 +1,20 @@
-import User from "../models/User";
-import Organization from "../models/Organization";
-import Invite from "../models/Invite";
-import { hashPassword, checkPassword } from "../utils/passwordHash";
-import { sendEmail } from "../utils/email";
+import jwt from 'jsonwebtoken';
+import User from "../models/User.js";
+import Organization from "../models/Organization.js";
+import Invite from "../models/Invite.js";
+import { hashPassword, checkPassword } from "../utils/passwordHash.js";
+import { sendEmail } from "../utils/email.js";
+
 
 export const registerManager = async (req, res) => {
     const { firstName, lastName, email, password, organizationName, description } = req.body;
+    console.log(req.body);
 
     try {
-        const userExists = await User.findOne({ email });
-        if (userExists) {
-            return res.status(400).json({ message: "User already exists" });
-        }
+        // const userExists = await User.findOne({ email });
+        // if (!userExists) {
+        //     return res.status(400).json({ message: "User already exists" });
+        // }
 
         const hashedPassword = await hashPassword(password);
 
