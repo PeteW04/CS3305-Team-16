@@ -1,9 +1,10 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import './App.css';
-import Landing from './Landing';
-import Login from './Login';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
 import Header from './components/header'; 
+import TestPage from './pages/Component-Test';
 
 function App() {
   // Render only the Login component
@@ -13,6 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Landing />} /> 
         <Route path="/login" element={<Login />} />
+        <Route path="/test" element ={<TestPage />} />
       </Routes>
     </Router>
   );
