@@ -1,15 +1,23 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
+import { login } from "./api/auth"
 import "./Login.css"
 
 const Login = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("Login attempted with:", { email, password })
-  }
+    try {
+      const data = await login({ email, password });
+      localStorage.setItem("clackToken", data.token);
+      console.log("Success");
+    } catch (error) {
+      console.log(error)
+      console.error(error.response.data.message, "Login Failed")
+    }
+  };
 
   return (
     <div className="login-container">
