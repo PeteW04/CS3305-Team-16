@@ -25,4 +25,4 @@ projectRouter.put('/:projectId/tasks/:taskId/:status', updateTaskStatus);
 // Update the projects status ['New', 'In Progress', 'Completed']
 projectRouter.put('/:projectId/:status', updateStatus);
 
-module.export = projectRouter;
+export default projectRouter;

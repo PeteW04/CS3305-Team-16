@@ -19,5 +19,5 @@ taskRouter.put('/:id',  checkUserRole('manager'), updateTask);
 // Delete a task
 taskRouter.delete('/:id',  checkUserRole('manager'), deleteTask);
 
-module.exports = taskRouter;
+export default taskRouter;
 
