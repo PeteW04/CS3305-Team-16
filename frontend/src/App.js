@@ -5,7 +5,10 @@ import Landing from './Landing';
 import Login from './Login';
 import Signup from './Signup';
 import UserSignup from './UserSignup';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
 import Header from './components/header'; 
+import TestPage from './pages/Component-Test';
 
 function App() {
   // Render only the Login component
@@ -17,6 +20,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/usersignup" element={<UserSignup />} />
+        <Route path="/test" element ={<TestPage />} />
       </Routes>
     </Router>
   );
