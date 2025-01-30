@@ -4,10 +4,12 @@ import Task from '../models/Task.js';
 // GET: List all Projects
 export const getAllProjects = async (req, res) => {
     try {
-        // Get all projects and return them
-        const projects = await Project.find({});
+        // Automatically filter by the user's organizationId
+        const projects = await Project.find({ organization: req.user.organizationId });
+
         res.status(200).json(projects);
-    } catch (error){
+    }
+    catch (error){
         res.status(500).json({error: error.message});
     }
 };
