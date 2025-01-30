@@ -25,7 +25,7 @@ export const registerManager = async (req, res) => {
 
         await organization.save();
 
-        const token = jwt.sign({ id: manager._id, role: manager.role }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const token = jwt.sign({ id: manager._id, role: manager.role, organizationId: manager.organizationId }, process.env.JWT_SECRET, { expiresIn: "7d" })
         return res.status(201).json({ token })
     } catch (e) {
         console.error("Error in registerManager:", e.message);
@@ -47,7 +47,7 @@ export const login = async (req, res) => {
             return res.status(400).send({ message: "Invalid Password" })
         }
 
-        const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "7d" });
+        const token = jwt.sign({ id: user._id, role: user.role, organizationId: user.organizationId }, process.env.JWT_SECRET, { expiresIn: "7d" });
 
         return res.status(200).json({ token });
     } catch (e) {
@@ -79,7 +79,7 @@ export const registerEmployee = async (req, res) => {
         organization.employees.push(employee._id);
         await organization.save();
 
-        const authToken = jwt.sign({ id: employee._id, role: employee.role }, process.env.JWT_SECRET, { expiresIn: "7d" })
+        const authToken = jwt.sign({ id: employee._id, role: employee.role, organizationId: employee.organizationId }, process.env.JWT_SECRET, { expiresIn: "7d" })
         return res.status(201).json({ authToken })
     } catch (e) {
         console.error("Error in registerEmployee:", e.message);
