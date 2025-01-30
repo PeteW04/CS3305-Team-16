@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 import { createProject, getAllProjects, getProjectById, addEmployee, addTask, updateTaskStatus, updateStatus } from '../controllers/projectController';
 import { checkUserRole } from '../middleware/checkUserRoleMiddleware';
 
@@ -14,10 +14,10 @@ projectRouter.get('/:id', getProjectById);
 projectRouter.post('/', checkUserRole('manager'), createProject);
 
 // Add an employee
-projectRouter.put('/:projectId/employees/:employeeId',  checkUserRole('manager'), addEmployee);
+projectRouter.put('/:projectId/employees/:employeeId', checkUserRole('manager'), addEmployee);
 
 // Add a task
-projectRouter.put('/:projectId/tasks/:taskId',  checkUserRole('manager'), addTask);
+projectRouter.put('/:projectId/tasks/:taskId', checkUserRole('manager'), addTask);
 
 // Update a task's status ['New', 'In Progress', 'Completed']
 projectRouter.put('/:projectId/tasks/:taskId/:status', updateTaskStatus);
