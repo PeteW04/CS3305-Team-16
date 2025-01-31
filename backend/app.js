@@ -4,6 +4,8 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
+import projectRouter from './routers/projectRouter.js';
+import taskRouter from './routers/taskRouter.js';
 import { authenticate } from './middleware/authMiddleware.js';
 
 dotenv.config();
@@ -16,6 +18,8 @@ app.use(cors());
 app.use('/auth', authRouter);
 app.use('/user', authenticate, userRouter);
 
+app.use('/project', authenticate, projectRouter);
+app.use('/task', authenticate, taskRouter);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

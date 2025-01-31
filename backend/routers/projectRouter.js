@@ -1,6 +1,6 @@
 const express = require('express');
-import { createProject, getAllProjects, getProjectById, addEmployee, addTask, updateTaskStatus, updateStatus } from '../controllers/projectController';
-import { checkUserRole } from '../middleware/checkUserRoleMiddleware';
+import { createProject, getAllProjects, getProjectById, addEmployee, addTask, updateTaskStatus, updateStatus } from '../controllers/projectController.js';
+import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
 
 const projectRouter = express.Router();
 
