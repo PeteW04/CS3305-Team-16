@@ -45,6 +45,7 @@ const Signup = () => {
                     onChange={handleChange}
                     required
                   />
+                  <User className="input-icon" />
                 </div>
               </div>
               <div className="input-group">

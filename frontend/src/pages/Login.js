@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
 import { login } from "../api/auth"
-import "./Login.css"
+import "../CSS-files/Login.css"
 
 const Login = () => {
   const [email, setEmail] = useState("")
@@ -51,7 +51,7 @@ const Login = () => {
             </div>
           </div>
           <div className="forgot-password">
-            <a href="#">Forgot Password?</a>
+            <a href="/forgotpassword">Forgot Password?</a>
           </div>
           <button className="login-button" type="submit">
             Login Now
