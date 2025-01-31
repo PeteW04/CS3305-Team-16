@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
-import { login } from "./api/auth"
+import { login } from "../api/auth"
 import "./Login.css"
 
 const Login = () => {

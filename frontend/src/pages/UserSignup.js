@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Lock, User } from "lucide-react"
-import "./UserSignup.css"
+import "../CSS-files/UserSignup.css"
 
 const UserSignup = () => {
   const [formData, setFormData] = useState({

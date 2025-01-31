@@ -1,10 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import Landing from './Landing';
-import Login from './Login';
-import Signup from './Signup';
-import UserSignup from './UserSignup';
+import '../src/CSS-files/App.css';
+import Signup from './pages/Signup';
+import UserSignup from './pages/UserSignup';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Header from './components/header'; 
