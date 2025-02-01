@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
 import { login } from "../api/auth"
-import "./Login.css"
+import "../CSS-files/Login.css"
 
 const Login = () => {
   const [email, setEmail] = useState("")
