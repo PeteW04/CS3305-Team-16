@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Mail, Lock, User, Building2 } from "lucide-react"
-import "./Signup.css"
+import "../CSS-files/Signup.css"
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -45,6 +45,7 @@ const Signup = () => {
                     onChange={handleChange}
                     required
                   />
+                  <User className="input-icon" />
                 </div>
               </div>
               <div className="input-group">

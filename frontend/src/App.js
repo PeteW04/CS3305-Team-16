@@ -1,11 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import './App.css';
-import Landing from './Landing';
-import Login from './Login';
-import Signup from './Signup';
-import UserSignup from './UserSignup';
+import '../src/CSS-files/App.css';
+import Signup from './pages/Signup';
+import UserSignup from './pages/UserSignup';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Header from './components/header'; 
+import TestPage from './pages/Component-Test';
+import Task from './pages/Task';
 
 function App() {
   // Render only the Login component
@@ -17,6 +21,10 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/usersignup" element={<UserSignup />} />
+        <Route path="/forgotpassword" element ={<ForgotPassword />} />
+        <Route path="/resetpassword" element ={<ResetPassword />} />
+        <Route path="/test" element ={<TestPage />} />
+        <Route path="/tasks" element={<Task />} />
       </Routes>
     </Router>
   );
