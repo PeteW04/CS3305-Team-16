@@ -1,21 +1,23 @@
 const express = require('express');
-import { router } from express.Router();
-import { getAllTasks, getTaskById, createTask, updateTask, deleteTask } from '../controllers/taskController';
+import { getAllTasks, getTaskById, createTask, updateTask, deleteTask } from '../controllers/taskController.js';
+import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
+
+const taskRouter = express.Router();
 
 // Get all tasks
-router.get('/', getAllTasks);
+taskRouter.get('/', getAllTasks);
 
 // Get a task by id
-router.get('/:id', getTaskById);
+taskRouter.get('/:id', getTaskById);
 
 // Create a task
-router.post('/', createTask);
+taskRouter.post('/',  checkUserRole('manager'), createTask);
 
 // Update a task
-router.put('/:id', updateTask);
+taskRouter.put('/:id',  checkUserRole('manager'), updateTask);
 
 // Delete a task
-router.delete('/:id', deleteTask);
+taskRouter.delete('/:id',  checkUserRole('manager'), deleteTask);
 
-module.exports = router;
+export default taskRouter;
 
