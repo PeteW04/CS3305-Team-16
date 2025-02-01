@@ -1,6 +1,7 @@
 import React from 'react';
 import { Layout } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import Tasks from '../Task';
 
 function Header() {
   const location = useLocation();
@@ -27,6 +28,12 @@ function Header() {
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
               >
                 Sign Up Free
+              </Link>
+              <Link
+                to="/tasks"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
+              >
+                Tasks
               </Link>
             </div>
           )}
