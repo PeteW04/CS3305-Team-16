@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import TaskColumn from './TaskColumn';
 import { initialTasks } from '../DummyData/tasks';
+import '../CSS-files/App.css';
 
 function Taskboard() {
   const [tasks, setTasks] = useState(initialTasks);
@@ -10,7 +11,7 @@ function Taskboard() {
   };
 
   return (
-    <div className="flex gap-6 overflow-x-auto">
+    <div className="flex gap-6 overflow-y-auto">
       <TaskColumn 
         title="To Do" 
         tasks={getTasksByStatus('todo')} 

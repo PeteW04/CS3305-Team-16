@@ -4,7 +4,7 @@ import TaskCard from './TaskCard';
 
 function TaskColumn({ title, tasks, count, accentColor }) {
   return (
-    <div className="flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4">
+    <div className="flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4 h-screen overflow-y-auto p-4">
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${accentColor}`}></div>
