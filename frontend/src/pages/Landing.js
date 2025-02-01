@@ -7,7 +7,7 @@ function Landing() {
   return (
     <main>
       {/* Hero */}
-      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="pt-32 pb-20 px-4 sm:px-6 lg:px-8 h-screen overflow-y-auto">
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-6">
