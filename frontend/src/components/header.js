@@ -1,7 +1,7 @@
 import React from 'react';
 import { Layout } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
-import Tasks from '../Task';
+import Task from '../Task';
 
 function Header() {
   const location = useLocation();
