@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Bell, Search, User } from 'lucide-react';
-import Taskboard from './components/Taskboard';
+import Taskboard from '../components/Taskboard';
 
 function Task() {
   return (

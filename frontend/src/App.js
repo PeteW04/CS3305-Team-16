@@ -9,7 +9,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Header from './components/header'; 
 import TestPage from './pages/Component-Test';
-import Task from './Task';
+import Task from './pages/Task';
 
 function App() {
   // Render only the Login component
