@@ -10,9 +10,6 @@ taskRouter.get('/', getAllTasks);
 // Get a task by id
 taskRouter.get('/:id', getTaskById);
 
-// Create a task
-taskRouter.post('/',  checkUserRole('manager'), createTask);
-
 // Update a task
 taskRouter.put('/:id',  checkUserRole('manager'), updateTask);
 

@@ -1,4 +1,5 @@
 import Task from '../models/Task.js';
+import Project from '../models/Projects.js';
 
 
 // Get all tasks
@@ -21,13 +22,24 @@ export const getTaskById = async (req, res) => {
 }
 
 // Create a task
-export const createTask = async (req, res) => {
+export const createTask = async (projectId, task) => {
     try {
-        const newTask = await Task.create(req.body);
-        res.status(201).json(newTask);
+        const newTask = await Task.create(task);
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId, 
+            { $addToSet: { tasks: newTask._id } },
+            { new: true }
+        );
+
+        if (!updatedProject) {
+            throw new Error('Failed to update project with new task');
+        }
+
+        return updatedProject;
     }
     catch (error) {
-        res.status(400).json({error: error.message});
+        console.error(error);
+        return null;
     }
 };
 
@@ -44,15 +56,30 @@ export const updateTask = async (req, res) => {
     }
 }
 
-// Delete a task
-export const deleteTask = async (req, res) => {
+// Delete a task from the project
+export const deleteTask = async (projectId, taskId) => {
     try {
-        const deletedTask = await Task.findByIdAndDelete(req.params.id);
+        // Delete the task from the Task collection
+        const deletedTask = await Task.findByIdAndDelete(taskId);
+
         if (!deletedTask) {
-            return res.status(404).json({ error: 'Task not found' });
+            throw new Error('Task not found');
         }
-        res.status(204).json({ message: 'Task deleted successfully' });
+
+        // Remove the task from the project's tasks array
+        const updatedProject = await Project.findByIdAndUpdate(
+            projectId, 
+            { $pull: { tasks: taskId } },
+            { new: true }
+        );
+
+        if (!updatedProject) {
+            throw new Error('Failed to update project after task removal');
+        }
+
+        return updatedProject;
     } catch (error) {
-        res.status(404).json({ error: error.message });
+        console.error(error);
+        return null;  // Return null if there was an error
     }
-}
+};

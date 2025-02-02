@@ -1,6 +1,7 @@
 import Project from '../models/Projects.js';
 import Task from '../models/Task.js';
 import mongoose from 'mongoose';
+import { createTask } from './taskController.js';
 
 // GET: List all Projects
 export const getAllProjects = async (req, res) => {
@@ -173,31 +174,28 @@ export const removeEmployee = async (req, res) => {
 // PUT: Add a new task to a project
 export const addTask = async (req, res) => {
     try {
-        const { taskId, projectId } = req.params;
+        const { projectId } = req.params;
+        const { task } = req.body;
 
-        // Validate ObjectId
-        if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(taskId)) {
-            return res.status(400).json({ error: 'Invalid projectId or taskId' });
+        // Ensure a valid project id
+        const project = await Project.findById(projectId);
+        if (!project){
+            return res.status(404).json({ error: 'Project not found' });
         }
 
-        const task = await Task.findById(taskId);
         // Ensure the task exists
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        const project = await Project.findByIdAndUpdate(
-            projectId, 
-            { $addToSet: { tasks: taskId } },
-            { new: true }
-        );
+        const updatedProject = await createTask(projectId, task);
 
         // Ensure the project exists
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
+        if (!updatedProject) {
+            return res.status(404).json({ error: 'Unable to add task' });
         }
 
-        res.status(200).json({ message: 'Task added successfully', project });
+        res.status(200).json({ message: 'Task added successfully', updatedProject });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -219,22 +217,26 @@ export const removeTask = async (req, res) => {
             return res.status(404).json({ error: 'Task not found' });
         }
 
-        const project = await Project.findByIdAndUpdate(
-            projectId, 
-            { $pull: { tasks: taskId } },
-            { new: true }
-        );
-
-        // Ensure the updated project exists
+        const project = await Project.findById(projectId);
+        // Ensure the project exists
         if (!project) {
-            return res.status(404).json({ error: 'Failed to remove task' });
+            return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json({ message: 'Task added successfully', project });
+        const updatedProject = await deleteTask(projectId, taskId);
+
+        // Ensure the updated project exists after task deletion
+        if (!updatedProject) {
+            return res.status(404).json({ error: 'Failed to remove task from project' });
+        }
+
+        // Respond with the updated project
+        res.status(200).json({ message: 'Task deleted successfully', updatedProject });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // PUT: Update the status of a task within the project, ['New', 'In Progress', 'Completed']
 export const updateTaskStatus = async (req, res) => {
