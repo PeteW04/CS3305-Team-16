@@ -1,5 +1,6 @@
 import Task from '../models/Task.js';
 import Project from '../models/Projects.js';
+import Project from '../models/Projects.js';
 
 
 // Get all tasks
@@ -56,7 +57,8 @@ export const createTask = async (req, res) => {
         res.status(201).json(newTask);
     }
     catch (error) {
-        res.status(400).json({error: error.message});
+        console.error(error);
+        return null;
     }
 };
 
@@ -81,8 +83,8 @@ export const updateTask = async (req, res) => {
     }
 }
 
-// Delete a task
-export const deleteTask = async (req, res) => {
+// Delete a task from the project
+export const deleteTask = async (projectId, taskId) => {
     try {
         const task = await Task.findById(req.params.id);
         const project = await Project.findById(task.project);
@@ -100,4 +102,4 @@ export const deleteTask = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-}
+};
