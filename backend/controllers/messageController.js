@@ -1,5 +1,5 @@
-import Chat from "../models/Chat";
-import Channel from "../models/Channel";
+import Message from "../models/Message.js";
+import Channel from "../models/Channel.js";
 
 
 export const createChannel = async (req, res) => {
@@ -36,11 +36,10 @@ export const editChannel = async (req, res) => {
 };
 
 
-
 export const getMessages = async (req, res) => {
     const { channelId } = req.body;
     try {
-        const messages = await MessageChannel.find({ channelId });
+        const messages = await Message.find({ channelId });
         return res.status(200).json(messages);
     } catch (e) {
         console.error("Error in getMessages:", e.message);
@@ -56,7 +55,7 @@ export const deleteChannel = async (req, res) => {
         if (!channel) {
             return res.status(404).json({ message: "Channel not found!" })
         }
-        await Chat.deleteMany({ channelId });
+        await Message.deleteMany({ channelId });
         req.io.emit("channelDeleted", { channelId });
         return res.status(200).json({ message: "Channel Deleted" });
     } catch (e) {
@@ -70,7 +69,7 @@ export const sendMessage = async (req, res) => {
     const { channelId, text } = req.body;
 
     try {
-        const message = Chat.create({ channelId, senderId: req.user._id, text });
+        const message = await Message.create({ channelId, senderId: req.user._id, text });
         req.io.to(channelId).emit('newMessage', message);
         return res.status(201).json(message);
     } catch (e) {
@@ -85,7 +84,7 @@ export const editMessage = async (req, res) => {
     const { text } = req.body;
 
     try {
-        const message = await Chat.findByIdAndUpdate(messageId, { text, editedAt: new Date() }, { new: true });
+        const message = await Message.findByIdAndUpdate(messageId, { text, editedAt: new Date() }, { new: true });
         if (!message) {
             return res.status(404).json({ message: "Chat not found" });
         }
@@ -101,11 +100,11 @@ export const editMessage = async (req, res) => {
 export const deleteMessage = async (req, res) => {
     const { id } = req.params;
     try {
-        const message = await MessageChannel.findByIdAndDelete(id);
+        const message = await Chat.findByIdAndDelete(id);
         if (!message) {
             return res.status(404).json({ message: "Message not found" });
         }
-        req.io.to(message.conversationId).emit('messageDelted', { id });
+        req.io.to(message.channelId).emit('messageDelted', { id });
         return res.status(200).json({ message: "Message Deleted" });
     } catch (e) {
         console.error("Error in deleteMessage:", e.message);

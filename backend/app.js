@@ -1,29 +1,71 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
 import connectDB from './config/db.js';
 import authRouter from './routers/authRouter.js';
 import userRouter from './routers/userRouter.js';
 import projectRouter from './routers/projectRouter.js';
 import taskRouter from './routers/taskRouter.js';
+import channelRouter from './routers/channelRouter.js';
+import messageRouter from './routers/messageRouter.js';
 import { authenticate } from './middleware/authMiddleware.js';
 
+// INITIALIZATION
 dotenv.config();
 await connectDB();
-
 const app = express();
+
+// SOCKET.IO
+const server = createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: '*',
+    }
+});
+
+// MIDDLEWARE
 app.use(express.json());
 app.use(cors());
+app.use((req, res, next) => {
+    req.io = io;
+    next();
+});
 
+
+// ROUTERS
 app.use('/auth', authRouter);
 app.use('/user', authenticate, userRouter);
 
 app.use('/project', authenticate, projectRouter);
 app.use('/task', authenticate, taskRouter);
 
-app.get('/', (req, res) => {
-    res.send('API is running...');
+app.use('/message', messageRouter);
+app.use('/channel', channelRouter);
+
+// SOCKET.IO CONNECTION
+io.on('connection', (socket) => {
+    console.log(`User connected: ${socket.id}`);
+
+    // Join a room for a specific channel
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`User joined room: ${roomId}`);
+    });
+
+    // Leave a room when requested
+    socket.on('leaveRoom', (roomId) => {
+        socket.leave(roomId);
+        console.log(`User left room: ${roomId}`);
+    });
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        console.log(`User disconnected: ${socket.id}`);
+    });
 });
 
+// RUNNING SERVER
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
