@@ -11,6 +11,7 @@ import taskRouter from './routers/taskRouter.js';
 import channelRouter from './routers/channelRouter.js';
 import messageRouter from './routers/messageRouter.js';
 import { authenticate } from './middleware/authMiddleware.js';
+import { socketAuthentication } from './middleware/socketMiddleware.js';
 
 // INITIALIZATION
 dotenv.config();
@@ -32,6 +33,7 @@ app.use((req, res, next) => {
     req.io = io;
     next();
 });
+io.use(socketAuthentication);
 
 
 // ROUTERS
@@ -41,8 +43,8 @@ app.use('/user', authenticate, userRouter);
 app.use('/project', authenticate, projectRouter);
 app.use('/task', authenticate, taskRouter);
 
-app.use('/message', messageRouter);
-app.use('/channel', channelRouter);
+app.use('/message', authenticate, messageRouter);
+app.use('/channel', authenticate, channelRouter);
 
 // SOCKET.IO CONNECTION
 io.on('connection', (socket) => {
