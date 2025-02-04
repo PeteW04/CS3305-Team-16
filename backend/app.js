@@ -35,7 +35,6 @@ app.use((req, res, next) => {
 });
 io.use(socketAuthentication);
 
-
 // ROUTERS
 app.use('/auth', authRouter);
 app.use('/user', authenticate, userRouter);
@@ -49,6 +48,10 @@ app.use('/channel', authenticate, channelRouter);
 // SOCKET.IO CONNECTION
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
+
+    socket.on('error', (err) => {
+        console.error("Socket Error:", err.message);
+    });
 
     // Join a room for a specific channel
     socket.on('joinRoom', (roomId) => {
@@ -70,4 +73,4 @@ io.on('connection', (socket) => {
 
 // RUNNING SERVER
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -37,7 +37,7 @@ export const editChannel = async (req, res) => {
 
 
 export const getMessages = async (req, res) => {
-    const { channelId } = req.body;
+    const { channelId } = req.params;
     try {
         const messages = await Message.find({ channelId });
         return res.status(200).json(messages);

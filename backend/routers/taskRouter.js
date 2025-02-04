@@ -1,4 +1,4 @@
-const express = require('express');
+import express from 'express';
 import { getAllTasks, getTaskById, createTask, updateTask, deleteTask } from '../controllers/taskController.js';
 import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
 
@@ -11,13 +11,13 @@ taskRouter.get('/', getAllTasks);
 taskRouter.get('/:id', getTaskById);
 
 // Create a task
-taskRouter.post('/',  checkUserRole('manager'), createTask);
+taskRouter.post('/', checkUserRole('manager'), createTask);
 
 // Update a task
-taskRouter.put('/:id',  checkUserRole('manager'), updateTask);
+taskRouter.put('/:id', checkUserRole('manager'), updateTask);
 
 // Delete a task
-taskRouter.delete('/:id',  checkUserRole('manager'), deleteTask);
+taskRouter.delete('/:id', checkUserRole('manager'), deleteTask);
 
 export default taskRouter;
 
