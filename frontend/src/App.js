@@ -7,7 +7,7 @@ import Landing from './pages/Landing';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
-import Header from './components/header'; 
+import Header from './components/header';
 import TestPage from './pages/Component-Test';
 import Task from './pages/Task';
 
@@ -17,13 +17,13 @@ function App() {
     <Router>
       <Header />
       <Routes>
-        <Route path="/" element={<Landing />} /> 
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/usersignup" element={<UserSignup />} />
-        <Route path="/forgotpassword" element ={<ForgotPassword />} />
-        <Route path="/resetpassword" element ={<ResetPassword />} />
-        <Route path="/test" element ={<TestPage />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/resetpassword" element={<ResetPassword />} />
+        <Route path="/test" element={<TestPage />} />
         <Route path="/tasks" element={<Task />} />
       </Routes>
     </Router>
@@ -32,22 +32,19 @@ function App() {
 
 export default App;
 
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    //     <p>
-    //       Edit <code>src/App.js</code> and save to reload.
-    //     </p>
-    //     <a
-    //       className="App-link"
-    //       href="https://reactjs.org"
-    //       target="_blank"
-    //       rel="noopener noreferrer"
-    //     >
-    //       Learn React
-    //     </a>
-    //   </header>
-    // </div>
-
-
-
+// <div className="App">
+//   <header className="App-header">
+//     <img src={logo} className="App-logo" alt="logo" />
+//     <p>
+//       Edit <code>src/App.js</code> and save to reload.
+//     </p>
+//     <a
+//       className="App-link"
+//       href="https://reactjs.org"
+//       target="_blank"
+//       rel="noopener noreferrer"
+//     >
+//       Learn React
+//     </a>
+//   </header>
+// </div>
