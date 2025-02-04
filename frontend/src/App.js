@@ -10,22 +10,25 @@ import ResetPassword from './pages/ResetPassword';
 import Header from './components/header';
 import TestPage from './pages/Component-Test';
 import Task from './pages/Task';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
   // Render only the Login component
   return (
     <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/usersignup" element={<UserSignup />} />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/resetpassword" element={<ResetPassword />} />
-        <Route path="/test" element={<TestPage />} />
-        <Route path="/tasks" element={<Task />} />
-      </Routes>
+      <AuthProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/usersignup" element={<UserSignup />} />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          <Route path="/test" element={<TestPage />} />
+          <Route path="/tasks" element={<Task />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
 }

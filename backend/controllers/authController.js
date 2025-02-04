@@ -113,3 +113,19 @@ export const registerEmployee = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
+
+
+
+export const validateToken = async (req, res) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) return res.status(401).json({ message: "No token provided" });
+
+    const token = authHeader.split(" ")[1];
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id).select('-password');
+        return res.status(200).json(user);
+    } catch (err) {
+        return res.status(401).json({ message: "Invalid or expired token" });
+    }
+};
