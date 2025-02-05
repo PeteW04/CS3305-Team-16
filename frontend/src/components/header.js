@@ -1,10 +1,11 @@
 import React from 'react';
 import { Layout } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import Task from '../pages/Task';
 
 function Header() {
   const location = useLocation();
-  const isAuthPage = false ;
+  const isAuthPage = false;
 
   return (
     <header className="fixed w-full bg-white/80 backdrop-blur-md shadow-sm z-50 pb-2">
@@ -27,6 +28,12 @@ function Header() {
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
               >
                 Sign Up Free
+              </Link>
+              <Link
+                to="/tasks"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
+              >
+                Tasks
               </Link>
             </div>
           )}
