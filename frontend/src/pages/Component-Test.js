@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import Sidebar from "../components/sidebar";
+import TaskManager from "../components/TaskManager";
+import ProjectSummary from "../components/ProjectSummary";
 
 function TestPage() {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -12,6 +14,10 @@ function TestPage() {
     <main className="flex h-screen pt-16">
       {/* Sidebar */}
       <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+      {/* Project summary */}
+      <ProjectSummary />
+      {/* tasklist */}
+      <TaskManager />
 
       {/* Main Content */}
       <div className="flex-1 bg-gray-100 py-10 px-6">
