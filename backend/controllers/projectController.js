@@ -1,7 +1,8 @@
 import Project from '../models/Projects.js';
 import Task from '../models/Task.js';
 import mongoose from 'mongoose';
-import { createTask } from './taskController.js';
+import { createTask, deleteTask } from './taskController.js';
+import { createChannel } from './messageController.js';
 
 // GET: List all Projects
 export const getAllProjects = async (req, res) => {
@@ -32,7 +33,8 @@ export const getAllProjectsByOrg = async (req, res) => {
 // GET: Return a single Project based on its ID
 export const getProjectById = async (req, res) => {
     try {
-        const project = await Project.findById(req.params.id);
+        const { projectId } = req.params;
+        const project = await Project.findById(projectId);
         if (!project) {
             return res.status(404).json({error: 'Project not found'});
         }
@@ -48,9 +50,8 @@ export const getProjectById = async (req, res) => {
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
     try {
-        const newProject = await Project.create(
-            req.body, 
-            { organization: req.user.organizationId });
+        const {title, description, organization, deadline} = req.body;
+        const newProject = await Project.create({title, description, organization, deadline});
         res.status(201).json(newProject);
     } catch (error) {
         res.status(400).json({error: error.message});
@@ -60,12 +61,12 @@ export const createProject = async (req, res) => {
 // PUT: Change project name
 export const changeTitle = async (req, res) => {
     try{
-        const { projectId, title } = req.params;
+        const { projectId, newTitle } = req.params;
 
         // Find the project and update its title
         const project = await Project.findByIdAndUpdate(
             projectId,
-            { title: title },
+            { title: newTitle },
             { new: true }
         );
 
@@ -83,12 +84,12 @@ export const changeTitle = async (req, res) => {
 // PUT: Change project description
 export const changeDescription = async (req, res) => {
     try{
-        const { projectId, description } = req.params;
+        const { projectId, newDescription } = req.params;
 
         // Find the project and update its description
         const project = await Project.findByIdAndUpdate(
             projectId,
-            { description: description },
+            { description: newDescription },
             { new: true }
         );
 
@@ -97,7 +98,7 @@ export const changeDescription = async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json({ message: 'Project title updated', project });
+        res.status(200).json({ message: 'Project description updated', project });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -107,12 +108,12 @@ export const changeDescription = async (req, res) => {
 // PUT: Change project deadline
 export const changeDeadline = async (req, res) => {
     try{
-        const { projectId, deadline } = req.params;
+        const { projectId, newDeadline } = req.params;
 
         // Find the project and update its deadline
         const project = await Project.findByIdAndUpdate(
             projectId,
-            { deadline: deadline },
+            { deadline: newDeadline },
             { new: true }
         );
 
@@ -121,7 +122,7 @@ export const changeDeadline = async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json({ message: 'Project title updated', project });
+        res.status(200).json({ message: 'Project deadline updated', project });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
@@ -190,17 +191,13 @@ export const removeEmployee = async (req, res) => {
 export const addTask = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { task } = req.body;
+        const { title, description, deadline } = req.body;
+        const task = { title: title, description: description, deadline: deadline }
 
         // Ensure a valid project id
         const project = await Project.findById(projectId);
         if (!project){
             return res.status(404).json({ error: 'Project not found' });
-        }
-
-        // Ensure the task exists
-        if (!task) {
-            return res.status(404).json({ error: 'Task not found' });
         }
 
         const updatedProject = await createTask(projectId, task);
@@ -219,20 +216,15 @@ export const addTask = async (req, res) => {
 // PUT: Remove a task from a project
 export const removeTask = async (req, res) => {
     try {
-        const { taskId, projectId } = req.params;
+        const {  projectId, taskId } = req.params;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(taskId)) {
             return res.status(400).json({ error: 'Invalid projectId or taskId' });
         }
 
-        const task = await Task.findById(taskId);
         const project = await Project.findById(projectId);
-
-        // Ensure the task and project exists
-        if (!task) {
-            return res.status(404).json({ error: 'Task not found' });
-        }
+        // Ensure the project exists
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
@@ -268,17 +260,14 @@ export const updateTaskStatus = async (req, res) => {
 
         // Find the project and verify that it exists
         const project = await Project.findById(projectId);
-
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to modify this task, as it is outside of your organisation' });
-        }
+        console.log(project);
 
         // Check if the task is in the project
-        const taskInProject = project.tasks.some(task => task._id.toString() === taskId);
+        const taskInProject = project.tasks.includes(taskId);
         if (!taskInProject) {
             return res.status(404).json({ error: 'Task not found in the project' });
         }
