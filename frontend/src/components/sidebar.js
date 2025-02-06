@@ -21,6 +21,10 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
 
+      
+      {/* Divider */}
+      {!isMinimized && <div className="h-px bg-[#787486]/20 my-6" />}
+
       {/* Projects Section */}
       {!isMinimized && (
         <div className="mt-6 px-2">
