@@ -4,8 +4,7 @@ import { sendMessage, editMessage, deleteMessage, getMessages } from '../control
 const messageRouter = express.Router();
 
 messageRouter.post('/send', sendMessage);
-messageRouter.put('/:messageId', editMessage);
-messageRouter.delete('/:id', deleteMessage);
-messageRouter.get('/:channelId', getMessages);
+messageRouter.put('/edit/:messageId', editMessage);
+messageRouter.delete('/delete/:messageId', deleteMessage);
 
 export default messageRouter;

@@ -75,7 +75,6 @@ export const login = async (req, res) => {
 };
 
 
-
 export const registerEmployee = async (req, res) => {
     const { firstName, lastName, password, token } = req.body;
 
@@ -113,7 +112,6 @@ export const registerEmployee = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
-
 
 
 export const validateToken = async (req, res) => {
