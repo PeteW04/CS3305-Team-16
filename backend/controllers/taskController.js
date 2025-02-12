@@ -1,6 +1,5 @@
 import Task from '../models/Task.js';
 import Project from '../models/Projects.js';
-import Project from '../models/Projects.js';
 
 
 // Get all tasks

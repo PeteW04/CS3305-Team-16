@@ -264,8 +264,6 @@ export const updateTaskStatus = async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        console.log(project);
-
         // Check if the task is in the project
         const taskInProject = project.tasks.includes(taskId);
         if (!taskInProject) {
