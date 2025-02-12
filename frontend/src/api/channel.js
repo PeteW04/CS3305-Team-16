@@ -1,0 +1,77 @@
+const API_URL = "http://localhost:5000/channel";
+
+export const getMessages = async (channelId) => {
+    try {
+        const response = await fetch(`${API_URL}/messages/${channelId}`, {
+            method: "GET",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to fetch messages");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching messages:", error.message);
+        throw error;
+    }
+};
+
+export const createChannel = async (channelData) => {
+    try {
+        const response = await fetch(`${API_URL}/create`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(channelData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to create channel");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error creating channel:", error.message);
+        throw error;
+    }
+};
+
+export const editChannel = async (channelId, channelData) => {
+    try {
+        const response = await fetch(`${API_URL}/edit/${channelId}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(channelData),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to edit channel");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error editing channel:", error.message);
+        throw error;
+    }
+};
+
+export const deleteChannel = async (channelId) => {
+    try {
+        const response = await fetch(`${API_URL}/delete/${channelId}`, {
+            method: "DELETE",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to delete channel");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error deleting channel:", error.message);
+        throw error;
+    }
+};

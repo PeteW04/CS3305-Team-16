@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API functions
 
 const AuthContext = createContext();
 
@@ -8,27 +9,20 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
+    // Login function
     const login = async (data) => {
         try {
-            const response = await fetch("https://api.example.com/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (response.ok) {
-                setUser(result.user);
-                setToken(result.token);
-                localStorage.setItem("authToken", result.token); 
-                navigate("/dashboard"); 
-            } else {
-                alert(result.message); 
-            }
-        } catch (err) {
-            console.error("Login Error:", err.message);
+            const result = await loginAPI(data);
+            setUser(result.user);
+            setToken(result.token);
+            localStorage.setItem("authToken", result.token);
+            navigate("/dashboard");
+        } catch (error) {
+            alert(error.message);
         }
     };
 
+    // Logout function
     const logout = () => {
         setUser(null);
         setToken("");
@@ -39,21 +33,14 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const storedToken = localStorage.getItem("authToken");
         if (storedToken) {
-            fetch("http://localhost:5000/validate", {
-                headers: { Authorization: `Bearer ${storedToken}` },
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.user) {
-                        setUser(data.user);
-                        setToken(storedToken);
-                    } else {
-                        logout();
-                    }
+            validateTokenAPI(storedToken)
+                .then((userData) => {
+                    setUser(userData);
+                    setToken(storedToken);
                 })
-                .catch(() => logout()); 
+                .catch(() => logout()); // Log out if token is invalid or expired
         }
-    }, []); 
+    }, []);
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout }}>
@@ -62,4 +49,5 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
+// Custom hook to access AuthContext
 export const useAuth = () => useContext(AuthContext);
