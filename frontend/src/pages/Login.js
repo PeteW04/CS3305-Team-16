@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
-import { login } from "../api/auth"
 import "../CSS-files/Login.css"
 import { useAuth } from "../context/AuthContext"
 

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API functions
 
@@ -9,26 +9,24 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
-    // Login function
     const login = async (data) => {
         try {
             const result = await loginAPI(data);
             setUser(result.user);
             setToken(result.token);
             localStorage.setItem("authToken", result.token);
-            navigate("/dashboard");
+            navigate("/tasks");
         } catch (error) {
             alert(error.message);
         }
     };
 
-    // Logout function
-    const logout = () => {
+    const logout = useCallback(() => {
         setUser(null);
         setToken("");
         localStorage.removeItem("authToken");
         navigate("/login");
-    };
+    }, [navigate]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("authToken");
@@ -38,9 +36,9 @@ export const AuthProvider = ({ children }) => {
                     setUser(userData);
                     setToken(storedToken);
                 })
-                .catch(() => logout()); // Log out if token is invalid or expired
+                .catch(() => logout());
         }
-    }, []);
+    }, [logout]);
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout }}>
@@ -49,5 +47,5 @@ export const AuthProvider = ({ children }) => {
     );
 };
 
-// Custom hook to access AuthContext
+
 export const useAuth = () => useContext(AuthContext);

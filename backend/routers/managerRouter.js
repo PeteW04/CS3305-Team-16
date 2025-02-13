@@ -1,7 +1,7 @@
 import express from 'express';
-import { inviteEmployee } from '../controllers/userController';
+import { inviteEmployee } from '../controllers/managerController.js';
 const managerRouter = express.Router();
 
-userRouter.post('/invite-employee', inviteEmployee);
+managerRouter.post('/invite-employee', inviteEmployee);
 
 export default managerRouter;
