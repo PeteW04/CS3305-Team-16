@@ -24,3 +24,24 @@ export const inviteEmployee = async (inviteData) => {
         throw error;
     }
 };
+
+
+export const changePassword = async (data, token) => {
+    try {
+        const response = await fetch(`${API_URL}/change-password`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${token}` },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Change Password failed");
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error in changePassword:", error.message);
+        throw error;
+    }
+};
