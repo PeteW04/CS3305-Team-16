@@ -1,8 +1,10 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from "../models/User.js";
 import Organization from "../models/Organization.js";
 import ResetToken from '../models/ResetToken.js';
 import { hashPassword, checkPassword } from "../utils/passwordHash.js";
+import { sendEmail } from "../utils/email.js";
 
 
 export const registerManager = async (req, res) => {
@@ -133,7 +135,7 @@ export const resetPassword = async (req, res) => {
         if (!resetToken || ResetToken.expiresAt < new Date()) {
             return res.status(400).json({ message: "Invalid or expired token" });
         }
-        const user = ResetToken.userId;
+        const user = resetToken.userId;
         user.password = await hashPassword(newPassword);
         await user.save();
         await ResetToken.deleteOne({ _id: resetToken._id });

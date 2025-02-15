@@ -1,7 +1,5 @@
 import User from '../models/User.js';
 import { hashPassword } from '../utils/passwordHash.js';
-import { sendEmail } from "../utils/email.js";
-
 
 // Get all users
 export const getAllUsers = async () => {
