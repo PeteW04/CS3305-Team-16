@@ -1,6 +1,6 @@
-import { useState, useSearchParams } from "react"
-import { changePassword } from "../api/employee.js"
-import { useAuth } from '../context/AuthContext.js'
+import { useState } from "react"
+import { useSearchParams } from "react-router-dom"
+import { resetPassword } from "../api/auth.js"
 import { Lock, ArrowLeft } from "lucide-react"
 import "../CSS-files/ForgotPassword.css"
 
@@ -13,7 +13,6 @@ const ResetPassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    setSuccessMessage("");
 
     if (password !== confirmPassword) {
       setError("Passwords do not match. Try again!");
@@ -21,12 +20,11 @@ const ResetPassword = () => {
     }
 
     try {
-      const token = searchParams.get("token"); // Extract token from URL
+      const token = searchParams.get("token");
       if (!token) throw new Error("Invalid or missing token");
 
-      const response = await resetPasswordAPI(token, password); // Call API helper
-      setSuccessMessage(response.message); // Display success message
-      setPassword(""); // Clear input fields
+      const response = await resetPassword(token, password);
+      setPassword("");
       setConfirmPassword("");
     } catch (err) {
       console.error("Failed to reset password:", err.message);

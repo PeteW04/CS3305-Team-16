@@ -86,7 +86,7 @@ export const validateTokenAPI = async (token) => {
 
 export const forgotPassword = async (email) => {
     try {
-        const response = await fetch("/api/forgot-password", {
+        const response = await fetch(`${API_URL}/forgot-password`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -101,7 +101,7 @@ export const forgotPassword = async (email) => {
 
         return await response.json(); // Return success message
     } catch (error) {
-        console.error("Error in forgotPasswordAPI:", error.message);
+        console.error("Error in forgotPassword:", error.message);
         throw error;
     }
 };
@@ -109,7 +109,7 @@ export const forgotPassword = async (email) => {
 
 export const resetPassword = async (token, newPassword) => {
     try {
-        const response = await fetch("/api/reset-password", {
+        const response = await fetch(`${API_URL}/reset-password`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -124,7 +124,7 @@ export const resetPassword = async (token, newPassword) => {
 
         return await response.json(); // Return success message
     } catch (error) {
-        console.error("Error in resetPasswordAPI:", error.message);
+        console.error("Error in resetPassword:", error.message);
         throw error;
     }
 };
