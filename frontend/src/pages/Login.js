@@ -1,22 +1,15 @@
 import { useState } from "react"
 import { Mail, Lock } from "lucide-react"
-import { login } from "../api/auth"
 import "../CSS-files/Login.css"
+import { useAuth } from "../context/AuthContext"
 
 const Login = () => {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
+  const { login } = useAuth();
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    try {
-      const data = await login({ email, password });
-      localStorage.setItem("clackToken", data.token);
-      console.log("Success");
-    } catch (error) {
-      console.log(error)
-      console.error(error.response.data.message, "Login Failed")
-    }
+    e.preventDefault();
+    login(credentials);
   };
 
   return (
@@ -30,8 +23,8 @@ const Login = () => {
               <input
                 type="email"
                 placeholder="victor@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={credentials.email}
+                onChange={(e) => setCredentials({ ...credentials, email: e.target.value })}
                 required
               />
               <Mail className="input-icon" />
@@ -43,8 +36,8 @@ const Login = () => {
               <input
                 type="password"
                 placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={credentials.password}
+                onChange={(e) => setCredentials({ ...credentials, password: e.target.value })}
                 required
               />
               <Lock className="input-icon" />

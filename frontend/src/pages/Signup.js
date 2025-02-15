@@ -1,16 +1,19 @@
 import { useState } from "react"
+import { registerManager } from "../api/auth"
+import { useAuth } from "../context/AuthContext"
 import { Mail, Lock, User, Building2 } from "lucide-react"
 import "../CSS-files/Signup.css"
 
 const Signup = () => {
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     password: "",
     confirmPassword: "",
-    organization: "",
-    organizationDescription: "",
+    organizationName: "",
+    description: "",
   })
 
   const handleChange = (e) => {
@@ -21,16 +24,26 @@ const Signup = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    console.log("Signup attempted with:", formData)
-  }
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    try {
+      await registerManager(formData);
+      await login({ email: formData.email, password: formData.password });
+    } catch (err) {
+      console.error("Signup Failed:", err.message);
+      alert("Signup Failed. Please try again");
+    }
+  };
 
   return (
     <div className="signup-container">
       <div className="signup-form-container">
         <div className="signup-form">
-        {/* logo goes here if needed */}
+          {/* logo goes here if needed */}
           <h2 className="form-title">Create your account</h2>
           <form onSubmit={handleSubmit}>
             <div className="name-row">
@@ -110,9 +123,9 @@ const Signup = () => {
               <div className="input-wrapper">
                 <input
                   type="text"
-                  name="organization"
+                  name="organizationName"
                   placeholder="Enter your organization"
-                  value={formData.organization}
+                  value={formData.organizationName}
                   onChange={handleChange}
                   required
                 />
@@ -123,9 +136,9 @@ const Signup = () => {
               <label>Organization Description</label>
               <div className="input-wrapper">
                 <textarea
-                  name="organizationDescription"
+                  name="description"
                   placeholder="Tell me about your organization"
-                  value={formData.organizationDescription}
+                  value={formData.description}
                   onChange={handleChange}
                   required
                   rows={4}
