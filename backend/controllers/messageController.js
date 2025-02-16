@@ -2,6 +2,21 @@ import Message from "../models/Message.js";
 import Channel from "../models/Channel.js";
 
 
+export const getChannels = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const channels = await Channel.find({ members: userId })
+            .populate("members", "name email")
+            .populate("projectId", "name");
+
+        res.status(200).json(channels);
+    } catch (error) {
+        console.error("Error in getChannels:", error.message);
+        res.status(500).json({ message: "Failed to fetch channels" });
+    }
+};
+
+
 export const createChannel = async (req, res) => {
     const { type, members, name, projectId } = req.body;
     try {
@@ -36,18 +51,6 @@ export const editChannel = async (req, res) => {
 };
 
 
-export const getMessages = async (req, res) => {
-    const { channelId } = req.params;
-    try {
-        const messages = await Message.find({ channelId });
-        return res.status(200).json(messages);
-    } catch (e) {
-        console.error("Error in getMessages:", e.message);
-        return res.status(500).json({ message: e.message });
-    }
-};
-
-
 export const deleteChannel = async (req, res) => {
     const { channelId } = req.params;
     try {
@@ -60,6 +63,19 @@ export const deleteChannel = async (req, res) => {
         return res.status(200).json({ message: "Channel Deleted" });
     } catch (e) {
         console.error("Error in deleteChannel:", e.message);
+        return res.status(500).json({ message: e.message });
+    }
+};
+
+
+export const getMessages = async (req, res) => {
+    const { channelId } = req.params;
+    try {
+        console.log(channelId);
+        const messages = await Message.find({ channelId });
+        return res.status(200).json(messages);
+    } catch (e) {
+        console.error("Error in getMessages:", e.message);
         return res.status(500).json({ message: e.message });
     }
 };

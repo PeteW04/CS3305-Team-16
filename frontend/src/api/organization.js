@@ -1,12 +1,15 @@
+import { getAuthToken } from "../utils/token.js";
+
 const API_URL = "http://localhost:5000/api";
 
 export const getOrganizationDetails = async (organizationId) => {
     try {
-        const token = localStorage.getItem("authToken");
-
         const response = await fetch(`${API_URL}/organization/${organizationId}`, {
             method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
         });
 
         if (!response.ok) {
