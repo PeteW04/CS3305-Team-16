@@ -31,8 +31,13 @@ const io = new Server(server, {
 app.use(cors({
     origin: 'http://localhost:3000',
     methods: ['GET','POST','PUT','DELETE','OPTIONS'],
-}));
-app.options('*', cors());
+    credentials: true,
+  }));
+app.options('*', cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    credentials: true,
+  }));
 
 app.use((req, res, next) => {
     req.io = io;
