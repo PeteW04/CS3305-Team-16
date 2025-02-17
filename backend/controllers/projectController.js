@@ -8,6 +8,9 @@ import { createChannel } from './messageController.js';
 export const getAllProjects = async (req, res) => {
     try {
         // Automatically filter by the user's organizationId
+
+        console.log("User organizationId:", req.user.organizationId);
+
         const projects = await Project.find({ organization: req.user.organizationId });
 
         res.status(200).json(projects);
@@ -51,7 +54,12 @@ export const getProjectById = async (req, res) => {
 export const createProject = async (req, res) => {
     try {
         const {title, description, organization, deadline} = req.body;
-        const newProject = await Project.create({title, description, organization, deadline});
+        const newProject = await Project.create({
+            title,
+            description,
+            organization: req.user.organizationId,
+            deadline
+          });
         res.status(201).json(newProject);
     } catch (error) {
         res.status(400).json({error: error.message});
