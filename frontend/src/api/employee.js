@@ -1,3 +1,5 @@
+import { getAuthToken } from "../utils/token.js";
+
 const API_URL = "http://localhost:5000/user";
 
 export const inviteEmployee = async (inviteData) => {

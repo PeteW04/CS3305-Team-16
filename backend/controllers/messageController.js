@@ -2,16 +2,58 @@ import Message from "../models/Message.js";
 import Channel from "../models/Channel.js";
 
 
+export const getChannels = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const channels = await Channel.find({ members: userId })
+            .populate("members", "firstName lastName email")
+            .populate("projectId", "name");
+
+        const updatedChannels = channels.map((channel) => {
+            if (channel.type === "direct-message") {
+                const otherMember = channel.members.find(
+                    (member) => member._id.toString() !== userId
+                );
+
+                channel.name = otherMember
+                    ? `${otherMember.firstName} ${otherMember.lastName}`
+                    : "Unknown User";
+            }
+
+            return channel;
+        });
+
+        res.status(200).json(updatedChannels);
+    } catch (error) {
+        console.error("Error in getChannels:", error.message);
+        res.status(500).json({ message: "Failed to fetch channels" });
+    }
+};
+
+
 export const createChannel = async (req, res) => {
     const { type, members, name, projectId } = req.body;
+    const { id } = req.user;
+
     try {
+        if (type === "direct-message" && members.length !== 2) {
+            return res.status(400).json({ message: "Direct-message channels must have exactly two members" });
+        }
+
+        if ((type === "group" || type === "project") && !name) {
+            return res.status(400).json({ message: "Group and Project channels must have a name" });
+        }
+        members.push(id);
         const channel = await Channel.create({ type, members, name, projectId });
+
         return res.status(201).json(channel);
     } catch (e) {
         console.error("Error in createChannel:", e.message);
         return res.status(500).json({ message: e.message });
     }
 };
+
 
 
 export const editChannel = async (req, res) => {
@@ -36,18 +78,6 @@ export const editChannel = async (req, res) => {
 };
 
 
-export const getMessages = async (req, res) => {
-    const { channelId } = req.params;
-    try {
-        const messages = await Message.find({ channelId });
-        return res.status(200).json(messages);
-    } catch (e) {
-        console.error("Error in getMessages:", e.message);
-        return res.status(500).json({ message: e.message });
-    }
-};
-
-
 export const deleteChannel = async (req, res) => {
     const { channelId } = req.params;
     try {
@@ -65,11 +95,29 @@ export const deleteChannel = async (req, res) => {
 };
 
 
+export const getMessages = async (req, res) => {
+    const { channelId } = req.params;
+    try {
+        console.log(channelId);
+        const messages = await Message.find({ channelId });
+        return res.status(200).json(messages);
+    } catch (e) {
+        console.error("Error in getMessages:", e.message);
+        return res.status(500).json({ message: e.message });
+    }
+};
+
+
 export const sendMessage = async (req, res) => {
     const { channelId, text } = req.body;
 
     try {
-        const message = await Message.create({ channelId, senderId: req.user._id, text });
+        const message = await Message.create({
+            channelId,
+            senderId: req.user._id,
+            text
+        });
+
         req.io.to(channelId).emit('newMessage', message);
         return res.status(201).json(message);
     } catch (e) {
@@ -77,6 +125,7 @@ export const sendMessage = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
+
 
 
 export const editMessage = async (req, res) => {
