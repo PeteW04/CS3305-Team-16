@@ -12,6 +12,7 @@ import channelRouter from './routers/channelRouter.js';
 import messageRouter from './routers/messageRouter.js';
 import { authenticate } from './middleware/authMiddleware.js';
 import { socketAuthentication } from './middleware/socketMiddleware.js';
+import managerRouter from './routers/managerRouter.js';
 
 // INITIALIZATION
 dotenv.config();
@@ -27,17 +28,30 @@ const io = new Server(server, {
 });
 
 // MIDDLEWARE
-app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    credentials: true,
+  }));
+app.options('*', cors({
+    origin: 'http://localhost:3000',
+    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    credentials: true,
+  }));
+
 app.use((req, res, next) => {
     req.io = io;
     next();
 });
+
+app.use(express.json());
+
 io.use(socketAuthentication);
 
 // ROUTERS
 app.use('/auth', authRouter);
 app.use('/user', authenticate, userRouter);
+app.use('/manager', authenticate, managerRouter)
 
 app.use('/project', authenticate, projectRouter);
 app.use('/task', authenticate, taskRouter);

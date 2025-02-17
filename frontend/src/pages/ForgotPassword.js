@@ -1,14 +1,26 @@
 import { useState } from "react"
 import { Mail, ArrowLeft } from "lucide-react"
 import "../CSS-files/ForgotPassword.css"
+import { forgotPassword } from "../api/auth"
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("")
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Password reset requested for:", email)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    try {
+      const response = await forgotPassword(email);
+      setMessage(response.message);
+      setEmail("");
+    } catch (err) {
+      console.error("Error in forgotPasssword:", err.message);
+      setError(err.message);
+    }
+  };
 
   return (
     <div className="fp-container">

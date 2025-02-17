@@ -1,59 +1,44 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API functions
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null); // Stores user information
-    const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
+    const [token, setToken] = useState(localStorage.getItem("token") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
     const login = async (data) => {
         try {
-            const response = await fetch("https://api.example.com/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            if (response.ok) {
-                setUser(result.user);
-                setToken(result.token);
-                localStorage.setItem("authToken", result.token); 
-                navigate("/dashboard"); 
-            } else {
-                alert(result.message); 
-            }
-        } catch (err) {
-            console.error("Login Error:", err.message);
+            const result = await loginAPI(data);
+            setUser(result.user);
+            setToken(result.token);
+            localStorage.setItem("token", result.token);
+            navigate("/tasks");
+        } catch (error) {
+            alert(error.message);
         }
     };
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setUser(null);
         setToken("");
         localStorage.removeItem("authToken");
         navigate("/login");
-    };
+    }, [navigate]);
 
     useEffect(() => {
         const storedToken = localStorage.getItem("authToken");
         if (storedToken) {
-            fetch("http://localhost:5000/validate", {
-                headers: { Authorization: `Bearer ${storedToken}` },
-            })
-                .then((res) => res.json())
-                .then((data) => {
-                    if (data.user) {
-                        setUser(data.user);
-                        setToken(storedToken);
-                    } else {
-                        logout();
-                    }
+            validateTokenAPI(storedToken)
+                .then((userData) => {
+                    setUser(userData);
+                    setToken(storedToken);
                 })
-                .catch(() => logout()); 
+                .catch(() => logout());
         }
-    }, []); 
+    }, [logout]);
 
     return (
         <AuthContext.Provider value={{ user, token, login, logout }}>
@@ -61,5 +46,6 @@ export const AuthProvider = ({ children }) => {
         </AuthContext.Provider>
     );
 };
+
 
 export const useAuth = () => useContext(AuthContext);

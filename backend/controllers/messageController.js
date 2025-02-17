@@ -98,13 +98,13 @@ export const editMessage = async (req, res) => {
 
 
 export const deleteMessage = async (req, res) => {
-    const { id } = req.params;
+    const { messageId } = req.params;
     try {
-        const message = await Chat.findByIdAndDelete(id);
+        const message = await Chat.findByIdAndDelete(messageId);
         if (!message) {
             return res.status(404).json({ message: "Message not found" });
         }
-        req.io.to(message.channelId).emit('messageDelted', { id });
+        req.io.to(message.channelId).emit('messageDelted', { messageId });
         return res.status(200).json({ message: "Message Deleted" });
     } catch (e) {
         console.error("Error in deleteMessage:", e.message);
