@@ -13,6 +13,7 @@
     flex-direction: column;
     background-color: #fff;
     overflow: hidden;
+    height: 100%;
   }
 
   /* Chat Container Styles */
@@ -22,6 +23,7 @@
     flex-direction: column;
     background-color: #fff;
     color: #0d062d;
+    overflow-y: auto;
   }
   
   .chat-title {

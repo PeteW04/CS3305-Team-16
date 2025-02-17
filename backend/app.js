@@ -23,8 +23,10 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: '*',
-    }
+        origin: "http://localhost:3000", // Replace with your frontend's URL
+        methods: ["GET", "POST"],
+        credentials: true,
+    },
 });
 
 // MIDDLEWARE
@@ -50,7 +52,7 @@ io.use(socketAuthentication);
 
 // ROUTERS
 app.use('/auth', authRouter);
-app.use('/user', authenticate, userRouter);
+app.use('/users', authenticate, userRouter);
 app.use('/manager', authenticate, managerRouter)
 
 app.use('/project', authenticate, projectRouter);
@@ -84,6 +86,8 @@ io.on('connection', (socket) => {
         console.log(`User disconnected: ${socket.id}`);
     });
 });
+
+console.log("Socket.IO server initialized");
 
 // RUNNING SERVER
 const PORT = process.env.PORT || 5000;

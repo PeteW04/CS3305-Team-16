@@ -1,9 +1,36 @@
+import { getAuthToken } from "../utils/token.js";
+
 const API_URL = "http://localhost:5000/channel";
+
+export const getChannels = async () => {
+    try {
+        const response = await fetch(`${API_URL}/`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to fetch channels");
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error fetching channels:", error.message);
+        throw error;
+    }
+};
 
 export const getMessages = async (channelId) => {
     try {
         const response = await fetch(`${API_URL}/messages/${channelId}`, {
             method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
         });
 
         if (!response.ok) {
@@ -22,7 +49,10 @@ export const createChannel = async (channelData) => {
     try {
         const response = await fetch(`${API_URL}/create`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
             body: JSON.stringify(channelData),
         });
 
@@ -42,7 +72,10 @@ export const editChannel = async (channelId, channelData) => {
     try {
         const response = await fetch(`${API_URL}/edit/${channelId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
             body: JSON.stringify(channelData),
         });
 
@@ -62,6 +95,10 @@ export const deleteChannel = async (channelId) => {
     try {
         const response = await fetch(`${API_URL}/delete/${channelId}`, {
             method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
         });
 
         if (!response.ok) {

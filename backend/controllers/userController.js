@@ -2,14 +2,15 @@ import User from '../models/User.js';
 import { hashPassword } from '../utils/passwordHash.js';
 
 // Get all users
-export const getAllUsers = async () => {
+export const getAllUsers = async (req, res) => {
+    const { organizationId } = req.user;
     try {
-        const users = await User.find({});
-        console.log(`Users: ${users}`);
-
+        const users = await User.find({ organizationId }).select("firstName lastName email _id");
+        return res.status(200).json(users);
     }
     catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error fetching users:", error.message);
+        return res.status(500).json({ message: "Failed to fetch users" });
     }
 };
 
