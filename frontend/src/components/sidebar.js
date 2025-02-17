@@ -1,9 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Link } from 'react-router-dom';
 
 
 function Sidebar({ isMinimized, toggleSidebar }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Retrieve token from localStorage
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      if (!token) {
+        setError("No token found. Please log in.");
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await fetch("http://localhost:5000/project", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          credentials: "include",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+        const data = await response.json();
+        setProjects(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProjects();
+  }, [token]); 
+
+  if (loading) return <div>Loading projects...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <nav className={`h-screen bg-white border-r border-gray-300 p-4 transition-all ${isMinimized ? "w-20" : "w-64"}`}>
       {/* Profile Section */}
@@ -30,11 +69,13 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <div className="mt-6 px-2">
           <h2 className="text-gray-500 text-sm uppercase font-semibold mb-2">My Projects</h2>
           <ul className="space-y-2">
-            <ProjectItem name="Mobile App" color="bg-green-500" />
-            <ProjectItem name="Website Redesign" color="bg-yellow-500" />
-            <ProjectItem name="Design System" color="bg-purple-400" />
-            <ProjectItem name="Wireframes" color="bg-blue-500" />
-            <ProjectItem name="Software App" color="bg-green-500" />
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <ProjectItem key={project._id} name={project.title} color="bg-blue-500" />
+              ))
+            ) : (
+              <p className="text-gray-400">You're not working on any projects</p>
+            )}
           </ul>
         </div>
       )}
