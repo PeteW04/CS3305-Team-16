@@ -5,7 +5,8 @@ import Organization from "../models/Organization.js";
 import ResetToken from '../models/ResetToken.js';
 import { hashPassword, checkPassword } from "../utils/passwordHash.js";
 import { sendEmail } from "../utils/email.js";
-
+import Invite from "../models/Invite.js";
+import { createChannel } from "./messageController.js";
 
 export const registerManager = async (req, res) => {
     const { firstName, lastName, email, password, organizationName, description } = req.body;
@@ -44,8 +45,89 @@ export const registerManager = async (req, res) => {
     }
 };
 
+
+export const registerEmployee = async (req, res) => {
+    const { firstName, lastName, password, token } = req.body;
+
+    try {
+        // Validate the invite
+        const invite = await Invite.findOne({ token });
+        if (!invite) {
+            return res.status(400).json({ message: "Invite does not exist" });
+        }
+
+        if (invite.expires < new Date()) {
+            return res.status(400).json({ message: "Invite expired" });
+        }
+
+        // Hash password and create employee
+        const hashedPassword = await hashPassword(password);
+        const organizationId = invite.organizationId; // Get organization ID from invite
+        const organization = await Organization.findById(organizationId);
+        const email = invite.email;
+
+        const employee = await User.create({
+            firstName,
+            lastName,
+            email,
+            password: hashedPassword,
+            role: "employee",
+            organizationId, // Assign employee to the same organization
+        });
+
+        // Add employee to organization
+        organization.employees.push(employee._id);
+        await organization.save();
+
+        // Fetch all existing employees in the same organization (excluding the new employee)
+        const existingEmployees = await User.find({
+            organizationId: organization._id, // Filter by organization ID
+            _id: { $ne: employee._id }, // Exclude the newly registered employee
+        });
+
+        // Create direct message channels between the new employee and all other employees in the same organization
+        for (const existingEmployee of existingEmployees) {
+            const channelData = {
+                type: "direct-message",
+                members: [employee._id, existingEmployee._id], // Include both members
+                name: `${existingEmployee.firstName} ${existingEmployee.lastName}`, // Dynamic channel name
+            };
+
+            // Save channel to database (replace with your actual channel creation logic)
+            await createChannel(
+                { body: channelData, user: { id: employee._id } },
+                { status: () => ({ json: () => { } }) },
+            );
+        }
+
+        // Generate auth token for the new employee
+        const authToken = jwt.sign(
+            { id: employee._id, role: employee.role },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        return res.status(201).json({
+            authToken,
+            user: {
+                id: employee._id,
+                firstName: employee.firstName,
+                lastName: employee.lastName,
+                email: employee.email,
+                role: employee.role,
+            },
+        });
+    } catch (e) {
+        console.error("Error in registerEmployee:", e.message);
+        return res.status(500).json({ message: e.message });
+    }
+};
+
+
 export const login = async (req, res) => {
     const { email, password } = req.body;
+    console.log(email);
+    console.log(password);
 
     try {
         const user = await User.findOne({ email });

@@ -1,4 +1,6 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { registerEmployee } from "../api/auth"
+import { useAuth } from "../context/AuthContext"
 import { Lock, User } from "lucide-react"
 import "../CSS-files/UserSignup.css"
 
@@ -9,6 +11,14 @@ const UserSignup = () => {
     password: "",
     confirmpassword: ""
   })
+  const [token, setToken] = useState(null);
+  const { login } = useAuth();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const extractedToken = queryParams.get("token"); // Get 'token' from URL
+    setToken(extractedToken);
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -18,10 +28,31 @@ const UserSignup = () => {
     }))
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("User Signup attempted with:", formData)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (formData.password !== formData.confirmpassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+    try {
+      const response = await registerEmployee({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        password: formData.password,
+        token,
+      });
+      console.log("Registration successful:", response);
+
+      await login({
+        email: response.user.email,
+        password: formData.password,
+      });
+
+    } catch (error) {
+      console.error("Error during registration:", error.message);
+      alert(error.message || "An error occurred during registration.");
+    }
+  };
 
   return (
     <div className="usersignup-container">
@@ -81,7 +112,7 @@ const UserSignup = () => {
             <div className="input-wrapper">
               <input
                 type="password"
-                name="password"
+                name="confirmpassword"
                 placeholder="Confirm your password"
                 value={formData.confirmpassword}
                 onChange={handleChange}
@@ -99,7 +130,7 @@ const UserSignup = () => {
           </div>
           <a href="/login">
             <button type="button" className="login-link-button">
-                Login Now
+              Login Now
             </button>
           </a>
         </form>
