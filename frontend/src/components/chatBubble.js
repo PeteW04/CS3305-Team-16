@@ -1,9 +1,8 @@
 import React from "react";
 
-const ChatBubble = ({ sender, currentUser, message, time}) => {
+const ChatBubble = ({ sender, currentUser, message, time }) => {
 
-    const isSent = Boolean(sender === currentUser)
-    
+  const isSent = Boolean(sender === currentUser)
 
   return (
     <div className={`flex flex-col space-y-1 ${isSent ? "items-end" : "items-start"}`}>

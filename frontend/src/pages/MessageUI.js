@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Smile, Send } from "lucide-react";
 import ChatList from "../components/ChatList";
+import ChatBubble from "../components/chatBubble";
 import "../CSS-files/MessageUI.css";
 import { getMessages, getChannels } from "../api/channel";
 import { sendMessage } from "../api/message";
@@ -120,10 +121,13 @@ export default function MessageUI() {
             {selectedChat ? (
               selectedChat.messages && selectedChat.messages.length > 0 ? (
                 selectedChat.messages.map((msg, index) => (
-                  <div key={index} className={`message ${msg.senderId === "currentUserId" ? "sent" : ""}`}>
-                    <p>{msg.text}</p>
-                    <span>{new Date(msg.createdAt).toLocaleTimeString()}</span>
-                  </div>
+                  <ChatBubble
+                    key={index}
+                    sender={msg.senderId}
+                    currentUser={user._id} // Pass current user's ID
+                    message={msg.text}
+                    time={new Date(msg.createdAt).toLocaleTimeString()}
+                  />
                 ))
               ) : (
                 <p>No messages in this chat yet.</p>
