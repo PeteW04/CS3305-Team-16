@@ -12,6 +12,7 @@ import TestPage from './pages/Component-Test';
 import Task from './pages/Task';
 import MessageUI from './pages/MessageUI';
 import { AuthProvider } from './context/AuthContext';
+import ProjectSummary from './components/ProjectSummary';
 
 function App() {
   // Render only the Login component
@@ -28,6 +29,7 @@ function App() {
           <Route path="/resetpassword" element={<ResetPassword />} />
           <Route path="/test" element={<TestPage />} />
           <Route path="/tasks" element={<Task />} />
+          <Route path="projects" element={<ProjectSummary />} />
           <Route path="/message" element={<MessageUI />} />
         </Routes>
       </AuthProvider>

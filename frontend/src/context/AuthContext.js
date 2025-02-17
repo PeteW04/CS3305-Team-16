@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
     console.log("AuthProvider rendered");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null); // Stores user information
-    const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
+    const [token, setToken] = useState(localStorage.getItem("token") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
     const login = async (data) => {
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
             const result = await loginAPI(data);
             setUser(result.user);
             setToken(result.token);
-            localStorage.setItem("authToken", result.token);
+            localStorage.setItem("token", result.token);
             navigate("/tasks");
         } catch (error) {
             alert(error.message);
