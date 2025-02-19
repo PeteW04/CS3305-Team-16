@@ -1,10 +1,24 @@
 import React from 'react';
 import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
+import { useDrop } from 'react-dnd';
 
-function TaskColumn({ title, tasks, count, accentColor }) {
+function TaskColumn({ title, tasks, count, accentColor, onTaskDrop }) {
+  const [{ isOver }, drop] = useDrop(() => ({
+    accept: 'TASK',
+    drop: (item) => onTaskDrop(item.id, title),
+    collect: (monitor) => ({
+      isOver: monitor.isOver(),
+    }),
+  }));
+
   return (
-    <div className="flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4 h-screen overflow-y-auto p-4">
+    <div
+      ref={drop}
+      className={`flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4 h-screen overflow-y-auto ${
+        isOver ? 'bg-gray-100' : ''
+      }`}
+    >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
           <div className={`w-2 h-2 rounded-full ${accentColor}`}></div>
@@ -28,6 +42,7 @@ function TaskColumn({ title, tasks, count, accentColor }) {
         ))}
       </div>
     </div>
+    
   );
 }
 
