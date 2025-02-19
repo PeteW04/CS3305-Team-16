@@ -9,14 +9,25 @@ function Taskboard() {
   const [tasks, setTasks] = useState(initialTasks);
 
   const getTasksByStatus = (status) => {
-    return tasks.filter(task => task.status === status.toLowerCase());
+    const statusMap = {
+      'To Do': 'todo',
+      'On Progress': 'progress',
+      'Done': 'done'
+    };
+    return tasks.filter(task => task.status === statusMap[status] || task.status === status.toLowerCase());
   };
 
   const handleTaskDrop = (taskId, newStatus) => {
+    const statusMap = {
+      'To Do': 'todo',
+      'On Progress': 'progress',
+      'Done': 'done'
+    };
+    
     setTasks(prevTasks => 
       prevTasks.map(task => 
         task.id === taskId 
-          ? { ...task, status: newStatus.toLowerCase() }
+          ? { ...task, status: statusMap[newStatus] || newStatus.toLowerCase() }
           : task
       )
     );
