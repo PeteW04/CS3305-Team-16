@@ -195,6 +195,7 @@ export const deleteMessage = async (req, res) => {
     }
 }
 
+
 export const markMessagesRead = async (req, res) => {
     const { channelId } = req.params;
     try {
@@ -219,12 +220,17 @@ export const markMessagesRead = async (req, res) => {
                 channelId,
                 messages: populatedMessages
             });
-        }
 
-        res.status(200).json({ success: true });
+            res.status(200).json({
+                success: true,
+                channelId,
+                messages: populatedMessages
+            });
+        } else {
+            res.status(200).json({ success: true, channelId });
+        }
     } catch (e) {
         console.error("Error in markMessagesRead:", e.message);
         res.status(500).json({ message: e.message });
     }
 };
-

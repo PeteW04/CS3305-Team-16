@@ -36,7 +36,10 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
 
   useEffect(() => {
     const handleNewMessage = (newMsg) => {
-      if (newMsg.senderId !== user._id) {
+      // Only increment unread count if:
+      // 1. Message is not from current user
+      // 2. Chat is not currently selected
+      if (newMsg.senderId._id !== user._id && newMsg.channelId !== activeChat) {
         setUnreadCounts(prev => ({
           ...prev,
           [newMsg.channelId]: (prev[newMsg.channelId] || 0) + 1
@@ -46,7 +49,17 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
 
     socket.on("newMessage", handleNewMessage);
     return () => socket.off("newMessage", handleNewMessage);
-  }, [user._id]);
+  }, [user._id, activeChat]);
+
+  useEffect(() => {
+    if (activeChat) {
+      setUnreadCounts(prev => ({
+        ...prev,
+        [activeChat]: 0
+      }));
+    }
+  }, [activeChat]);
+
 
 
   const openModal = async () => {
@@ -74,7 +87,11 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const handleChatClick = (chat) => {
     console.log("Selected Chat from ChatList:", chat);
     setActiveChat(chat._id);
-    onChatSelect(chat); // Notify parent of the selected chat
+    setUnreadCounts(prev => ({
+      ...prev,
+      [chat._id]: 0
+    }));
+    onChatSelect(chat);
   };
 
   const toggleSection = (section) => {

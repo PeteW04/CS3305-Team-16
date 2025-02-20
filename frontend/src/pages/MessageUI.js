@@ -30,58 +30,20 @@ export default function MessageUI() {
 
   useEffect(() => {
     if (selectedChat && user?._id) {
+      const { _id: channelId } = selectedChat;
+
       const handleNewMessage = (newMsg) => {
-        // Check if message is from another user and for the current channel
-        if (newMsg.channelId === selectedChat._id &&
-          newMsg.senderId._id !== user._id) {
+        // Check against senderId._id since it's populated
+        if (newMsg.channelId === channelId && newMsg.senderId._id !== user._id) {
           setSelectedChat((prev) => ({
             ...prev,
-            messages: [...prev.messages, newMsg]
+            messages: [...prev.messages, newMsg],
           }));
         }
       };
 
       socket.on("newMessage", handleNewMessage);
-
-      // Cleanup function to remove listener
       return () => socket.off("newMessage", handleNewMessage);
-    }
-  }, [selectedChat, user?._id]);
-
-
-
-  useEffect(() => {
-    if (selectedChat) {
-      const { _id: channelId } = selectedChat;
-
-      const handleReadReceipts = ({ channelId: updatedChannelId, messages }) => {
-        if (updatedChannelId === channelId) {
-          setSelectedChat(prev => ({
-            ...prev,
-            messages: prev.messages.map(msg =>
-              messages.find(updatedMsg => updatedMsg._id === msg._id) || msg
-            ),
-          }));
-        }
-      };
-
-      socket.on("messagesRead", handleReadReceipts);
-
-      return () => socket.off("messagesRead", handleReadReceipts);
-    }
-  }, [selectedChat]);
-
-  useEffect(() => {
-    if (selectedChat && user?._id) {
-      const markAsRead = async () => {
-        try {
-          await markMessagesRead(selectedChat._id);
-        } catch (error) {
-          console.error("Error marking messages as read:", error);
-        }
-      };
-
-      markAsRead();
     }
   }, [selectedChat, user?._id]);
 
@@ -102,6 +64,43 @@ export default function MessageUI() {
     };
   }, []);
 
+  useEffect(() => {
+    if (selectedChat && user?._id) {
+      const handleReadReceipts = ({ channelId, messages }) => {
+        // Update selected chat messages with new read receipts
+        if (selectedChat._id === channelId) {
+          setSelectedChat(prev => ({
+            ...prev,
+            messages: prev.messages.map(msg =>
+              messages.find(m => m._id === msg._id) || msg
+            )
+          }));
+
+          // Update chats list to reflect read status and latest message
+          setChats(prevChats => prevChats.map(chat =>
+            chat._id === channelId
+              ? {
+                ...chat,
+                messages: chat.messages?.map(msg =>
+                  messages.find(m => m._id === msg._id) || msg
+                ),
+                latestMessage: {
+                  ...chat.latestMessage,
+                  readBy: messages.find(m => m._id === chat.latestMessage?._id)?.readBy || []
+                }
+              }
+              : chat
+          ));
+        }
+      };
+
+      socket.on("messagesRead", handleReadReceipts);
+      return () => socket.off("messagesRead", handleReadReceipts);
+    }
+  }, [selectedChat, user?._id]);
+
+
+
   const handleChatSelect = async (chat) => {
     console.log("Selected Chat in MessageUI:", chat);
 
@@ -112,9 +111,15 @@ export default function MessageUI() {
 
     try {
       const messages = await getMessages(chat._id);
-      console.log("Fetched Messages:", messages);
       setSelectedChat({ ...chat, messages });
       socket.emit("joinRoom", chat._id);
+
+      // Mark messages as read when selecting chat
+      try {
+        await markMessagesRead(chat._id);
+      } catch (error) {
+        console.error("Error marking messages as read:", error);
+      }
     } catch (error) {
       console.error("Error fetching messages:", error.message);
     }
@@ -123,24 +128,40 @@ export default function MessageUI() {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!message.trim() || !selectedChat) return;
+    if (message.trim() && selectedChat) {
+      try {
+        const newMessage = await sendMessage({
+          channelId: selectedChat._id,
+          text: message
+        });
 
-    try {
-      const newMessage = await sendMessage({
-        channelId: selectedChat._id,
-        text: message
-      });
+        // Update selected chat
+        setSelectedChat((prev) => ({
+          ...prev,
+          messages: [...prev.messages, newMessage],
+        }));
 
-      // Only update local state with the sent message
-      setSelectedChat((prev) => ({
-        ...prev,
-        messages: [...prev.messages, newMessage]
-      }));
-      setMessage("");
-    } catch (error) {
-      console.error("Error sending message:", error.message);
+        // Update chats list with new latest message
+        setChats(prevChats => prevChats.map(chat =>
+          chat._id === selectedChat._id
+            ? {
+              ...chat,
+              latestMessage: {
+                text: message,
+                createdAt: new Date(),
+                senderId: user
+              }
+            }
+            : chat
+        ));
+
+        setMessage("");
+      } catch (error) {
+        console.error("Error sending message:", error.message);
+      }
     }
   };
+
 
   const handleNewChat = (newChat) => {
     setChats((prevChats) => [...prevChats, newChat]);
@@ -162,30 +183,16 @@ export default function MessageUI() {
           <div className="messages">
             {selectedChat ? (
               selectedChat.messages && selectedChat.messages.length > 0 ? (
-
-                selectedChat.messages.map((msg, index) => {
-                  // console.log("Message Props:", {
-                  //   sender: msg.senderId,
-                  //   currentUser: user._id,
-                  //   message: msg.text,
-                  //   time: new Date(msg.createdAt).toLocaleTimeString(),
-                  //   readBy: msg.readBy,
-                  // });
-                  return (
-                    <ChatBubble
-                      key={index}
-                      sender={msg.senderId}
-                      currentUser={user._id}
-                      message={msg.text}
-                      time={new Date(msg.createdAt).toLocaleTimeString()}
-                      readBy={msg.readBy}
-                    />
-                  );
-                })
-
-
-
-
+                selectedChat.messages.map((msg, index) => (
+                  <ChatBubble
+                    key={index}
+                    sender={msg.senderId}
+                    currentUser={user._id}
+                    message={msg.text}
+                    time={new Date(msg.createdAt).toLocaleTimeString()}
+                    readBy={msg.readBy} // Add this line
+                  />
+                ))
               ) : (
                 <p>No messages in this chat yet.</p>
               )
