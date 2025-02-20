@@ -94,12 +94,12 @@ export const deleteChannel = async (req, res) => {
     }
 };
 
-
 export const getMessages = async (req, res) => {
     const { channelId } = req.params;
     try {
-        console.log(channelId);
-        const messages = await Message.find({ channelId });
+        const messages = await Message.find({ channelId })
+            .populate('senderId', 'firstName lastName')
+            .populate('readBy', 'firstName lastName'); // Add readBy population
         return res.status(200).json(messages);
     } catch (e) {
         console.error("Error in getMessages:", e.message);
@@ -108,15 +108,18 @@ export const getMessages = async (req, res) => {
 };
 
 
+
 export const sendMessage = async (req, res) => {
     const { channelId, text } = req.body;
 
     try {
-        const message = await Message.create({
+        let message = await Message.create({
             channelId,
             senderId: req.user._id,
-            text
+            text,
+            readBy: [req.user._id]
         });
+        message = await message.populate('senderId', 'firstName lastName _id');
 
         req.io.to(channelId).emit('newMessage', message);
         return res.status(201).json(message);
@@ -125,8 +128,6 @@ export const sendMessage = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
-
-
 
 export const editMessage = async (req, res) => {
     const { messageId } = req.params;
@@ -160,3 +161,37 @@ export const deleteMessage = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 }
+
+export const markMessagesRead = async (req, res) => {
+    const { channelId } = req.params;
+    try {
+        const updatedMessages = await Message.find({
+            channelId,
+            senderId: { $ne: req.user._id },
+            readBy: { $nin: [req.user._id] }
+        }).populate('senderId', 'firstName lastName _id');
+
+        if (updatedMessages.length > 0) {
+            await Message.updateMany(
+                { _id: { $in: updatedMessages.map(msg => msg._id) } },
+                { $addToSet: { readBy: req.user._id } }
+            );
+
+            const populatedMessages = await Message.find(
+                { _id: { $in: updatedMessages.map(msg => msg._id) } }
+            ).populate('senderId', 'firstName lastName')
+                .populate('readBy', 'firstName lastName');
+
+            req.io.to(channelId).emit('messagesRead', {
+                channelId,
+                messages: populatedMessages
+            });
+        }
+
+        res.status(200).json({ success: true });
+    } catch (e) {
+        console.error("Error in markMessagesRead:", e.message);
+        res.status(500).json({ message: e.message });
+    }
+};
+
