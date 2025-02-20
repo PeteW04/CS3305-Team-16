@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
             const result = await loginAPI(data);
             setUser(result.user);
             setToken(result.token);
-            localStorage.setItem("token", result.token);
+            localStorage.setItem("authToken", result.token);
             navigate("/tasks");
         } catch (error) {
             alert(error.message);

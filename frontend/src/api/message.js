@@ -69,3 +69,16 @@ export const deleteMessage = async (messageId) => {
         throw error;
     }
 };
+
+export const markMessagesRead = async (channelId) => {
+    try {
+        const res = await fetch(`/mark-read/${channelId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken()}`, }
+        });
+        return await res.json();
+    } catch (error) {
+        console.error('Error marking message read:', error);
+        return null;
+    }
+};
