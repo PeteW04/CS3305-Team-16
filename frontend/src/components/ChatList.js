@@ -1,8 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createChannel } from "../api/channel";
 import { getUsersInOrganization } from "../api/users";
 import { Plus, Users, Briefcase, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
 import "../CSS-files/MessageList.css";
+import { useAuth } from "../context/AuthContext";
+import socket from "../utils/socket";
 
 export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const [activeChat, setActiveChat] = useState(null);
@@ -13,6 +15,39 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   });
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [unreadCounts, setUnreadCounts] = useState({});
+  const { user } = useAuth()
+
+  useEffect(() => {
+    const calculateUnreadCounts = () => {
+      const counts = {};
+      chatData.forEach(chat => {
+        const unreadMessages = chat.messages?.filter(msg =>
+          msg.senderId !== user._id &&
+          !msg.readBy.includes(user._id)
+        ).length || 0;
+        counts[chat._id] = unreadMessages;
+      });
+      setUnreadCounts(counts);
+    };
+
+    calculateUnreadCounts();
+  }, [chatData, user._id]);
+
+  useEffect(() => {
+    const handleNewMessage = (newMsg) => {
+      if (newMsg.senderId !== user._id) {
+        setUnreadCounts(prev => ({
+          ...prev,
+          [newMsg.channelId]: (prev[newMsg.channelId] || 0) + 1
+        }));
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, [user._id]);
+
 
   const openModal = async () => {
     setIsModalOpen(true);
@@ -49,22 +84,41 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
     }));
   };
 
-  const renderChatItem = (chat) => (
-    <div
-      key={chat.id || chat._id}
-      className={`chat-item ${activeChat === (chat.id || chat._id) ? "active" : ""}`}
-      onClick={() => handleChatClick(chat)}
-    >
-      <div className="chat-item-content">
-        <div className="chat-item-header">
-          <span className="chat-item-name">{chat.name}</span>
-          <span className="chat-item-time">{chat.lastMessageTime}</span>
+  const renderChatItem = (chat) => {
+    const latestMessage = chat.latestMessage;
+    const unreadCount = unreadCounts[chat._id] || 0;
+
+    return (
+      <div
+        key={chat._id}
+        className={`chat-item ${activeChat === chat._id ? "active" : ""}`}
+        onClick={() => handleChatClick(chat)}
+      >
+        <div className="chat-item-content">
+          <div className="chat-item-header">
+            <span className="chat-item-name">{chat.name}</span>
+            {latestMessage && (
+              <span className="chat-item-time">
+                {new Date(latestMessage.createdAt).toLocaleTimeString([], {
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </span>
+            )}
+          </div>
+          <p className="chat-item-message">
+            {latestMessage
+              ? `${latestMessage.senderId.firstName}: ${latestMessage.text}`
+              : "No messages yet"}
+          </p>
         </div>
-        <p className="chat-item-message">{chat.lastMessage}</p>
+        {unreadCount > 0 && (
+          <div className="chat-item-badge">{unreadCount}</div>
+        )}
       </div>
-      {chat.unread > 0 && <div className="chat-item-badge">{chat.unread}</div>}
-    </div>
-  );
+    );
+  };
+
 
   const renderChatSection = (title, icon, chats, sectionKey) => (
     <div className="chat-category">

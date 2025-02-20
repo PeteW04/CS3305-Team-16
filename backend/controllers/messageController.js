@@ -8,9 +8,33 @@ export const getChannels = async (req, res) => {
 
         const channels = await Channel.find({ members: userId })
             .populate("members", "firstName lastName email")
-            .populate("projectId", "name");
+            .populate("projectId", "name")
+            // Add this populate for latest message
+            .populate({
+                path: 'latestMessage.senderId',
+                select: 'firstName lastName'
+            });
 
-        const updatedChannels = channels.map((channel) => {
+        // Get unread counts for each channel
+        const channelsWithCounts = await Promise.all(channels.map(async (channel) => {
+            const unreadCount = await Message.countDocuments({
+                channelId: channel._id,
+                senderId: { $ne: userId },
+                readBy: { $nin: [userId] }
+            });
+
+            const latestMessage = await Message.findOne({ channelId: channel._id })
+                .sort({ createdAt: -1 })
+                .populate('senderId', 'firstName lastName');
+
+            return {
+                ...channel.toObject(),
+                unreadCount,
+                latestMessage
+            };
+        }));
+
+        const updatedChannels = channelsWithCounts.map((channel) => {
             if (channel.type === "direct-message") {
                 const otherMember = channel.members.find(
                     (member) => member._id.toString() !== userId
@@ -30,6 +54,7 @@ export const getChannels = async (req, res) => {
         res.status(500).json({ message: "Failed to fetch channels" });
     }
 };
+
 
 
 export const createChannel = async (req, res) => {
@@ -120,6 +145,14 @@ export const sendMessage = async (req, res) => {
             readBy: [req.user._id]
         });
         message = await message.populate('senderId', 'firstName lastName _id');
+
+        await Channel.findByIdAndUpdate(channelId, {
+            latestMessage: {
+                text,
+                createdAt: new Date(),
+                senderId: req.user._id
+            }
+        });
 
         req.io.to(channelId).emit('newMessage', message);
         return res.status(201).json(message);
