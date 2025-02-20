@@ -8,29 +8,34 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 function Taskboard() {
   const [tasks, setTasks] = useState(initialTasks);
 
+  const statusMap = {
+    'To Do': 'todo',
+    'On Progress': 'progress',
+    'Done': 'done'
+  };
+
   const getTasksByStatus = (status) => {
-    const statusMap = {
-      'To Do': 'todo',
-      'On Progress': 'progress',
-      'Done': 'done'
-    };
-    return tasks.filter(task => task.status === statusMap[status] || task.status === status.toLowerCase());
+    return tasks.filter(task => task.status === statusMap[status]);
   };
 
   const handleTaskDrop = (taskId, newStatus) => {
-    const statusMap = {
-      'To Do': 'todo',
-      'On Progress': 'progress',
-      'Done': 'done'
-    };
-    
     setTasks(prevTasks => 
       prevTasks.map(task => 
         task.id === taskId 
-          ? { ...task, status: statusMap[newStatus] || newStatus.toLowerCase() }
+          ? { ...task, status: statusMap[newStatus] }
           : task
       )
     );
+  };
+
+  const handleAddTask = (taskData) => {
+    const newTask = {
+      id: tasks.length + 1,
+      ...taskData,
+      status: 'todo' // New tasks always go to 'todo'
+    };
+    
+    setTasks(prevTasks => [...prevTasks, newTask]);
   };
 
   return (
@@ -38,22 +43,23 @@ function Taskboard() {
       <div className="flex gap-6 overflow-y-auto">
         <TaskColumn 
           title="To Do" 
-          tasks={getTasksByStatus('todo')} 
-          count={getTasksByStatus('todo').length}
+          tasks={getTasksByStatus('To Do')} 
+          count={getTasksByStatus('To Do').length}
           accentColor="bg-indigo-500"
           onTaskDrop={handleTaskDrop}
+          onAddTask={handleAddTask}
         />
         <TaskColumn 
           title="On Progress" 
-          tasks={getTasksByStatus('progress')} 
-          count={getTasksByStatus('progress').length}
+          tasks={getTasksByStatus('On Progress')} 
+          count={getTasksByStatus('On Progress').length}
           accentColor="bg-orange-500"
           onTaskDrop={handleTaskDrop}
         />
         <TaskColumn 
           title="Done" 
-          tasks={getTasksByStatus('done')} 
-          count={getTasksByStatus('done').length}
+          tasks={getTasksByStatus('Done')} 
+          count={getTasksByStatus('Done').length}
           accentColor="bg-green-500"
           onTaskDrop={handleTaskDrop}
         />
