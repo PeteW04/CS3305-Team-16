@@ -28,24 +28,7 @@ export default function MessageUI() {
     fetchChats();
   }, []);
 
-  useEffect(() => {
-    if (selectedChat && user?._id) {
-      const { _id: channelId } = selectedChat;
 
-      const handleNewMessage = (newMsg) => {
-        // Check against senderId._id since it's populated
-        if (newMsg.channelId === channelId && newMsg.senderId._id !== user._id) {
-          setSelectedChat((prev) => ({
-            ...prev,
-            messages: [...prev.messages, newMsg],
-          }));
-        }
-      };
-
-      socket.on("newMessage", handleNewMessage);
-      return () => socket.off("newMessage", handleNewMessage);
-    }
-  }, [selectedChat, user?._id]);
 
 
   useEffect(() => {
@@ -66,8 +49,22 @@ export default function MessageUI() {
 
   useEffect(() => {
     if (selectedChat && user?._id) {
+      // Handle new messages
+      const handleNewMessage = async (newMsg) => {
+        // Only handle messages if they're for the current chat and from another user
+        if (newMsg.channelId === selectedChat._id && newMsg.senderId._id !== user._id) {
+          // Automatically mark message as read if chat is open
+          await markMessagesRead(selectedChat._id);
+
+          setSelectedChat((prev) => ({
+            ...prev,
+            messages: [...prev.messages, newMsg],
+          }));
+        }
+      };
+
+      // Handle read receipts
       const handleReadReceipts = ({ channelId, messages }) => {
-        // Update selected chat messages with new read receipts
         if (selectedChat._id === channelId) {
           setSelectedChat(prev => ({
             ...prev,
@@ -76,7 +73,7 @@ export default function MessageUI() {
             )
           }));
 
-          // Update chats list to reflect read status and latest message
+          // Update chats list to reflect read status
           setChats(prevChats => prevChats.map(chat =>
             chat._id === channelId
               ? {
@@ -94,10 +91,19 @@ export default function MessageUI() {
         }
       };
 
+      // Set up socket event listeners
+      socket.on("newMessage", handleNewMessage);
       socket.on("messagesRead", handleReadReceipts);
-      return () => socket.off("messagesRead", handleReadReceipts);
+
+      // Cleanup function
+      return () => {
+        socket.off("newMessage", handleNewMessage);
+        socket.off("messagesRead", handleReadReceipts);
+      };
     }
   }, [selectedChat, user?._id]);
+
+
 
 
 
@@ -135,25 +141,28 @@ export default function MessageUI() {
           text: message
         });
 
-        // Update selected chat
-        setSelectedChat((prev) => ({
-          ...prev,
-          messages: [...prev.messages, newMessage],
-        }));
+        // Only update the UI for the sender's own message
+        // The socket will handle messages from other users
+        if (newMessage.senderId._id === user._id) {
+          setSelectedChat((prev) => ({
+            ...prev,
+            messages: [...prev.messages, newMessage],
+          }));
 
-        // Update chats list with new latest message
-        setChats(prevChats => prevChats.map(chat =>
-          chat._id === selectedChat._id
-            ? {
-              ...chat,
-              latestMessage: {
-                text: message,
-                createdAt: new Date(),
-                senderId: user
+          // Update chats list with new latest message
+          setChats(prevChats => prevChats.map(chat =>
+            chat._id === selectedChat._id
+              ? {
+                ...chat,
+                latestMessage: {
+                  text: message,
+                  createdAt: new Date(),
+                  senderId: user
+                }
               }
-            }
-            : chat
-        ));
+              : chat
+          ));
+        }
 
         setMessage("");
       } catch (error) {
@@ -161,6 +170,8 @@ export default function MessageUI() {
       }
     }
   };
+
+
 
 
   const handleNewChat = (newChat) => {

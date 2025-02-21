@@ -195,42 +195,45 @@ export const deleteMessage = async (req, res) => {
     }
 }
 
-
 export const markMessagesRead = async (req, res) => {
     const { channelId } = req.params;
     try {
-        const updatedMessages = await Message.find({
+        // Find messages that are unread by current user
+        const unreadMessages = await Message.find({
             channelId,
             senderId: { $ne: req.user._id },
             readBy: { $nin: [req.user._id] }
-        }).populate('senderId', 'firstName lastName _id');
+        });
 
-        if (updatedMessages.length > 0) {
+        if (unreadMessages.length > 0) {
+            // Update read status
             await Message.updateMany(
-                { _id: { $in: updatedMessages.map(msg => msg._id) } },
+                { _id: { $in: unreadMessages.map(msg => msg._id) } },
                 { $addToSet: { readBy: req.user._id } }
             );
 
-            const populatedMessages = await Message.find(
-                { _id: { $in: updatedMessages.map(msg => msg._id) } }
+            // Get updated messages with populated fields
+            const updatedMessages = await Message.find(
+                { _id: { $in: unreadMessages.map(msg => msg._id) } }
             ).populate('senderId', 'firstName lastName')
                 .populate('readBy', 'firstName lastName');
 
+            // Emit to all users in the channel
             req.io.to(channelId).emit('messagesRead', {
                 channelId,
-                messages: populatedMessages
+                messages: updatedMessages
             });
 
-            res.status(200).json({
+            return res.status(200).json({
                 success: true,
                 channelId,
-                messages: populatedMessages
+                messages: updatedMessages
             });
-        } else {
-            res.status(200).json({ success: true, channelId });
         }
+
+        return res.status(200).json({ success: true, channelId });
     } catch (e) {
         console.error("Error in markMessagesRead:", e.message);
-        res.status(500).json({ message: e.message });
+        return res.status(500).json({ message: e.message });
     }
 };
