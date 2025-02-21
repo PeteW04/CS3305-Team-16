@@ -153,11 +153,6 @@ export default function MessageUI() {
           text: message
         });
 
-        setSelectedChat((prev) => ({
-          ...prev,
-          messages: [...prev.messages, newMessage],
-        }));
-
         setChats(prevChats => prevChats.map(chat =>
           chat._id === selectedChat._id
             ? {
@@ -205,7 +200,12 @@ export default function MessageUI() {
                       sender={msg.senderId}
                       currentUser={user._id}
                       message={msg.text}
-                      time={new Date(msg.createdAt).toLocaleTimeString()}
+                      time={new Date(msg.createdAt).toLocaleString('en-US', {
+                        hour: 'numeric',
+                        minute: '2-digit',
+                        hour12: true
+                      })}
+
                       readBy={msg.readBy}
                     />
                   ))}

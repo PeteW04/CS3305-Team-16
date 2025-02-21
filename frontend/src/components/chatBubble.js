@@ -2,7 +2,11 @@ import React from "react";
 
 const ChatBubble = ({ sender, currentUser, message, time, readBy = [] }) => {
   const isSent = sender._id === currentUser;
-  const isRead = readBy.some(reader => reader._id !== currentUser);
+  const isRead = readBy.length > 1 ||
+    (readBy.length === 1 && readBy.some(reader =>
+      reader._id !== sender._id
+    ));
+  console.log(readBy)
 
   return (
     <div className={`flex flex-col space-y-1 ${isSent ? "items-end" : "items-start"}`}>

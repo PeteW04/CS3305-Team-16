@@ -141,7 +141,8 @@ export const sendMessage = async (req, res) => {
             latestMessage: {
                 text,
                 createdAt: new Date(),
-                senderId: req.user._id
+                senderId: req.user._id,
+                readBy: [req.user._id]
             }
         });
 

@@ -26,7 +26,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
           msg.senderId !== user._id &&
           !msg.readBy.includes(user._id)
         ).length || 0;
-        console.log(`Chat ${chat._id}:`, unreadMessages); // Debug log
         counts[chat._id] = unreadMessages;
       });
       setUnreadCounts(counts);
