@@ -26,13 +26,14 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
           msg.senderId !== user._id &&
           !msg.readBy.includes(user._id)
         ).length || 0;
+        console.log(`Chat ${chat._id}:`, unreadMessages); // Debug log
         counts[chat._id] = unreadMessages;
       });
       setUnreadCounts(counts);
     };
-
     calculateUnreadCounts();
   }, [chatData, user._id]);
+
 
   useEffect(() => {
     const handleNewMessage = (newMsg) => {
@@ -97,7 +98,7 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
 
   const renderChatItem = (chat) => {
     const latestMessage = chat.latestMessage;
-    const unreadCount = unreadCounts[chat._id] || 0;
+    const unreadCount = chat.unreadCount || 0; // Use chat.unreadCount directly
 
     return (
       <div
@@ -108,6 +109,9 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
         <div className="chat-item-content">
           <div className="chat-item-header">
             <span className="chat-item-name">{chat.name}</span>
+            {unreadCount > 0 && (
+              <span className="chat-item-badge">{unreadCount}</span>
+            )}
             {latestMessage && (
               <span className="chat-item-time">
                 {new Date(latestMessage.createdAt).toLocaleTimeString([], {
@@ -123,12 +127,10 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
               : "No messages yet"}
           </p>
         </div>
-        {unreadCount > 0 && (
-          <div className="chat-item-badge">{unreadCount}</div>
-        )}
       </div>
     );
   };
+
 
   const renderChatSection = (title, icon, chats, sectionKey) => (
     <div className="chat-category">
