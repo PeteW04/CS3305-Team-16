@@ -1,21 +1,17 @@
 import Message from "../models/Message.js";
 import Channel from "../models/Channel.js";
 
-
 export const getChannels = async (req, res) => {
     try {
         const userId = req.user.id;
-
         const channels = await Channel.find({ members: userId })
             .populate("members", "firstName lastName email")
             .populate("projectId", "name")
-            // Add this populate for latest message
             .populate({
                 path: 'latestMessage.senderId',
                 select: 'firstName lastName'
             });
 
-        // Get unread counts for each channel
         const channelsWithCounts = await Promise.all(channels.map(async (channel) => {
             const unreadCount = await Message.countDocuments({
                 channelId: channel._id,
@@ -79,8 +75,6 @@ export const createChannel = async (req, res) => {
     }
 };
 
-
-
 export const editChannel = async (req, res) => {
     const { channelId } = req.params;
     const { name, members, type, projectId } = req.body;
@@ -101,7 +95,6 @@ export const editChannel = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
-
 
 export const deleteChannel = async (req, res) => {
     const { channelId } = req.params;
@@ -131,8 +124,6 @@ export const getMessages = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
-
-
 
 export const sendMessage = async (req, res) => {
     const { channelId, text } = req.body;
@@ -179,7 +170,6 @@ export const editMessage = async (req, res) => {
     }
 };
 
-
 export const deleteMessage = async (req, res) => {
     const { messageId } = req.params;
     try {
@@ -198,7 +188,6 @@ export const deleteMessage = async (req, res) => {
 export const markMessagesRead = async (req, res) => {
     const { channelId } = req.params;
     try {
-        // Find messages that are unread by current user
         const unreadMessages = await Message.find({
             channelId,
             senderId: { $ne: req.user._id },
@@ -206,19 +195,16 @@ export const markMessagesRead = async (req, res) => {
         });
 
         if (unreadMessages.length > 0) {
-            // Update read status
             await Message.updateMany(
                 { _id: { $in: unreadMessages.map(msg => msg._id) } },
                 { $addToSet: { readBy: req.user._id } }
             );
 
-            // Get updated messages with populated fields
             const updatedMessages = await Message.find(
                 { _id: { $in: unreadMessages.map(msg => msg._id) } }
             ).populate('senderId', 'firstName lastName')
                 .populate('readBy', 'firstName lastName');
 
-            // Emit to all users in the channel
             req.io.to(channelId).emit('messagesRead', {
                 channelId,
                 messages: updatedMessages

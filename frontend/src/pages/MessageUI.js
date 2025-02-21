@@ -28,18 +28,13 @@ export default function MessageUI() {
     fetchChats();
   }, []);
 
-
-
-
   useEffect(() => {
-    // Connect the socket on mount
     if (!socket.connected) {
       socket.connect();
       console.log("Attempting to connect socket...");
     }
 
     return () => {
-      // Disconnect the socket on unmount
       if (socket.connected) {
         socket.disconnect();
         console.log("Socket disconnected");
@@ -49,13 +44,9 @@ export default function MessageUI() {
 
   useEffect(() => {
     if (selectedChat && user?._id) {
-      // Handle new messages
       const handleNewMessage = async (newMsg) => {
-        // Only handle messages if they're for the current chat and from another user
         if (newMsg.channelId === selectedChat._id && newMsg.senderId._id !== user._id) {
-          // Automatically mark message as read if chat is open
           await markMessagesRead(selectedChat._id);
-
           setSelectedChat((prev) => ({
             ...prev,
             messages: [...prev.messages, newMsg],
@@ -63,7 +54,6 @@ export default function MessageUI() {
         }
       };
 
-      // Handle read receipts
       const handleReadReceipts = ({ channelId, messages }) => {
         if (selectedChat._id === channelId) {
           setSelectedChat(prev => ({
@@ -73,7 +63,6 @@ export default function MessageUI() {
             )
           }));
 
-          // Update chats list to reflect read status
           setChats(prevChats => prevChats.map(chat =>
             chat._id === channelId
               ? {
@@ -91,11 +80,8 @@ export default function MessageUI() {
         }
       };
 
-      // Set up socket event listeners
       socket.on("newMessage", handleNewMessage);
       socket.on("messagesRead", handleReadReceipts);
-
-      // Cleanup function
       return () => {
         socket.off("newMessage", handleNewMessage);
         socket.off("messagesRead", handleReadReceipts);
@@ -103,13 +89,7 @@ export default function MessageUI() {
     }
   }, [selectedChat, user?._id]);
 
-
-
-
-
   const handleChatSelect = async (chat) => {
-    console.log("Selected Chat in MessageUI:", chat);
-
     if (!chat || !chat._id) {
       console.error("Invalid chat object:", chat);
       return;
@@ -120,7 +100,6 @@ export default function MessageUI() {
       setSelectedChat({ ...chat, messages });
       socket.emit("joinRoom", chat._id);
 
-      // Mark messages as read when selecting chat
       try {
         await markMessagesRead(chat._id);
       } catch (error) {
@@ -140,16 +119,12 @@ export default function MessageUI() {
           channelId: selectedChat._id,
           text: message
         });
-
-        // Only update the UI for the sender's own message
-        // The socket will handle messages from other users
         if (newMessage.senderId._id === user._id) {
           setSelectedChat((prev) => ({
             ...prev,
             messages: [...prev.messages, newMessage],
           }));
 
-          // Update chats list with new latest message
           setChats(prevChats => prevChats.map(chat =>
             chat._id === selectedChat._id
               ? {
@@ -171,24 +146,18 @@ export default function MessageUI() {
     }
   };
 
-
-
-
   const handleNewChat = (newChat) => {
     setChats((prevChats) => [...prevChats, newChat]);
     setSelectedChat(newChat);
   };
 
   if (isLoading) {
-    return <div>Loading...</div>; // Show a loading indicator while user data is being fetched
+    return <div>Loading...</div>;
   }
-
-
 
   return (
     <div className="chat-interface">
       <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
-
       <div className="main-content">
         <div className="chat-container">
           <div className="messages">
@@ -201,7 +170,7 @@ export default function MessageUI() {
                     currentUser={user._id}
                     message={msg.text}
                     time={new Date(msg.createdAt).toLocaleTimeString()}
-                    readBy={msg.readBy} // Add this line
+                    readBy={msg.readBy}
                   />
                 ))
               ) : (

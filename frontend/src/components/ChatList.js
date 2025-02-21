@@ -36,9 +36,7 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
 
   useEffect(() => {
     const handleNewMessage = (newMsg) => {
-      // Only increment unread count if:
-      // 1. Message is not from current user
-      // 2. Chat is not currently selected
+
       if (newMsg.senderId._id !== user._id && newMsg.channelId !== activeChat) {
         setUnreadCounts(prev => ({
           ...prev,
@@ -60,14 +58,11 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
     }
   }, [activeChat]);
 
-
-
   const openModal = async () => {
     setIsModalOpen(true);
-
     try {
       const fetchedUsers = await getUsersInOrganization();
-      setUsers(fetchedUsers); // Store fetched users in state
+      setUsers(fetchedUsers);
     } catch (error) {
       console.error("Error fetching users:", error.message);
     }
@@ -76,13 +71,12 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const handleCreateChat = async (chatDetails) => {
     try {
       const newChat = await createChannel(chatDetails);
-      setIsModalOpen(false); // Close modal after creation
-      onNewChat(newChat); // Optionally select newly created chat
+      setIsModalOpen(false);
+      onNewChat(newChat);
     } catch (error) {
       console.error("Error creating chat:", error.message);
     }
   };
-
 
   const handleChatClick = (chat) => {
     console.log("Selected Chat from ChatList:", chat);
@@ -136,7 +130,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
     );
   };
 
-
   const renderChatSection = (title, icon, chats, sectionKey) => (
     <div className="chat-category">
       <h3 className="category-title" onClick={() => toggleSection(sectionKey)}>
@@ -160,14 +153,12 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
           </button>
         </div>
 
-        {/* Render categorized chats */}
         {renderChatSection("Direct Messages", <MessageSquare size={16} />, chatData.filter(c => c.type === 'direct-message'), "directMessages")}
         {renderChatSection("Group Chats", <Users size={16} />, chatData.filter(c => c.type === 'group'), "groupChats")}
         {renderChatSection("Project Chats", <Briefcase size={16} />, chatData.filter(c => c.type === 'project'), "projectChats")}
       </div>
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          {/* Modal content */}
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
             <h3 className="text-xl font-semibold mb-4">Create New Chat</h3>
             <form
@@ -181,7 +172,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
                 handleCreateChat({ type, name, members: selectedMembers });
               }}
             >
-              {/* Chat Type */}
               <label className="block mb-2 font-medium text-gray-700">
                 Chat Type:
                 <select
@@ -194,7 +184,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
                 </select>
               </label>
 
-              {/* Chat Name */}
               <label className="block mb-2 font-medium text-gray-700">
                 Chat Name:
                 <input
@@ -206,7 +195,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
                 />
               </label>
 
-              {/* Members */}
               <label className="block mb-2 font-medium text-gray-700">
                 Members:
                 <select
@@ -223,7 +211,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
                 </select>
               </label>
 
-              {/* Buttons */}
               <div className="flex justify-end mt-4 space-x-2">
                 <button
                   type="submit"
