@@ -4,7 +4,7 @@ import TaskCard from './TaskCard';
 import { useDrop } from 'react-dnd';
 import NewTaskModal from './NewTaskModal';
 
-function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask }) {
+function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, onEditTask, onDeleteTask }) {
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'TASK',
@@ -48,7 +48,12 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask })
 
       <div className="space-y-3">
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard 
+            key={task.id} 
+            task={task} 
+            onEdit={onEditTask}
+            onDelete={onDeleteTask}
+          />
         ))}
       </div>
 
