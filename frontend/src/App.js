@@ -27,11 +27,13 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/usersignup" element={<UserSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
-          
+          <Route path="/tasks" element={<Task />} />
+
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/test" element={<TestPage />} />
-            <Route path="/tasks" element={<Task />} />
+           {/* unprotected for testing purposes 
+           <Route path="/tasks" element={<Task />} /> */}
             <Route path="/projects" element={<ProjectSummary />} />
             <Route path="/message" element={<MessageUI />} />
             <Route path="/resetpassword" element={<ResetPassword />} />
