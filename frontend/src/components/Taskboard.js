@@ -38,6 +38,20 @@ function Taskboard() {
     setTasks(prevTasks => [...prevTasks, newTask]);
   };
 
+  const handleEditTask = (taskData) => {
+    setTasks(prevTasks =>
+      prevTasks.map(task =>
+        task.id === taskData.id
+          ? { ...task, ...taskData }
+          : task
+      )
+    );
+  };
+
+  const handleDeleteTask = (taskId) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  };
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex gap-6 overflow-y-auto">
@@ -48,6 +62,8 @@ function Taskboard() {
           accentColor="bg-indigo-500"
           onTaskDrop={handleTaskDrop}
           onAddTask={handleAddTask}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
         <TaskColumn 
           title="On Progress" 
@@ -55,6 +71,8 @@ function Taskboard() {
           count={getTasksByStatus('On Progress').length}
           accentColor="bg-orange-500"
           onTaskDrop={handleTaskDrop}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
         <TaskColumn 
           title="Done" 
@@ -62,6 +80,8 @@ function Taskboard() {
           count={getTasksByStatus('Done').length}
           accentColor="bg-green-500"
           onTaskDrop={handleTaskDrop}
+          onEditTask={handleEditTask}
+          onDeleteTask={handleDeleteTask}
         />
       </div>
     </DndProvider>
