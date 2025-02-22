@@ -3,9 +3,11 @@ import { MoreHorizontal } from 'lucide-react';
 import PriorityBadge from './PriorityBadge';
 import { useDrag } from 'react-dnd';
 import TaskOptionsModal from './TaskOptionsModal';
+import EditTaskModal from './EditTaskModal';
 
 function TaskCard({ task, onEdit, onDelete }) {
   const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TASK',
     item: { id: task.id, status: task.status },
@@ -13,6 +15,11 @@ function TaskCard({ task, onEdit, onDelete }) {
       isDragging: monitor.isDragging(),
     }),
   }));
+
+  const handleEdit = (taskData) => {
+    onEdit(taskData);
+    setShowEditModal(false);
+  };
 
   return (
     <div
@@ -40,8 +47,19 @@ function TaskCard({ task, onEdit, onDelete }) {
         <TaskOptionsModal
           task={task}
           onClose={() => setShowOptionsModal(false)}
-          onEdit={onEdit}
+          onEdit={() => {
+            setShowOptionsModal(false);
+            setShowEditModal(true);
+          }}
           onDelete={onDelete}
+        />
+      )}
+
+      {showEditModal && (
+        <EditTaskModal
+          task={task}
+          onClose={() => setShowEditModal(false)}
+          onSubmit={handleEdit}
         />
       )}
     </div>
