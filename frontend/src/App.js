@@ -28,12 +28,13 @@ function App() {
           <Route path="/usersignup" element={<UserSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/tasks" element={<Task />} />
-
+          <Route path="/settings" element={<Settings />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/test" element={<TestPage />} />
            {/* unprotected for testing purposes 
-           <Route path="/tasks" element={<Task />} /> */}
+           <Route path="/tasks" element={<Task />} /> 
+            <Route path="/settings" element={<Settings />} />*/}
             <Route path="/projects" element={<ProjectSummary />} />
             <Route path="/message" element={<MessageUI />} />
             <Route path="/resetpassword" element={<ResetPassword />} />
