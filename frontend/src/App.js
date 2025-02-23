@@ -14,7 +14,7 @@ import MessageUI from './pages/MessageUI';
 import { AuthProvider } from './context/AuthContext';
 import ProjectSummary from './components/ProjectSummary';
 import ProtectedRoute from './components/ProtectedRoute';
-import Settings from './pages/Settings';
+
 function App() {
   return (
     <Router>
@@ -28,7 +28,6 @@ function App() {
           <Route path="/usersignup" element={<UserSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/tasks" element={<Task />} />
-          <Route path="/settings" element={<Settings />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/test" element={<TestPage />} />
