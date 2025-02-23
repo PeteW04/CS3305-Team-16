@@ -13,38 +13,34 @@ function Taskboard({ projectId }) {
   // Retrieve token from localStorage
   const token = localStorage.getItem("token");
 
+  const fetchTasks = async () => {
+    if (!token) {
+      setError("No token found. Please log in.");
+      return;
+    }
+    try {
+      console.log(`Fetching tasks for projectId: ${projectId}`);  // Log projectId
+      const response = await fetch(`http://localhost:5000/project/${projectId}/tasks`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch tasks');
+
+      const data = await response.json();
+
+      setTasks(data);
+
+    } catch (error) {
+      console.error('Error fetching tasks:', error);
+      setTasks([]);
+    }
+  };
+
   useEffect(() => {
-    async function fetchTasks() {
-      if (!token) {
-        setError("No token found. Please log in.");
-        return;
-      }
-      try {
-        console.log(`Fetching tasks for projectId: ${projectId}`);  // ✅ Log projectId
-        const response = await fetch(`http://localhost:5000/project/${projectId}/tasks`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
-  
-        if (!response.ok) throw new Error('Failed to fetch tasks');
-  
-        const data = await response.json();
-
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid tasks response");
-        }
-
-        setTasks(data);
-  
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-        setTasks([]);
-      }
-    };
-  
     if (projectId) fetchTasks();
   }, [token, projectId]);
 
@@ -60,10 +56,9 @@ function Taskboard({ projectId }) {
 
 
   const handleTaskDrop = async (taskId, newStatus) => {
-    console.log('Handle Task Drop taskId:', taskId); // Log taskId to check if it's correct
-    console.log('Handle Task Drop newStatus:', newStatus); // Log newStatus to verify the value
-    console.log('Sending status:', statusMap[newStatus]);
-
+    console.log("Handle Task Drop taskID: ", taskId);
+    console.log("Handle Task Drop newStatus: ", newStatus);
+    console.log("Handle Task Drop transmitted status: ", statusMap[newStatus]);
 
     // Update on Backend
     try {
@@ -73,7 +68,9 @@ function Taskboard({ projectId }) {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'application/json' 
         },
-        body: JSON.stringify({ status: statusMap[newStatus] }),
+        body: JSON.stringify({ 
+          status: statusMap[newStatus],
+        }),
       });
   
       if (!response.ok) {
@@ -95,6 +92,7 @@ function Taskboard({ projectId }) {
 
   const handleAddTask = async (taskData) => {
     try {
+      // Update on Backend
       const response = await fetch(`http://localhost:5000/project/projectId/${projectId}/tasks/add`, {
         method: 'POST',
         headers: { 
@@ -109,8 +107,14 @@ function Taskboard({ projectId }) {
   
       if (!response.ok) throw new Error('Failed to create task');
   
+      // Update on Frontend
       const newTask = await response.json();
-      setTasks(prevTasks => [...prevTasks, newTask]); // Update UI
+
+
+      setTasks(prevTasks => [...prevTasks, newTask]);
+      console.log(newTask);
+
+      fetchTasks();
     } catch (error) {
       console.error('Error creating task:', error);
     }
