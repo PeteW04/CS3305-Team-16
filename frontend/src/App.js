@@ -33,8 +33,9 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/test" element={<TestPage />} />
            {/* unprotected for testing purposes 
-           <Route path="/tasks" element={<Task />} /> 
             <Route path="/settings" element={<Settings />} />*/}
+            <Route path="/tasks" element={<Task />} />
+            <Route path="/tasks/:projectId" element={<Task />} />
             <Route path="/projects" element={<ProjectSummary />} />
             <Route path="/message" element={<MessageUI />} />
             <Route path="/resetpassword" element={<ResetPassword />} />

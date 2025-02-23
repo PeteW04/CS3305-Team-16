@@ -10,7 +10,7 @@ function TaskCard({ task, onEdit, onDelete }) {
   const [showEditModal, setShowEditModal] = useState(false);
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TASK',
-    item: { id: task.id, status: task.status },
+    item: { _id: task._id, status: task.status },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),

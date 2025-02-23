@@ -8,7 +8,7 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'TASK',
-    drop: (item) => onTaskDrop(item.id, title),
+    drop: (item) => onTaskDrop(item._id, title),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
@@ -49,7 +49,7 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
       <div className="space-y-3">
         {tasks.map((task) => (
           <TaskCard 
-            key={task.id} 
+            key={task._id} 
             task={task} 
             onEdit={onEditTask}
             onDelete={onDeleteTask}

@@ -21,7 +21,7 @@ const [tasks, setTasks] = useState(generateTasks());
   const toggleTaskStatus = (id) => {
     setTasks((prevTasks) =>
       prevTasks.map((task) =>
-        task.id === id
+        task._id === id
           ? { ...task, status: task.status === "completed" ? "incomplete" : "completed" }
           : task
       )
@@ -52,12 +52,12 @@ const [tasks, setTasks] = useState(generateTasks());
           .slice()
           .sort((a, b) => (a.status === "incomplete" ? -1 : 1)) // Sort incomplete first
           .map((task) => (
-            <div key={task.id} className="task-item">
+            <div key={task._id} className="task-item">
               <div className="task-info">
                 <input
                   type="checkbox"
                   checked={task.status === "completed"}
-                  onChange={() => toggleTaskStatus(task.id)}
+                  onChange={() => toggleTaskStatus(task._id)}
                 />
                 <span className="task-title">{task.title}</span>
               </div>

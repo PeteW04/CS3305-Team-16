@@ -50,6 +50,31 @@ export const getProjectById = async (req, res) => {
     }
 };
 
+// Get a projects tasks
+export const getTasks = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const project = await Project.findById(projectId).populate("tasks");
+
+        if (!project) {
+            console.log('Project not found');
+            return res.status(404).json({error: 'Project not found'});
+        }
+
+        console.log("Fetched project:", project);  // ✅ Log project details
+        console.log("Project tasks:", project.tasks);  // ✅ Log tasks
+
+        if (!Array.isArray(project.tasks)) {
+            console.error("Tasks is not an array:", project.tasks);
+            return res.status(500).json({ error: "Invalid task data" });
+        }
+
+        res.status(200).json(project.tasks);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};
+
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
     try {
@@ -204,18 +229,23 @@ export const addTask = async (req, res) => {
 
         // Ensure a valid project id
         const project = await Project.findById(projectId);
-        if (!project){
-            return res.status(404).json({ error: 'Project not found' });
+
+        if (!project ) {
+            return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const updatedProject = await createTask(projectId, task);
+        const newTask = await createTask(projectId, task);
 
-        // Ensure the project exists
-        if (!updatedProject) {
+        // Ensure the new task exists
+        if (!newTask) {
             return res.status(404).json({ error: 'Unable to add task' });
         }
 
-        res.status(200).json({ message: 'Task added successfully', updatedProject });
+        // Add the task to the project
+        project.tasks.push(newTask._id);
+        await project.save();
+
+        res.status(200).json({ message: 'Task added successfully', newTask });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
