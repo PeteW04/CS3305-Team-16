@@ -3,9 +3,11 @@ import { Menu, Bell, Search, User } from "lucide-react";
 import Taskboard from "../components/Taskboard";
 import Sidebar from "../components/sidebar";
 import { useState } from "react";
+import ProfileModal from '../components/ProfileModal';
 
 function Task() {
     const [isMinimized, setIsMinimized] = useState(false);
+    const [showProfileModal, setShowProfileModal] = useState(false);
 
     const toggleSidebar = () => {
       setIsMinimized(!isMinimized);
@@ -36,9 +38,13 @@ function Task() {
               <Bell className="w-5 h-5 text-gray-600" />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-            <button className="p-1 hover:bg-gray-100 rounded-full">
+            <button 
+              className="p-1 hover:bg-gray-100 rounded-full"
+              onClick={() => setShowProfileModal(true)}
+            >
               <User className="w-6 h-6 text-gray-600" />
             </button>
+            {showProfileModal && <ProfileModal onClose={() => setShowProfileModal(false)} />}
           </div>
         </div>
       </header>
