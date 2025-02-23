@@ -19,6 +19,26 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const { user } = useAuth()
 
   useEffect(() => {
+    // Join all chat rooms when chat data is loaded
+    chatData.forEach(chat => {
+      socket.emit("joinRoom", chat._id);
+    });
+
+    const handleNewMessage = (newMsg) => {
+      if (newMsg.senderId._id !== user._id) {
+        setUnreadCounts(prev => ({
+          ...prev,
+          [newMsg.channelId]: (prev[newMsg.channelId] || 0) + 1
+        }));
+      }
+    };
+
+    socket.on("newMessage", handleNewMessage);
+    return () => socket.off("newMessage", handleNewMessage);
+  }, [chatData, user._id]);
+
+
+  useEffect(() => {
     const calculateUnreadCounts = () => {
       const counts = {};
       chatData.forEach(chat => {

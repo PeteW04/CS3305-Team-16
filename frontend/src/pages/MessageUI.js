@@ -22,6 +22,22 @@ export default function MessageUI() {
     scrollToBottom();
   }, [selectedChat?.messages]);
 
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+      // Join all chat rooms when component mounts
+      chats.forEach(chat => {
+        socket.emit("joinRoom", chat._id);
+      });
+    }
+    return () => {
+      if (socket.connected) {
+        socket.disconnect();
+      }
+    };
+  }, [chats]);
+
+
 
   useEffect(() => {
     const fetchChats = async () => {
