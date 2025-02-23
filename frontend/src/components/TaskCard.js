@@ -6,7 +6,7 @@ import { useDrag } from 'react-dnd';
 function TaskCard({ task }) {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: 'TASK',
-    item: { id: task.id, status: task.status },
+    item: { _id: task._id, status: task.status },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),

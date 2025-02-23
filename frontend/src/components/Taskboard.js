@@ -37,16 +37,16 @@ function Taskboard({ projectId }) {
           throw new Error("Invalid tasks response");
         }
 
-        setTasks(data);  // ✅ Ensure the correct structure
+        setTasks(data);
   
       } catch (error) {
         console.error('Error fetching tasks:', error);
-        setTasks([]); // ✅ Prevent undefined tasks
+        setTasks([]);
       }
     };
   
     if (projectId) fetchTasks();
-  }, [token, projectId]); // ✅ Added projectId to dependencies
+  }, [token, projectId]);
 
   const statusMap = {
     'To Do': 'todo',
@@ -55,20 +55,24 @@ function Taskboard({ projectId }) {
   };
 
   const getTasksByStatus = (status) => {
-    if (!Array.isArray(tasks)) {
-        console.error("Tasks is not an array", tasks);
-        return []; // ✅ Return empty array to avoid crashes
-    }
     return tasks.filter(task => task.status === statusMap[status]);
   };
 
 
   const handleTaskDrop = async (taskId, newStatus) => {
+    console.log('Handle Task Drop taskId:', taskId); // Log taskId to check if it's correct
+    console.log('Handle Task Drop newStatus:', newStatus); // Log newStatus to verify the value
+    console.log('Sending status:', statusMap[newStatus]);
+
+
     // Update on Backend
     try {
       const response = await fetch(`http://localhost:5000/task/status/${taskId}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+        },
         body: JSON.stringify({ status: statusMap[newStatus] }),
       });
   
@@ -81,7 +85,7 @@ function Taskboard({ projectId }) {
       // Update on Frontend
       setTasks(prevTasks =>
         prevTasks.map(task =>
-          task.id === taskId ? updatedTask : task
+          task._id === taskId ? updatedTask : task
         )
       );
     } catch (error) {
@@ -93,7 +97,10 @@ function Taskboard({ projectId }) {
     try {
       const response = await fetch(`http://localhost:5000/project/projectId/${projectId}/tasks/add`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+        },
         body: JSON.stringify({ 
           ...taskData, 
           status: 'New', 

@@ -76,9 +76,15 @@ export const updateTask = async (req, res) => {
 // Update a tasks status
 export const updateTaskStatus = async (req, res) => {
     try {
+        console.log('Received request body:', req.body);
+
+        const { id } = req.params;
         const { status } = req.body; // Only allow status updates
-        const task = await Task.findById(req.params.id);
+        const task = await Task.findById(id);
         const validStatuses = ["todo", "progress", "done"];
+
+        console.log('updateTaskStatus taskId:', id); // Log taskId to check if it's correct
+        console.log('updateTaskStatus newStatus:', status); // Log newStatus to verify the value
 
         if (!validStatuses.includes(status)) {
             return res.status(404).json({ error: 'Invalid Status' });
@@ -86,11 +92,6 @@ export const updateTaskStatus = async (req, res) => {
         
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
-        }
-
-        const project = await Project.findById(task.project);
-        if (!project || project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to update this task' });
         }
 
         task.status = status;

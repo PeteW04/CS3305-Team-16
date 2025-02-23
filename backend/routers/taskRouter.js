@@ -14,7 +14,7 @@ taskRouter.get('/:id', getTaskById);
 taskRouter.put('/:id', checkUserRole('manager'), updateTask);
 
 // Update a tasks status
-taskRouter.put('/status/:id', checkUserRole('manager'), updateTaskStatus);
+taskRouter.put('/status/:id', updateTaskStatus);
 
 // Delete a task
 taskRouter.delete('/:id', checkUserRole('manager'), deleteTask);
