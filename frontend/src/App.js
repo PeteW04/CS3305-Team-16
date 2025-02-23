@@ -13,24 +13,31 @@ import Task from './pages/Task';
 import MessageUI from './pages/MessageUI';
 import { AuthProvider } from './context/AuthContext';
 import ProjectSummary from './components/ProjectSummary';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
-  // Render only the Login component
   return (
     <Router>
       <AuthProvider>
         <Header />
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/usersignup" element={<UserSignup />} />
           <Route path="/forgotpassword" element={<ForgotPassword />} />
-          <Route path="/resetpassword" element={<ResetPassword />} />
-          <Route path="/test" element={<TestPage />} />
           <Route path="/tasks" element={<Task />} />
-          <Route path="projects" element={<ProjectSummary />} />
-          <Route path="/message" element={<MessageUI />} />
+
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/test" element={<TestPage />} />
+           {/* unprotected for testing purposes 
+           <Route path="/tasks" element={<Task />} /> */}
+            <Route path="/projects" element={<ProjectSummary />} />
+            <Route path="/message" element={<MessageUI />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+          </Route>
         </Routes>
       </AuthProvider>
     </Router>

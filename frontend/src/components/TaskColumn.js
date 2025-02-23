@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Plus } from 'lucide-react';
 import TaskCard from './TaskCard';
 import { useDrop } from 'react-dnd';
+import NewTaskModal from './NewTaskModal';
 
-function TaskColumn({ title, tasks, count, accentColor, onTaskDrop }) {
+function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, onEditTask, onDeleteTask }) {
+  const [showNewTaskModal, setShowNewTaskModal] = useState(false);
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'TASK',
     drop: (item) => onTaskDrop(item.id, title),
@@ -11,6 +13,11 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop }) {
       isOver: monitor.isOver(),
     }),
   }));
+
+  const handleAddTask = (taskData) => {
+    onAddTask(taskData);
+    setShowNewTaskModal(false);
+  };
 
   return (
     <div
@@ -28,7 +35,10 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop }) {
           </span>
         </div>
         {title === 'To Do' && (
-          <button className="p-1 hover:bg-gray-200 rounded">
+          <button 
+            className="p-1 hover:bg-gray-200 rounded"
+            onClick={() => setShowNewTaskModal(true)}
+          >
             <Plus className="w-5 h-5" />
           </button>
         )}
@@ -38,11 +48,22 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop }) {
 
       <div className="space-y-3">
         {tasks.map((task) => (
-          <TaskCard key={task.id} task={task} />
+          <TaskCard 
+            key={task.id} 
+            task={task} 
+            onEdit={onEditTask}
+            onDelete={onDeleteTask}
+          />
         ))}
       </div>
+
+      {showNewTaskModal && (
+        <NewTaskModal 
+          onClose={() => setShowNewTaskModal(false)}
+          onSubmit={handleAddTask}
+        />
+      )}
     </div>
-    
   );
 }
 
