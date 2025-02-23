@@ -32,6 +32,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/test" element={<TestPage />} />
             <Route path="/tasks" element={<Task />} />
+            <Route path="/tasks/:projectId" element={<Task />} />
             <Route path="/projects" element={<ProjectSummary />} />
             <Route path="/message" element={<MessageUI />} />
             <Route path="/resetpassword" element={<ResetPassword />} />

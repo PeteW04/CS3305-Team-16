@@ -37,23 +37,14 @@ export const getTaskById = async (req, res) => {
 };
 
 // Create a task
-export const createTask = async (req, res) => {
+export const createTask = async (projectId, task) => {
     try {
-        const { projectId, title, description, status } = req.body; // TODO need to tell front end boys to include this
-        const project = await Project.findById(projectId);
-
-        if (!project || project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to create a task for this project, as it is outside of your organization' });
-        }
-
         const newTask = await Task.create({
-            title,
-            description,
-            status,
-            project: projectId, 
-            organization: req.user.organizationId 
+            title : task.title,
+            project: projectId,
+            description : task.description,
     });
-        res.status(201).json(newTask);
+        return newTask;
     }
     catch (error) {
         console.error(error);
@@ -81,6 +72,36 @@ export const updateTask = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+// Update a tasks status
+export const updateTaskStatus = async (req, res) => {
+    try {
+        const { status } = req.body; // Only allow status updates
+        const task = await Task.findById(req.params.id);
+        const validStatuses = ["todo", "progress", "done"];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(404).json({ error: 'Invalid Status' });
+        }
+        
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
+        }
+
+        const project = await Project.findById(task.project);
+        if (!project || project.organization.toString() !== req.user.organizationId) {
+            return res.status(403).json({ message: 'Unauthorized to update this task' });
+        }
+
+        task.status = status;
+        await task.save();
+
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 
 // Delete a task from the project
 export const deleteTask = async (projectId, taskId) => {

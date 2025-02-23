@@ -71,7 +71,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
           <ul className="space-y-2">
             {projects.length > 0 ? (
               projects.map((project) => (
-                <ProjectItem key={project._id} name={project.title} color="bg-blue-500" />
+                <ProjectItem key={project._id} projectId={project._id} name={project.title} color="bg-blue-500" />
               ))
             ) : (
               <p className="text-gray-400">You're not working on any projects</p>
@@ -100,11 +100,13 @@ function SidebarItem({ isMinimized, icon, text }) {
   );
 }
 
-function ProjectItem({ name, color }) {
+function ProjectItem({ projectId, name, color }) {
   return (
     <li className="flex items-center space-x-2 text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer transition-all">
-      <span className={`w-3 h-3 ${color} rounded-full`}></span>
-      <span>{name}</span>
+      <Link to={`/tasks/${projectId}`} className="flex items-center space-x-2 p-2 w-full">
+        <span className={`w-3 h-3 ${color} rounded-full`}></span>
+        <span>{name}</span>
+      </Link>
     </li>
   );
 }

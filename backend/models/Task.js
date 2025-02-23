@@ -9,16 +9,17 @@ const taskSchema = new mongoose.Schema({
     type: String, default: ''
   },
   project: { 
-    type: mongoose.Schema.Types.ObjectId, ref: 'Project', required: true 
+    type: mongoose.Schema.Types.ObjectId, ref: 'Project', default: null
   },
   status: {
-    type: String, enum: ['New', 'In Progress', 'Completed'], default: 'New'
+    type: String, enum: ['todo', 'progress', 'done'], default: 'todo'
   },
-  deadline: {
-    type: Date
+  priority: {
+    type: String, enum: ['Low', 'High'], default: 'Low'
   }, 
 });
 // TODO
+// Add deadline 
 // Add a new field about assignedTo
 // Add a timestamp??
 // Add a assignedBy?? to track which manager assigned the task??
