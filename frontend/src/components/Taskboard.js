@@ -4,35 +4,18 @@ import { initialTasks } from '../DummyData/tasks';
 import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { getProjectTasks } from '../api/project.js'
 
 function Taskboard({ projectId }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Retrieve token from localStorage
-  const token = localStorage.getItem("token");
-
   const fetchTasks = async () => {
-    if (!token) {
-      setError("No token found. Please log in.");
-      return;
-    }
     try {
-      console.log(`Fetching tasks for projectId: ${projectId}`);  // Log projectId
-      const response = await fetch(`http://localhost:5000/project/${projectId}/tasks`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch tasks');
-
-      const data = await response.json();
-
-      setTasks(data);
+      const tasks = await getProjectTasks(projectId);
+      
+      setTasks(tasks);
 
     } catch (error) {
       console.error('Error fetching tasks:', error);
@@ -42,7 +25,7 @@ function Taskboard({ projectId }) {
 
   useEffect(() => {
     if (projectId) fetchTasks();
-  }, [token, projectId]);
+  }, [projectId]);
 
   const statusMap = {
     'To Do': 'todo',
