@@ -5,6 +5,7 @@ import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { getProjectTasks } from '../api/project.js'
+import { changeTaskStatus } from '../api/task.js'
 
 function Taskboard({ projectId }) {
   const [tasks, setTasks] = useState([]);
@@ -14,7 +15,7 @@ function Taskboard({ projectId }) {
   const fetchTasks = async () => {
     try {
       const tasks = await getProjectTasks(projectId);
-      
+
       setTasks(tasks);
 
     } catch (error) {
@@ -43,24 +44,9 @@ function Taskboard({ projectId }) {
     console.log("Handle Task Drop newStatus: ", newStatus);
     console.log("Handle Task Drop transmitted status: ", statusMap[newStatus]);
 
-    // Update on Backend
     try {
-      const response = await fetch(`http://localhost:5000/task/status/${taskId}`, {
-        method: 'PUT',
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify({ 
-          status: statusMap[newStatus],
-        }),
-      });
-  
-      if (!response.ok) {
-        throw new Error('Failed to update task status');
-      }
-  
-      const updatedTask = await response.json();
+      // Update on Backend
+      const updatedTask = await changeTaskStatus(taskId, statusMap[newStatus]);
       
       // Update on Frontend
       setTasks(prevTasks =>
