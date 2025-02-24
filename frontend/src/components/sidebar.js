@@ -9,7 +9,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
   const [error, setError] = useState(null);
 
   // Retrieve token from localStorage
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
     async function fetchProjects() {
