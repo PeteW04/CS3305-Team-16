@@ -37,7 +37,6 @@ export default function MessageUI() {
   }, [chats]);
 
 
-
   useEffect(() => {
     const fetchChats = async () => {
       try {
@@ -91,7 +90,7 @@ export default function MessageUI() {
           chat._id === channelId
             ? {
               ...chat,
-              unreadCount: 0,  // Reset unread count if messages are read
+              unreadCount: 0,
               latestMessage: {
                 ...chat.latestMessage,
                 readBy: messages.find(m => m._id === chat.latestMessage?._id)?.readBy || []
@@ -109,20 +108,6 @@ export default function MessageUI() {
     }
   }, [selectedChat?._id, user?._id]);
 
-
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-      console.log("Attempting to connect socket...");
-    }
-
-    return () => {
-      if (socket.connected) {
-        socket.disconnect();
-        console.log("Socket disconnected");
-      }
-    };
-  }, []);
 
   const handleChatSelect = async (chat) => {
     if (!chat || !chat._id) {
