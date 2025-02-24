@@ -1,0 +1,159 @@
+.stupidretarded{
+  padding: 24px;
+  max-height:  365px;
+}
+
+.gauge-container {
+  background: #f5f5f5; 
+  border-radius: 24px;
+  padding: 32px; 
+  max-width: 800px;
+  margin: 0 auto; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  min-height: 365px;
+  height:fit-content
+  
+}
+
+.gauge-header {
+  display: flex;
+  justify-content: space-between; /* Fix alignment */
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.gauge-header h2 {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  color: #000000; /* Remove the invalid "align-self: ;" */
+}
+
+.gauge-wrapper {
+  position: relative;
+  width: 300px;
+  height: 240px;
+  
+  justify-content: center;
+  align-items: center;
+  margin-bottom: -65px;
+}
+
+.gauge {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  bottom: -20px;
+}
+
+.gauge-segment {
+  fill: none;
+  stroke-width: 24;
+  stroke-linecap: round;
+}
+
+.gauge-segment.completed {
+  stroke: #68b266;
+}
+
+.gauge-segment.incomplete {
+  stroke: #d8727d;
+}
+
+.gauge-segment.in-progress {
+  stroke: #d58d49;
+}
+
+.tick-marks line {
+  stroke-linecap: round;
+}
+
+.gauge-center {
+  position: absolute;
+  text-align: center;
+  padding-top: 30px;
+  top: -5px;
+  left: 50%;
+  transform: translate(-50%, 20%);
+}
+
+.percentage {
+  font-size: 64px;
+  font-weight: 500;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.label {
+  color: #787486;
+  font-size: 18px;
+}
+
+.stats-container {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.stat-label {
+  color: #787486;
+  font-size: 16px;
+}
+
+.stat-item.total .stat-value {
+  color: black;
+  font-size: 20px;
+  margin:0 auto;
+}
+
+.stat-item.completed2 .stat-value {
+  color: #68b266;
+  padding:3px;
+}
+
+.stat-item.incomplete2 .stat-value {
+  color: #d8727d;
+  padding:3px;
+}
+
+.stat-item.in-progress2 .stat-value {
+  color: #d58d49;
+  padding:3px;
+}
+
+/*@media (max-width: 768px) {
+  .gauge-container {
+    padding: 24px;
+  }
+
+  .gauge-wrapper {
+    height: 200px;
+  }
+
+  .percentage {
+    font-size: 48px;
+  }
+
+  .stats-container {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .stat-item {
+    width: calc(50% - 12px);
+  }
+}*/
+
