@@ -3,7 +3,6 @@ import { createChannel } from "../api/channel";
 import { getUsersInOrganization } from "../api/users";
 import { Plus, Users, Briefcase, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
 import "../CSS-files/MessageList.css";
-import { useAuth } from "../context/AuthContext";
 
 export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const [activeChat, setActiveChat] = useState(null);
