@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/header';
 // Pages
+import UserProfile from './pages/UserProfile';
 import Signup from './pages/Signup';
 import UserSignup from './pages/UserSignup';
 import Landing from './pages/Landing';
@@ -41,6 +42,9 @@ function App() {
           <Route path="/message" element={<MessageUI />} />
           <Route path="/resetpassword" element={<ResetPassword />} />
           {/* </Route> */}
+          <Route path="/projects" element={<ProjectSummary />} />
+          <Route path="/message" element={<MessageUI />} />
+          <Route path="/UserProfile" element={<UserProfile />} />
         </Routes>
       </AuthProvider>
     </Router>
