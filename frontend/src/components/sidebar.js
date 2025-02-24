@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Link } from 'react-router-dom';
-
+import { getProjects } from '../api/project.js'
 
 function Sidebar({ isMinimized, toggleSidebar }) {
   const [projects, setProjects] = useState([]);
@@ -9,36 +9,22 @@ function Sidebar({ isMinimized, toggleSidebar }) {
   const [error, setError] = useState(null);
 
   // Retrieve token from localStorage
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("authToken");
 
   useEffect(() => {
     async function fetchProjects() {
-      if (!token) {
-        setError("No token found. Please log in.");
-        setLoading(false);
-        return;
-      }
       try {
-        const response = await fetch("http://localhost:5000/project", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch projects");
-        }
-        const data = await response.json();
-        setProjects(data);
+        const projects = await getProjects();
+        setProjects(projects);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     }
+
     fetchProjects();
-  }, [token]); 
+  }, []); 
 
   if (loading) return <div>Loading projects...</div>;
   if (error) return <div>Error: {error}</div>;

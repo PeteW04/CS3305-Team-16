@@ -25,7 +25,6 @@ export default function MessageUI() {
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
-      // Join all chat rooms when component mounts
       chats.forEach(chat => {
         socket.emit("joinRoom", chat._id);
       });
@@ -36,7 +35,6 @@ export default function MessageUI() {
       }
     };
   }, [chats]);
-
 
 
   useEffect(() => {
@@ -53,8 +51,6 @@ export default function MessageUI() {
     fetchChats();
   }, []);
 
-  // Remove the second useEffect with handleGlobalMessage completely
-  // Modify the first useEffect to handle all message scenarios
 
   useEffect(() => {
     if (user?._id) {
@@ -80,7 +76,6 @@ export default function MessageUI() {
           })
         );
 
-        // If the message is for the currently selected chat, update messages in `selectedChat`
         if (selectedChat?._id === newMsg.channelId) {
           setSelectedChat(prev => ({
             ...prev,
@@ -90,13 +85,12 @@ export default function MessageUI() {
         }
       };
 
-
       const handleMessageRead = ({ channelId, messages }) => {
         setChats(prevChats => prevChats.map(chat =>
           chat._id === channelId
             ? {
               ...chat,
-              unreadCount: 0,  // Reset unread count if messages are read
+              unreadCount: 0,
               latestMessage: {
                 ...chat.latestMessage,
                 readBy: messages.find(m => m._id === chat.latestMessage?._id)?.readBy || []
@@ -105,11 +99,8 @@ export default function MessageUI() {
             : chat
         ));
       };
-
-
       socket.on("newMessage", handleGlobalNewMessage);
       socket.on("messagesRead", handleMessageRead);
-
       return () => {
         socket.off("newMessage", handleGlobalNewMessage);
         socket.off("messagesRead", handleMessageRead);
@@ -117,23 +108,6 @@ export default function MessageUI() {
     }
   }, [selectedChat?._id, user?._id]);
 
-
-
-
-
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-      console.log("Attempting to connect socket...");
-    }
-
-    return () => {
-      if (socket.connected) {
-        socket.disconnect();
-        console.log("Socket disconnected");
-      }
-    };
-  }, []);
 
   const handleChatSelect = async (chat) => {
     if (!chat || !chat._id) {
@@ -147,18 +121,15 @@ export default function MessageUI() {
 
       socket.emit("joinRoom", chat._id);  // Notify server user has opened chat
 
-      // Reset unread count to 0
       setChats(prevChats => prevChats.map(c =>
         c._id === chat._id ? { ...c, unreadCount: 0 } : c
       ));
 
-      // Mark messages as read in the backend
       await markMessagesRead(chat._id);
     } catch (error) {
       console.error("Error fetching messages:", error.message);
     }
   };
-
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -189,8 +160,6 @@ export default function MessageUI() {
       }
     }
   };
-
-
 
   const handleNewChat = (newChat) => {
     setChats((prevChats) => [...prevChats, newChat]);
@@ -234,8 +203,6 @@ export default function MessageUI() {
               <p>Select a chat to start messaging</p>
             )}
           </div>
-
-
           {selectedChat && (
             <form className="chat-input" onSubmit={handleSendMessage}>
               <button type="button" className="emoji-button">

@@ -62,9 +62,9 @@ export const updateTask = async (req, res) => {
             return res.status(404).json({ error: 'Task not found' });
         }
         
-        if (!project || project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to update this task' });
-        }
+        //if (!project || project.organization.toString() !== req.user.organizationId) {
+            //return res.status(403).json({ message: 'Unauthorized to update this task' });
+        //}
 
         const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
         res.status(200).json(updatedTask);

@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { createChannel } from "../api/channel";
 import { getUsersInOrganization } from "../api/users";
 import { Plus, Users, Briefcase, MessageSquare, ChevronDown, ChevronRight } from "lucide-react";
 import "../CSS-files/MessageList.css";
-import { useAuth } from "../context/AuthContext";
-import socket from "../utils/socket";
 
 export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   const [activeChat, setActiveChat] = useState(null);
@@ -15,68 +13,6 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   });
   const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [unreadCounts, setUnreadCounts] = useState({});
-  const { user } = useAuth()
-
-  useEffect(() => {
-    // Join all chat rooms when chat data is loaded
-    chatData.forEach(chat => {
-      socket.emit("joinRoom", chat._id);
-    });
-
-    const handleNewMessage = (newMsg) => {
-      if (newMsg.senderId._id !== user._id) {
-        setUnreadCounts(prev => ({
-          ...prev,
-          [newMsg.channelId]: (prev[newMsg.channelId] || 0) + 1
-        }));
-      }
-    };
-
-    socket.on("newMessage", handleNewMessage);
-    return () => socket.off("newMessage", handleNewMessage);
-  }, [chatData, user._id]);
-
-
-  useEffect(() => {
-    const calculateUnreadCounts = () => {
-      const counts = {};
-      chatData.forEach(chat => {
-        const unreadMessages = chat.messages?.filter(msg =>
-          msg.senderId !== user._id &&
-          !msg.readBy.includes(user._id)
-        ).length || 0;
-        counts[chat._id] = unreadMessages;
-      });
-      setUnreadCounts(counts);
-    };
-    calculateUnreadCounts();
-  }, [chatData, user._id]);
-
-
-  useEffect(() => {
-    const handleNewMessage = (newMsg) => {
-
-      if (newMsg.senderId._id !== user._id && newMsg.channelId !== activeChat) {
-        setUnreadCounts(prev => ({
-          ...prev,
-          [newMsg.channelId]: (prev[newMsg.channelId] || 0) + 1
-        }));
-      }
-    };
-
-    socket.on("newMessage", handleNewMessage);
-    return () => socket.off("newMessage", handleNewMessage);
-  }, [user._id, activeChat]);
-
-  useEffect(() => {
-    if (activeChat) {
-      setUnreadCounts(prev => ({
-        ...prev,
-        [activeChat]: 0
-      }));
-    }
-  }, [activeChat]);
 
   const openModal = async () => {
     setIsModalOpen(true);
@@ -99,12 +35,7 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
   };
 
   const handleChatClick = (chat) => {
-    console.log("Selected Chat from ChatList:", chat);
     setActiveChat(chat._id);
-    setUnreadCounts(prev => ({
-      ...prev,
-      [chat._id]: 0
-    }));
     onChatSelect(chat);
   };
 
