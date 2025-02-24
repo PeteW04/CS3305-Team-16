@@ -1,10 +1,10 @@
-import { useState } from "react"
-import { Mail, ArrowLeft } from "lucide-react"
-import "../CSS-files/ForgotPassword.css"
-import { forgotPassword } from "../api/auth"
+import { useState } from "react";
+import { Mail, ArrowLeft, AlertCircle } from "lucide-react";
+import "../CSS-files/ForgotPassword.css";
+import { forgotPassword } from "../api/auth";
 
 const ForgotPassword = () => {
-  const [email, setEmail] = useState("")
+  const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -17,7 +17,7 @@ const ForgotPassword = () => {
       setMessage(response.message);
       setEmail("");
     } catch (err) {
-      console.error("Error in forgotPasssword:", err.message);
+      console.error("Error in forgotPassword:", err.message);
       setError(err.message);
     }
   };
@@ -29,6 +29,12 @@ const ForgotPassword = () => {
         <p className="fp-description">
           Enter your email address and we'll send you instructions to reset your password.
         </p>
+        {error && ( 
+          <div className="error-message">
+            <AlertCircle size={18} />
+            <span>{error}</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="email">Email Address</label>
@@ -54,8 +60,7 @@ const ForgotPassword = () => {
         </a>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ForgotPassword
-
+export default ForgotPassword;

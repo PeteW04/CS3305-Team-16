@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("authToken", result.token);
             navigate("/tasks");
         } catch (error) {
-            alert(error.message);
+            throw error; 
         }
     };
 
