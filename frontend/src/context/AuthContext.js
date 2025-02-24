@@ -1,12 +1,12 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API functions
+import { loginAPI, validateTokenAPI } from "../api/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
-    const [user, setUser] = useState(null); // Stores user information
+    const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("token") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
