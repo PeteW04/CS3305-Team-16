@@ -29,16 +29,16 @@ function App() {
           <Route path="/forgotpassword" element={<ForgotPassword />} />
           <Route path="/tasks" element={<Task />} />
           {/* Protected Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/test" element={<TestPage />} />
-           {/* unprotected for testing purposes 
+          {/* <Route element={<ProtectedRoute />}> */}
+          <Route path="/test" element={<TestPage />} />
+          {/* unprotected for testing purposes 
             <Route path="/settings" element={<Settings />} />*/}
-            <Route path="/tasks" element={<Task />} />
-            <Route path="/tasks/:projectId" element={<Task />} />
-            <Route path="/projects" element={<ProjectSummary />} />
-            <Route path="/message" element={<MessageUI />} />
-            <Route path="/resetpassword" element={<ResetPassword />} />
-          </Route>
+          <Route path="/tasks" element={<Task />} />
+          <Route path="/tasks/:projectId" element={<Task />} />
+          <Route path="/projects" element={<ProjectSummary />} />
+          <Route path="/message" element={<MessageUI />} />
+          <Route path="/resetpassword" element={<ResetPassword />} />
+          {/* </Route> */}
         </Routes>
       </AuthProvider>
     </Router>

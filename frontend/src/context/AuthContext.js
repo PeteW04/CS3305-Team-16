@@ -5,7 +5,6 @@ import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API function
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    console.log("AuthProvider rendered");
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null); // Stores user information
     const [token, setToken] = useState(localStorage.getItem("token") || ""); // Get token from localStorage
@@ -31,22 +30,25 @@ export const AuthProvider = ({ children }) => {
     }, [navigate]);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("authToken");
-        if (storedToken) {
-            validateTokenAPI(storedToken)
-                .then((userData) => {
-                    setUser(userData);
-                    setToken(storedToken);
-                })
-                .catch(() => {
-                    logout();
-                })
-                .finally(() => {
-                    setIsLoading(false); // Mark loading as complete
-                });
-        } else {
-            setIsLoading(false); // No token, mark loading as complete
-        }
+        const validateAuth = async () => {
+            const storedToken = localStorage.getItem("authToken");
+            if (!storedToken) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const userData = await validateTokenAPI(storedToken);
+                setUser(userData);
+                setToken(storedToken);
+            } catch (error) {
+                logout();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        validateAuth();
     }, [logout]);
 
     return (
