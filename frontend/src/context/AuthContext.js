@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(localStorage.getItem("token") || ""); // Get token from localStorage
+    const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
     const login = async (data) => {
@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("authToken", result.token);
             navigate("/tasks");
         } catch (error) {
-            alert(error.message);
+            throw error; 
         }
     };
 

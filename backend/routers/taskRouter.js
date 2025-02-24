@@ -11,7 +11,7 @@ taskRouter.get('/', getAllTasks);
 taskRouter.get('/:id', getTaskById);
 
 // Update a task
-taskRouter.put('/:id', checkUserRole('manager'), updateTask);
+taskRouter.put('/:id', updateTask);
 
 // Update a tasks status
 taskRouter.put('/status/:id', updateTaskStatus);
