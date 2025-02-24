@@ -4,7 +4,7 @@ const ChatBubble = ({ sender, currentUser, message, time}) => {
 
     const isSent = Boolean(sender === currentUser)
     
-
+    
   return (
     <div className={`flex flex-col space-y-1 ${isSent ? "items-end" : "items-start"}`}>
       <span className="text-xs text-black-600">{sender}</span>
