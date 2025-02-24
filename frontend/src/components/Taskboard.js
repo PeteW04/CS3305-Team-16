@@ -5,7 +5,7 @@ import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { getProjectTasks } from '../api/project.js'
-import { changeTaskStatus } from '../api/task.js'
+import { changeTaskStatus, addTask } from '../api/task.js'
 
 function Taskboard({ projectId }) {
   const [tasks, setTasks] = useState([]);
@@ -54,6 +54,7 @@ function Taskboard({ projectId }) {
           task._id === taskId ? updatedTask : task
         )
       );
+
     } catch (error) {
       console.error('Error updating task status:', error);
     }
@@ -62,24 +63,9 @@ function Taskboard({ projectId }) {
   const handleAddTask = async (taskData) => {
     try {
       // Update on Backend
-      const response = await fetch(`http://localhost:5000/project/projectId/${projectId}/tasks/add`, {
-        method: 'POST',
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify({ 
-          ...taskData, 
-          status: 'New', 
-        })
-      });
-  
-      if (!response.ok) throw new Error('Failed to create task');
+      const newTask = await addTask(projectId, taskData);
   
       // Update on Frontend
-      const newTask = await response.json();
-
-
       setTasks(prevTasks => [...prevTasks, newTask]);
       console.log(newTask);
 
