@@ -30,25 +30,25 @@ export const changeTaskStatus = async (taskId, newStatus) => {
     }
 }
 
-export const addTask = async (projectId, taskData) => {
-    // Send API request to add a new task
+export const editTask = async (taskData) => {
+    console.log('Edit Task taskData: ', taskData);
     try {
-    const response = await fetch(`http://localhost:5000/project/projectId/${projectId}/tasks/add`, {
-        method: 'POST',
-        headers: { 
-            Authorization: `Bearer ${getAuthToken()}`,
-            'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify({ 
-            ...taskData, 
-            status: 'New', 
-        })
+        // Send API request to add a new task
+        const response = await fetch(`http://localhost:5000/task/${taskData._id}`, {
+            method: 'PUT',
+            headers: { 
+                Authorization: `Bearer ${getAuthToken()}`,
+                'Content-Type': 'application/json' 
+            },
+            body: JSON.stringify({ 
+                ...taskData
+            })
         });
     
-    if (!response.ok) throw new Error('Failed to create task');
+        if (!response.ok) throw new Error('Failed to create task');
 
-    // Return the response 
-    return await response.json();
+        // Return the response 
+        return await response.json();
 
     // Catch any errors
     } catch (error) {

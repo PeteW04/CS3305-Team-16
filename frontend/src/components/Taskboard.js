@@ -4,8 +4,8 @@ import { initialTasks } from '../DummyData/tasks';
 import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getProjectTasks } from '../api/project.js'
-import { changeTaskStatus, addTask } from '../api/task.js'
+import { getProjectTasks, addTask } from '../api/project.js'
+import { changeTaskStatus, editTask } from '../api/task.js'
 
 function Taskboard({ projectId }) {
   const [tasks, setTasks] = useState([]);
@@ -75,17 +75,27 @@ function Taskboard({ projectId }) {
     }
   };
 
-  const handleEditTask = (taskData) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
-        task.id === taskData.id
-          ? { ...task, ...taskData }
-          : task
-      )
-    );
+  const handleEditTask = async (taskData) => {
+    console.log('handleEditTask taskData: ', taskData);
+    try {
+      // Update on Backend
+      const updatedTask = await editTask(taskData);
+
+      // Update on Frontend
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task._id === updatedTask._id
+            ? { ...task, ...taskData }
+            : task
+        )
+      );
+    } catch (error) {
+      console.error('Error editing task:', error);
+    }
   };
 
   const handleDeleteTask = (taskId) => {
+    // Update on Frontend
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
   };
 

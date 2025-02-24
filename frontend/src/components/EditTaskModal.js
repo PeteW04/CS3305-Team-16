@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 
 function EditTaskModal({ task, onClose, onSubmit }) {
   const [taskData, setTaskData] = useState({
-    id: task.id,
+    _id: task._id,
     title: task.title,
     description: task.description,
     priority: task.priority,
@@ -12,6 +12,7 @@ function EditTaskModal({ task, onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting taskData:", taskData);
     onSubmit(taskData);
   };
 
