@@ -45,7 +45,8 @@ export default function ProjectSummary() {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="container">
+    <div className="ProjectSummary">
+    <div className="container1">
       <div className="filter-container">
         <h1 className="ProjectBoxHeader">Project Summary</h1>
         <button className="filter-button">
@@ -90,6 +91,7 @@ export default function ProjectSummary() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

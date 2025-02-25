@@ -81,6 +81,7 @@ export const getProjectTasks = async (projectId) => {
 export const addTaskToProject = async (projectId, taskData) => {
     // Send API request to add a new task
     try {
+        console.log("addTaskToProject taskData: ", taskData);
         const response = await fetch(`${API_URL}/projectId/${projectId}/tasks/add`, {
             method: 'POST',
             headers: { 

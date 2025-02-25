@@ -23,7 +23,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", // Replace with your frontend's URL
+        origin: "http://localhost:3000", 
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -60,6 +60,8 @@ app.use('/task', authenticate, taskRouter);
 
 app.use('/message', authenticate, messageRouter);
 app.use('/channel', authenticate, channelRouter);
+
+app.use('/uploads', express.static('uploads'))
 
 // SOCKET.IO CONNECTION
 io.on('connection', (socket) => {

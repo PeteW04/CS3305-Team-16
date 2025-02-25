@@ -15,7 +15,7 @@ const taskSchema = new mongoose.Schema({
     type: String, enum: ['todo', 'progress', 'done'], default: 'todo'
   },
   priority: {
-    type: String, enum: ['Low', 'High'], default: 'Low'
+    type: String, enum: ['Low', 'High']
   }, 
 });
 // TODO
