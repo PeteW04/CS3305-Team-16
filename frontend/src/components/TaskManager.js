@@ -29,6 +29,7 @@ const [tasks, setTasks] = useState(generateTasks());
   }
 
   return (
+    <div className="taskmanagercontainer">
     <div className="task-manager">
       <h1 className="TaskBoxHeader">Today's Tasks</h1>
 
@@ -67,6 +68,7 @@ const [tasks, setTasks] = useState(generateTasks());
             </div>
           ))}
       </div>
+    </div>
     </div>
   )
 }
