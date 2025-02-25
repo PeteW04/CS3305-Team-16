@@ -5,6 +5,7 @@ import TaskManager from "../components/TaskManager";
 import ProjectSummary from "../components/ProjectSummary";
 import ProgressGauge from "../components/ProgressGauge";
 import Calendar from "../components/Calendar";
+import MessageList from "../components/MessageList";
 
 function TestPage() {
   const [isMinimized, setIsMinimized] = useState(false);
@@ -17,17 +18,26 @@ function TestPage() {
     <main className="flex h-screen pt-16">
       {/* Sidebar */}
       <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+      <div className="dashboard" style={{display:"inline-flex"}}>
 
-      <div className="dashboard" style={{flexDirection: "row",display:"flex", flexWrap: "wrap"}}>
+      {/* Dashboard */}
+      <div className="dashboardother" style={{flexDirection: "row",display:"flex", flexWrap: "wrap"}}>
         
+        {/* Project summary */}
+        <div><ProjectSummary /></div>
+        {/* Calendar */}
+        <div><Calendar /></div>
         {/* tasklist */}
         <div><TaskManager /></div>
         {/* Progress Gauge */}
         <div><ProgressGauge /></div>
-        {/* Calendar */}
-        <div><Calendar /></div>
-        {/* Project summary */}
-        <div><ProjectSummary /></div>
+
+
+      </div>
+      <div className="chat">
+        {/* Chat */}
+        <div><MessageList /></div>
+      </div>
       </div>
 
       {/* Main Content 
