@@ -4,7 +4,7 @@ import { initialTasks } from '../DummyData/tasks';
 import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import { getProjectTasks, addTask } from '../api/project.js'
+import { getProjectTasks, addTaskToProject, deleteTaskFromProject } from '../api/project.js'
 import { changeTaskStatus, editTask } from '../api/task.js'
 
 function Taskboard({ projectId }) {
@@ -63,7 +63,8 @@ function Taskboard({ projectId }) {
   const handleAddTask = async (taskData) => {
     try {
       // Update on Backend
-      const newTask = await addTask(projectId, taskData);
+      console.log("handleAddTask taskData: ", taskData);
+      const newTask = await addTaskToProject(projectId, taskData);
   
       // Update on Frontend
       setTasks(prevTasks => [...prevTasks, newTask]);
@@ -94,9 +95,19 @@ function Taskboard({ projectId }) {
     }
   };
 
-  const handleDeleteTask = (taskId) => {
-    // Update on Frontend
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  const handleDeleteTask = async (taskId) => {
+    console.log('handleDeleteTask projectId: ', projectId);
+    console.log('handleDeleteTask taskId: ', taskId);
+    try {
+      // Update on Backend
+      const deletedTask = await deleteTaskFromProject(projectId, taskId);
+      console.log(deletedTask);
+
+      // Update on Frontend
+      setTasks(prevTasks => prevTasks.filter(task => task._id !== taskId));
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
   };
 
   return (

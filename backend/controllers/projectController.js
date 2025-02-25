@@ -37,13 +37,16 @@ export const getAllProjectsByOrg = async (req, res) => {
 export const getProjectById = async (req, res) => {
     try {
         const { projectId } = req.params;
+
         const project = await Project.findById(projectId);
         if (!project) {
             return res.status(404).json({error: 'Project not found'});
         }
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized access to this project' });
-        }
+
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'Unauthorized access to this project' });
+        //}
+
         res.status(200).json(project);
     } catch (error) {
         res.status(500).json({error: error.message});
@@ -251,14 +254,22 @@ export const addTask = async (req, res) => {
     }
 };
 
-// PUT: Remove a task from a project
+// DELETE: Remove a task from a project
 export const removeTask = async (req, res) => {
     try {
         const {  projectId, taskId } = req.params;
+        console.log('removeTask projectId: ', projectId);
+        console.log('removeTask taskId: ', taskId);
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(taskId)) {
             return res.status(400).json({ error: 'Invalid projectId or taskId' });
+        }
+
+        const task = await Task.findById(taskId);
+        // Ensure the task exists
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
         }
 
         const project = await Project.findById(projectId);
@@ -268,16 +279,19 @@ export const removeTask = async (req, res) => {
         }
 
         // Ensure that the modifying user is part of the organization
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to modify this project, as it is outside of your organization' });
-        }
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'Unauthorized to modify this project, as it is outside of your organization' });
+        //}
 
-        project.tasks.addToSet(taskId);
+        await deleteTask(projectId, taskId);
+
+        project.tasks = project.tasks.filter(task => task.toString() !== taskId);
         await project.save();
 
-        res.status(200).json({ message: 'Task added successfully', project });
+        return res.status(200).json({ message: 'Task successfully deleted', project });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error deleting task: ", error.message);
+        return res.status(500).json({ error: error.message });
     }
 };
 

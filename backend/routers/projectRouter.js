@@ -38,7 +38,7 @@ projectRouter.put('/projectId/:projectId/employees/remove/employeeId/:employeeId
 projectRouter.post('/projectId/:projectId/tasks/add', checkUserRole('manager'), addTask);
 
 // Remove a task
-projectRouter.put('/projectId/:projectId/tasks/remove/taskId/:taskId', checkUserRole('manager'), removeTask);
+projectRouter.delete('/projectId/:projectId/tasks/remove/taskId/:taskId', removeTask);
 
 // Update a task's status ['New', 'In Progress', 'Completed']
 projectRouter.put('/projectId/:projectId/tasks/taskId/:taskId/status/:status', updateTaskStatus);
