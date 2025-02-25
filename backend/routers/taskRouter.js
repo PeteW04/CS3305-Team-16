@@ -17,7 +17,7 @@ taskRouter.put('/:id', updateTask);
 taskRouter.put('/status/:id', updateTaskStatus);
 
 // Delete a task
-taskRouter.delete('/:id', checkUserRole('manager'), deleteTask);
+taskRouter.delete('/:id', deleteTask);
 
 export default taskRouter;
 

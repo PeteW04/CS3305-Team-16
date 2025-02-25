@@ -105,22 +105,15 @@ export const updateTaskStatus = async (req, res) => {
 
 
 // Delete a task from the project
-export const deleteTask = async (projectId, taskId) => {
+export const deleteTask = async (taskId) => {
     try {
-        const task = await Task.findById(req.params.id);
-        const project = await Project.findById(task.project);
+        console.log('Controller taskId: ', taskId);
 
-        if (!task) {
-            return res.status(404).json({ error: 'Task not found' });
-        }
-
-        if (!project || project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to delete this task' });
-        }
-
+        // Delete the task from the database
         await Task.findByIdAndDelete(req.params.id);
-        res.status(204).json({ message: 'Task deleted successfully' });
+
+        return { message: 'Task deleted successfully' }
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return { error: error.message }
     }
 };
