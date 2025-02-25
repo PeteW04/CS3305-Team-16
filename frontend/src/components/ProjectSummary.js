@@ -9,13 +9,13 @@ export default function ProjectSummary() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Retrieve token from localStorage
-  const token = localStorage.getItem("token");
+  // Retrieve authToken from localStorage
+  const authToken = localStorage.getItem("authToken");
 
   useEffect(() => {
     async function fetchProjects() {
-      if (!token) {
-        setError("No token found. Please log in.");
+      if (!authToken) {
+        setError("No authToken found. Please log in.");
         setLoading(false);
         return;
       }
@@ -23,7 +23,7 @@ export default function ProjectSummary() {
         const response = await fetch("http://localhost:5000/project", {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${authToken}`,
           },
           credentials: "include",
         });
@@ -39,7 +39,7 @@ export default function ProjectSummary() {
       }
     }
     fetchProjects();
-  }, [token]); 
+  }, [authToken]); 
 
   if (loading) return <div>Loading projects...</div>;
   if (error) return <div>Error: {error}</div>;
