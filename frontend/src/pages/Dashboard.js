@@ -3,7 +3,7 @@ import Sidebar from "../components/sidebar";
 import TaskManager from "../components/TaskManager";
 import ProjectSummary from "../components/ProjectSummary";
 import ProgressGauge from "../components/ProgressGauge";
-import Calendar from "../components/Calendar";
+import EamonCalendar from "../components/eamonCalendar";
 import MessageList from "../components/MessageList";
 //import "../CSS-files/dashboard.css";
 
@@ -50,7 +50,7 @@ function Dashboard() {
           {/* Project summary */}
           <div><ProjectSummary /></div>
           {/* Calendar */}
-          <div><Calendar /></div>
+          <div><EamonCalendar/></div>
           {/* tasklist */}
           <div><TaskManager /></div>
           {/* Progress Gauge */}
