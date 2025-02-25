@@ -1,0 +1,119 @@
+import React from 'react';
+import { X, Settings, User as UserIcon, Plus, List } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+
+function UserListModal({ onClose }) {
+  const { user, isLoading } = useAuth(); 
+  const name = `${user.firstName} ${user.lastName}`;
+  const email = user.email;
+
+  // Placeholder data for tasks (replace with actual data from your backend or state)
+  const tasks = [
+    { id: 1, title: 'Task 1', status: 'In Progress' },
+    { id: 2, title: 'Task 2', status: 'Completed' },
+    { id: 3, title: 'Task 3', status: 'Pending' },
+  ];
+
+  const numberOfTasks = tasks.length;
+
+  if (isLoading) {
+    return <div>Loading...</div>; // Or your LoadingSpinner component
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50"
+      onClick={onClose}
+    >
+      <div
+        className="absolute right-4 top-20 w-80 bg-white rounded-xl shadow-lg"
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Profile Header */}
+        <div className="p-4 border-b">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center gap-3">
+              <div className="bg-indigo-100 p-2 rounded-full">
+                <UserIcon className="w-6 h-6 text-indigo-600" />
+              </div>
+              <div>
+                <h3 className="font-semibold">{name}</h3>
+                <p className="text-sm text-gray-600">{email}</p>
+              </div>
+            </div>
+            <button
+              onClick={onClose}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Profile Information */}
+        <div className="p-4 border-b">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold">Profile Information</h4>
+            <Link
+              to="/edit-profile"
+              className="text-sm text-indigo-600 hover:underline"
+              onClick={onClose}
+            >
+              Edit
+            </Link>
+          </div>
+          <div className="space-y-2">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Projects:</span>
+              <span className="text-sm font-medium">{user.projects || 'N/A'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-600">Tasks Assigned:</span>
+              <span className="text-sm font-medium">{numberOfTasks}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Task Actions */}
+        <div className="p-4 border-b">
+          <h4 className="font-semibold mb-3">Task Actions</h4>
+          <div className="space-y-2">
+            <button
+              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
+              onClick={() => {
+                // Add logic to assign a task
+                console.log('Assign Task');
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              <span>Assign Task</span>
+            </button>
+            <Link
+              to="/tasks"
+              className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
+              onClick={onClose}
+            >
+              <List className="w-4 h-4" />
+              <span>View All Tasks</span>
+            </Link>
+          </div>
+        </div>
+
+        {/* Menu Items */}
+        <div className="p-2">
+          <Link
+            to="/settings"
+            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
+            onClick={onClose}
+          >
+            <Settings className="w-4 h-4" />
+            <span>Settings</span>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default UserListModal;

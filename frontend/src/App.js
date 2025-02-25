@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/header';
 // Pages
+import ManagerPage from './pages/ManagerPage';
 import UserProfile from './pages/UserProfile';
 import Signup from './pages/Signup';
 import UserSignup from './pages/UserSignup';
@@ -49,6 +50,7 @@ function App() {
           <Route path="/projects" element={<ProjectSummary />} />
           <Route path="/message" element={<MessageUI />} />
           <Route path="/UserProfile" element={<UserProfile />} />
+          <Route path="/managerpage" element={<ManagerPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </AuthProvider>
