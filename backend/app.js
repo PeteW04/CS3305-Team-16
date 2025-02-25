@@ -61,6 +61,8 @@ app.use('/task', authenticate, taskRouter);
 app.use('/message', authenticate, messageRouter);
 app.use('/channel', authenticate, channelRouter);
 
+app.use('/uploads', express.static('uploads'))
+
 // SOCKET.IO CONNECTION
 io.on('connection', (socket) => {
     console.log(`User connected: ${socket.id}`);
