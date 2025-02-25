@@ -63,6 +63,7 @@ function Taskboard({ projectId }) {
   const handleAddTask = async (taskData) => {
     try {
       // Update on Backend
+      console.log("handleAddTask taskData: ", taskData);
       const newTask = await addTaskToProject(projectId, taskData);
   
       // Update on Frontend
