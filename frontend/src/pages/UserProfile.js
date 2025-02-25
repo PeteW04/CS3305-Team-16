@@ -1,8 +1,31 @@
 import Sidebar from "../components/sidebar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { getUserProfile } from "../api/users.js";
 
-const UserProfile = ({ user }) => {
+const UserProfile = ({  }) => {
+  const [user, setUser] = useState(null);
+  const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(null);
+
+  useEffect(() => {
+    async function fetchProfile() {
+      try {
+        const profile = await getUserProfile();
+        setUser(profile);
+      } catch (error) {
+        setError(error.message);
+      }
+    }
+    fetchProfile();
+  }, []);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="bg-gray-100 pt-16 flex">
@@ -28,17 +51,17 @@ const UserProfile = ({ user }) => {
             <h3 className="text-lg font-semibold text-center p-4">Name</h3>
             <div className="bg-gray-200 rounded-lg w-full">
               <p className="text-gray-700 p-2 bg-gray-200 rounded-lg w-full">
-                {"user.name"}
+                {user.firstName}
               </p>
               <p className="text-gray-700 mt-3 p-2 bg-gray-200 rounded-lg w-full">
-                {"user.lastname"}
+                {user.lastName}
               </p>
             </div>
           </div>
           <div className="bg-gray-200 grid grid-cols-2 w-full col-start-4 col-span-3 row-start-2 row-end-4 rounded-lg shadow-lg">
             <div className="col-start-1 col-span-2 row-start-2 flex flex-col mb-6 items-center justify-center">
               <h3 className="text-lg font-semibold text-center p-4">Email</h3>
-              <p className="text-gray-700 text-center">{"user.email"}</p>
+              <p className="text-gray-700 text-center">{user.email}</p>
               <button
                 className="mt-3 bg-indigo-500 text-white px-5 py-2 rounded-lg shadow-md hover:bg-indigo-600"
                 onClick={() => setShowPopup("email")}
