@@ -79,3 +79,35 @@ export const changePassword = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
+
+export const getUserProfile = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      
+      if (!user) return res.status(404).json({ error: 'User not found' });
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  export const updateProfilePicture = async (req, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      
+    const filePath = req.file.path; 
+      
+      // Update the user's profilePicture field with the new file path
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { profilePicture: filePath },
+        { new: true }
+      );
+      
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

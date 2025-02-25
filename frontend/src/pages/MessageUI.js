@@ -7,6 +7,8 @@ import { getMessages, getChannels, markMessagesRead } from "../api/channel";
 import { sendMessage } from "../api/message";
 import socket from "../utils/socket";
 import { useAuth } from "../context/AuthContext";
+import NavBar from '../components/NavBar';
+import Sidebar from '../components/sidebar';
 
 export default function MessageUI() {
   const { user, isLoading } = useAuth();
@@ -14,6 +16,8 @@ export default function MessageUI() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState([]);
   const messagesEndRef = useRef(null);
+  const [isMinimized, setIsMinimized] = useState(false);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -166,60 +170,74 @@ export default function MessageUI() {
     setSelectedChat(newChat);
   };
 
+  const toggleSidebar = () => {
+    setIsMinimized(!isMinimized);
+  };
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="chat-interface">
-      <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
-      <div className="main-content">
-        <div className="chat-container">
-          <div className="messages">
-            {selectedChat ? (
-              selectedChat.messages && selectedChat.messages.length > 0 ? (
-                <>
-                  {selectedChat.messages.map((msg, index) => (
-                    <ChatBubble
-                      key={index}
-                      sender={msg.senderId}
-                      currentUser={user._id}
-                      message={msg.text}
-                      time={new Date(msg.createdAt).toLocaleString('en-US', {
-                        hour: 'numeric',
-                        minute: '2-digit',
-                        hour12: true
-                      })}
+    <div className="min-h-screen bg-gray-50 h-screen flex flex-col">
+      <header className="bg-white border-b border-gray-200">
+        <NavBar />
+      </header>
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+        <main className="p-6 flex-1 h-full overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-sm p-6">
+            <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
+            <div className="main-content">
+              <div className="chat-container">
+                <div className="messages">
+                  {selectedChat ? (
+                    selectedChat.messages && selectedChat.messages.length > 0 ? (
+                      <>
+                        {selectedChat.messages.map((msg, index) => (
+                          <ChatBubble
+                            key={index}
+                            sender={msg.senderId}
+                            currentUser={user._id}
+                            message={msg.text}
+                            time={new Date(msg.createdAt).toLocaleString('en-US', {
+                              hour: 'numeric',
+                              minute: '2-digit',
+                              hour12: true
+                            })}
 
-                      readBy={msg.readBy}
+                            readBy={msg.readBy}
+                          />
+                        ))}
+                        <div ref={messagesEndRef} />
+                      </>
+                    ) : (
+                      <p>No messages in this chat yet.</p>
+                    )
+                  ) : (
+                    <p>Select a chat to start messaging</p>
+                  )}
+                </div>
+                {selectedChat && (
+                  <form className="chat-input" onSubmit={handleSendMessage}>
+                    <button type="button" className="emoji-button">
+                      <Smile size={20} />
+                    </button>
+                    <input
+                      type="text"
+                      placeholder="Start typing..."
+                      value={message}
+                      onChange={(e) => setMessage(e.target.value)}
                     />
-                  ))}
-                  <div ref={messagesEndRef} />
-                </>
-              ) : (
-                <p>No messages in this chat yet.</p>
-              )
-            ) : (
-              <p>Select a chat to start messaging</p>
-            )}
+                    <button type="submit" className="send-button">
+                      <Send size={20} />
+                    </button>
+                  </form>
+                )}
+              </div>
+            </div>
           </div>
-          {selectedChat && (
-            <form className="chat-input" onSubmit={handleSendMessage}>
-              <button type="button" className="emoji-button">
-                <Smile size={20} />
-              </button>
-              <input
-                type="text"
-                placeholder="Start typing..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
-              <button type="submit" className="send-button">
-                <Send size={20} />
-              </button>
-            </form>
-          )}
-        </div>
+        </main>
       </div>
     </div>
   );

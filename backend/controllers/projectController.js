@@ -37,13 +37,16 @@ export const getAllProjectsByOrg = async (req, res) => {
 export const getProjectById = async (req, res) => {
     try {
         const { projectId } = req.params;
+
         const project = await Project.findById(projectId);
         if (!project) {
             return res.status(404).json({error: 'Project not found'});
         }
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized access to this project' });
-        }
+
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'Unauthorized access to this project' });
+        //}
+
         res.status(200).json(project);
     } catch (error) {
         res.status(500).json({error: error.message});

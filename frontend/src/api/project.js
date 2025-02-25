@@ -29,6 +29,33 @@ export const getProjects = async () => {
     }
 }
 
+export const getProject = async (projectId) => {
+    try {
+    // Send API request to get all projects, with the users token
+    const response = await fetch(`${API_URL}/projectId/${projectId}`, {
+        method: "GET",
+        headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${getAuthToken()}`,
+        },
+        credentials: "include",
+    });
+    
+    // Ensure the response comes back ok
+    if (!response.ok) {
+        throw new Error("Failed to fetch projects");
+    }
+
+    // Return the response 
+    return await response.json();
+
+    // Catch any errors
+    } catch (error) {
+        console.error("Error fetching projects:", error.message);
+        throw error;
+    }
+}
+
 export const getProjectTasks = async (projectId) => {
     try {
     const response = await fetch(`${API_URL}/${projectId}/tasks`, {
@@ -54,6 +81,7 @@ export const getProjectTasks = async (projectId) => {
 export const addTaskToProject = async (projectId, taskData) => {
     // Send API request to add a new task
     try {
+        console.log("addTaskToProject taskData: ", taskData);
         const response = await fetch(`${API_URL}/projectId/${projectId}/tasks/add`, {
             method: 'POST',
             headers: { 
