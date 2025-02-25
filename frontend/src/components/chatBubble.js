@@ -13,7 +13,7 @@ const ChatBubble = ({ sender, currentUser, message, time, readBy = [] }) => {
       <span className="text-xs text-black-600">{`${sender.firstName} ${sender.lastName}`}</span>
       <div className={`px-4 py-2 rounded-lg max-w-xs shadow-md relative ${isSent ? "bg-indigo-600 text-white" : "bg-emerald-400 text-black"
         }`}>
-        <p>{message}</p>
+        <p className="break-words">{message}</p>
         <div className="flex items-center justify-end text-xs text-gray-200 mt-1">
           <span className={isSent ? "text-gray-200" : "text-gray-600"}>{time}</span>
           {isSent && (
