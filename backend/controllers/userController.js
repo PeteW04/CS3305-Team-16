@@ -90,3 +90,26 @@ export const getUserProfile = async (req, res) => {
       res.status(500).json({ error: error.message });
     }
   };
+
+  export const updateProfilePicture = async (req, res) => {
+    try {
+      // req.file contains information about the uploaded file
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+      
+    // The file is stored in the "uploads" folder, and req.file.path contains its path.
+    const filePath = req.file.path; // e.g., "uploads/profilePicture-123456789-filename.jpg"
+      
+      // Update the user's profilePicture field with the new file path
+      const user = await User.findByIdAndUpdate(
+        req.user.id,
+        { profilePicture: filePath },
+        { new: true }
+      );
+      
+      res.json(user);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  };

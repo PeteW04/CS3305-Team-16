@@ -22,6 +22,30 @@ export async function getUserProfile() {
   }
 
 
+export async function updateUserProfilePicture(file) {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+  
+    try {
+      const response = await fetch('http://localhost:5000/users/profile-picture', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          // Notice: Do not set 'Content-Type' header for FormData; the browser will set it automatically.
+        },
+        body: formData,
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update profile picture");
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error updating profile picture:", error);
+      throw error;
+    }
+  }
+
+
 
 export const getUsersInOrganization = async () => {
     try {
