@@ -1,12 +1,14 @@
 import Sidebar from "../components/sidebar";
 import React, { useState, useEffect } from "react";
-import { getUserProfile, updateUserProfilePicture } from "../api/users.js";
+import { getUserProfile, updateUserProfilePicture, changeUserPassword } from "../api/users.js";
 
 const UserProfile = ({  }) => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [showPopup, setShowPopup] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
   useEffect(() => {
     async function fetchProfile() {
@@ -32,6 +34,26 @@ const UserProfile = ({  }) => {
       setShowPopup(null);
     } catch (error) {
       console.error("Error updating profile picture:", error);
+    }
+  };
+
+  const handleUpdatePassword = async () => {
+    if (newPassword !== confirmNewPassword) {
+      alert("Passwords do not match!");
+      return;
+    }
+    try {
+      await changeUserPassword(newPassword);
+      // Optionally, you can also fetch the updated user profile if needed:
+      // const updatedProfile = await getUserProfile();
+      // setUser(updatedProfile);
+      setShowPopup(null);
+      // Clear password fields:
+      setNewPassword("");
+      setConfirmNewPassword("");
+      alert("Password changed successfully!");
+    } catch (error) {
+      console.error("Error updating password:", error);
     }
   };
 
@@ -158,11 +180,15 @@ const UserProfile = ({  }) => {
             type="password"
             placeholder="New Password"
             className="border p-2 rounded w-full mb-4"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
           />
           <input
-            type="password"
-            placeholder="Confirm New Password"
-            className="border p-2 rounded w-full mb-4"
+              type="password"
+              placeholder="Confirm New Password"
+              className="border p-2 rounded w-full mb-4"
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
           />
           <div className="flex justify-end space-x-2">
             <button
@@ -171,7 +197,10 @@ const UserProfile = ({  }) => {
             >
               Cancel
             </button>
-            <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+            <button
+              className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600"
+              onClick={handleUpdatePassword}
+            >
               Update
             </button>
           </div>

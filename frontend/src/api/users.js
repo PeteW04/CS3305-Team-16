@@ -31,7 +31,6 @@ export async function updateUserProfilePicture(file) {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${getAuthToken()}`,
-          // Notice: Do not set 'Content-Type' header for FormData; the browser will set it automatically.
         },
         body: formData,
       });
@@ -68,3 +67,23 @@ export const getUsersInOrganization = async () => {
         throw error;
     }
 };
+
+export async function changeUserPassword(newPassword) {
+    try {
+      const response = await fetch('http://localhost:5000/users/change-password', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${getAuthToken()}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ Password: newPassword }),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to change password');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error("Error changing password:", error);
+      throw error;
+    }
+  }
