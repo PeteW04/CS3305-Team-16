@@ -29,7 +29,7 @@ function TaskOptionsModal({ task, onClose, onEdit, onDelete }) {
           
           <button
             onClick={() => {
-              onDelete(task.id);
+              onDelete(task._id);
               onClose();
             }}
             className="w-full flex items-center gap-2 px-4 py-2 hover:bg-gray-100 rounded-lg text-red-600"
