@@ -16,10 +16,13 @@ export default function MessageUI() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [chats, setChats] = useState([]);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -159,6 +162,7 @@ export default function MessageUI() {
         ));
 
         setMessage("");
+        setTimeout(scrollToBottom, 100);
       } catch (error) {
         console.error("Error sending message:", error.message);
       }
@@ -179,18 +183,18 @@ export default function MessageUI() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 h-screen flex flex-col">
+    <div className="min-h-screen bg-gray-50 h-screen flex flex-col overflow-hidden">
       <header className="bg-white border-b border-gray-200">
         <NavBar />
       </header>
       <div className="flex flex-1 overflow-hidden">
         <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
-        <main className="p-6 flex-1 h-full overflow-y-auto">
-          <div className="bg-white rounded-xl shadow-sm p-6">
-            <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
-            <div className="main-content">
-              <div className="chat-container">
-                <div className="messages">
+        <main className="p-6 flex-1 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
+            <div className="flex flex-1 overflow-hidden h-[calc(100vh-180px)]">
+              <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
+              <div className="flex-1 flex flex-col overflow-hidden border-l border-gray-200">
+                <div className="messages flex-1 overflow-y-auto px-4" ref={messagesContainerRef}>
                   {selectedChat ? (
                     selectedChat.messages && selectedChat.messages.length > 0 ? (
                       <>
@@ -205,21 +209,20 @@ export default function MessageUI() {
                               minute: '2-digit',
                               hour12: true
                             })}
-
                             readBy={msg.readBy}
                           />
                         ))}
                         <div ref={messagesEndRef} />
                       </>
                     ) : (
-                      <p>No messages in this chat yet.</p>
+                      <p className="text-center text-gray-500 mt-4">No messages in this chat yet.</p>
                     )
                   ) : (
-                    <p>Select a chat to start messaging</p>
+                    <p className="text-center text-gray-500 mt-4">Select a chat to start messaging</p>
                   )}
                 </div>
                 {selectedChat && (
-                  <form className="chat-input" onSubmit={handleSendMessage}>
+                  <form className="chat-input border-t border-gray-200 p-4" onSubmit={handleSendMessage}>
                     <button type="button" className="emoji-button">
                       <Smile size={20} />
                     </button>
