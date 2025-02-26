@@ -8,7 +8,7 @@ const generateTasks = () => {
   const taskList = [];
   for (let i = 1; i <= 8; i++) { //generates 8 sample tasks
     taskList.push({
-      id: i,
+      _id: i,
       title: `Task ${i}`,
       status: "incomplete",  // status must be imported from db
       //tags to be added: "important", "notes", "links"
