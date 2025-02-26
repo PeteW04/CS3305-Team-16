@@ -87,3 +87,15 @@ export async function changeUserPassword(newPassword) {
       throw error;
     }
   }
+
+  export const getProfilePictureUrl = (profilePicture) => {
+    if (!profilePicture) return "";
+    
+    if (typeof profilePicture === "string") return profilePicture;
+    
+    const { contentType, data } = profilePicture;
+    const bytes = data.data; 
+    const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
+    const base64String = window.btoa(binary);
+    return `data:${contentType};base64,${base64String}`;
+  };

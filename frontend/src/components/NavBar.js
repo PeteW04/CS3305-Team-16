@@ -4,11 +4,18 @@ import "../CSS-files/NavBar.css";
 import ProfileModal from "./ProfileModal";
 import NotificationModal from "./NotificationModal"; 
 import { useAuth } from "../context/AuthContext";
+import { getProfilePictureUrl } from "../api/users";
+
+
 
 const NavBar = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false); 
   const { user, isLoading } = useAuth();
+
+  console.log("User profile picture URL:", user.profilePicture);
+
+
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -42,15 +49,23 @@ const NavBar = () => {
           <span className="notification-dot"></span>
         </div>
 
-        {/* Profile Section */}
         <div className="profile-section" onClick={() => setShowProfileModal(true)}>
-          <div className="flex items-center gap-2 cursor-pointer">
-            <div className="bg-indigo-100 p-2 rounded-full">
-              <User className="w-5 h-5 text-indigo-600" />
-            </div>
-          </div>
-        </div>
-      </div>
+  <div className="flex items-center gap-2 cursor-pointer">
+    <div className="bg-indigo-100 p-2 rounded-full">
+      {user.profilePicture ? (
+        <img
+          src={getProfilePictureUrl(user.profilePicture)}
+          alt="User Profile"
+          className="w-5 h-5 rounded-full object-cover"
+        />
+      ) : (
+        <User className="w-5 h-5 text-indigo-600" />
+      )}
+    </div>
+  </div>
+</div>
+
+
 
       {/* Profile Modal */}
       {showProfileModal && user && (
@@ -61,6 +76,7 @@ const NavBar = () => {
       {showNotificationModal && (
         <NotificationModal onClose={() => setShowNotificationModal(false)} />
       )}
+      </div>
     </header>
   );
 };

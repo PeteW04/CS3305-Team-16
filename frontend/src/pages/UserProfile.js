@@ -86,10 +86,11 @@ const UserProfile = ({}) => {
           <div className="flex flex-col h-min bg-white shadow-lg rounded-2xl p-6">
             <h2 className="text-3xl font-semibold text-center">My Profile</h2>
             <div className="flex flex-col items-center w-full p-5">
-              <img
-                src={`http://localhost:5000/${user.profilePicture}`}
-                className="w-32 h-32 rounded-full object-cover mb-4 border-2 border-indigo-500"
-              />
+            <img
+              src={user.profilePicture} 
+              alt="Profile"
+              className="w-32 h-32 rounded-full object-cover mb-4 border-2 border-indigo-500"
+            />  
               <button
                 className="mt-2 bg-indigo-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-indigo-600"
                 onClick={() => setShowPopup("profilePicture")}

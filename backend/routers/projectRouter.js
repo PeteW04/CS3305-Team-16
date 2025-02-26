@@ -32,7 +32,7 @@ projectRouter.put('/change-deadline/projectId/:projectId/newDeadline/:newDeadlin
 projectRouter.put('/employees/add', checkUserRole('manager'), addEmployee);
 
 // Remove an Employee
-projectRouter.put('/employees/remove', checkUserRole('manager'), removeEmployee);
+projectRouter.put('/projectId/:projectId/employees/remove/employeeId/:employeeId', checkUserRole('manager'), removeEmployee);
 
 // Add a task
 projectRouter.post('/projectId/:projectId/tasks/add', checkUserRole('manager'), addTask);

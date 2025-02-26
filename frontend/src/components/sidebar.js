@@ -42,7 +42,11 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
         <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
         <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
+<<<<<<< HEAD
+        <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Members" /></Link>
+=======
         <Link to="/calendar"><SidebarItem isMinimized={isMinimized} icon={<Calendar size={20} />} text="Calendar" /></Link>
+>>>>>>> 63c03a202997b1e0c0397ab4c3d769bd00c4acfb
         <Link to="/userprofile"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
 

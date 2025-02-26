@@ -2,14 +2,11 @@ import React, { useState } from "react";
 import "../CSS-files/UserList.css";
 import { initialusers } from "../DummyData/userlist";
 import UserListModal from "./UserListModal";
-import AddMemberModal from "./AddMemberModal"; 
 
 const UserList = () => {
   const [users, setUsers] = useState(initialusers);
   const [showUserListModal, setShowUserListModal] = useState(false);
-  const [showAddMemberModal, setShowAddMemberModal] = useState(false); 
-  const [selectedUserId, setSelectedUserId] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState(null); // Track the selected user ID
 
   const handleRemoveUser = (userId) => {
     setUsers(users.filter((user) => user.id !== userId));
@@ -17,46 +14,26 @@ const UserList = () => {
 
   const handleViewProfile = (userId) => {
     console.log(`Viewing profile of user with ID: ${userId}`);
-    setSelectedUserId(userId);
-    setShowUserListModal(true);
+    setSelectedUserId(userId); // Set the selected user ID
+    setShowUserListModal(true); // Show the modal
   };
 
   const handleAddUser = () => {
-    setShowAddMemberModal(true);
-  };
-
-  const handleAddMember = (email) => {
     const newUser = {
       id: users.length + 1,
-      name: email, 
+      name: `New User ${users.length + 1}`,
+      role: "Team Member",
     };
     setUsers([...users, newUser]);
-    setShowAddMemberModal(false);
   };
-
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
 
   return (
     <div className="user-list">
       <div className="user-list-header">
         <h2>Team Members</h2>
-        <div className="header-actions">
-          <input
-            type="text"
-            placeholder="Search users..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="search-bar"
-          />
-          <button className="add-member-button" onClick={handleAddUser}>
-            Add Member
-          </button>
-        </div>
       </div>
       <div className="users-container">
-        {filteredUsers.map((user) => (
+        {users.map((user) => (
           <div key={user.id} className="user-item">
             <div className="user-info">
               <div className="avatar"></div>
@@ -68,7 +45,7 @@ const UserList = () => {
             <div className="user-actions">
               <button
                 className="action-button view-profile"
-                onClick={() => handleViewProfile(user.id)}
+                onClick={() => handleViewProfile(user.id)} // Fixed onClick handler
               >
                 View
               </button>
@@ -82,20 +59,17 @@ const UserList = () => {
           </div>
         ))}
       </div>
+      <div className="add-user-container">
+        <button className="add-user-button" onClick={handleAddUser}>
+          Add New User
+        </button>
+      </div>
 
-      {/* UserListModal for viewing profiles */}
+      {/* Render the modal outside the loop */}
       {showUserListModal && (
         <UserListModal
           onClose={() => setShowUserListModal(false)}
-          userId={selectedUserId}
-        />
-      )}
-
-      {/* AddMemberModal for adding new members */}
-      {showAddMemberModal && (
-        <AddMemberModal
-          onClose={() => setShowAddMemberModal(false)}
-          onAddMember={handleAddMember}
+          userId={selectedUserId} // Pass the selected user ID to the modal
         />
       )}
     </div>
