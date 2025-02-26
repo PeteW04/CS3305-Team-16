@@ -15,9 +15,6 @@
 /* Dashboard Main */
 .dashboard-main {
   padding: 24px;
-  flex: 1; 
-  display: flex;
-  flex-direction: column;
 }
 
 .dashboard-title {
@@ -28,16 +25,22 @@
 }
 
 .dashboard-grid {
-  display: flex;
-  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: 20px;
   align-items: start;
+}
+
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* Responsive Design */
 @media (max-width: 1024px) {
   .dashboard-grid {
-    flex-direction: column; 
+    grid-template-columns: 1fr;
   }
 }
 
@@ -46,3 +49,4 @@
     padding: 16px;
   }
 }
+
