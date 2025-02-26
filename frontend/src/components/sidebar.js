@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight } from "lucide-react";
+import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight, Calendar } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { getProjects } from '../api/project.js'
 
@@ -42,7 +42,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
         <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
         <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
-        <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Members" /></Link>
+        <Link to="/calendar"><SidebarItem isMinimized={isMinimized} icon={<Calendar size={20} />} text="Calendar" /></Link>
         <Link to="/userpofile"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
 
