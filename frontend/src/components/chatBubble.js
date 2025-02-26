@@ -1,4 +1,5 @@
 import React from "react";
+import { Pencil, Trash2 } from "lucide-react";
 
 const ChatBubble = ({ sender, currentUser, message, time, readBy = [] }) => {
   const isSent = sender._id === currentUser;
@@ -10,7 +11,19 @@ const ChatBubble = ({ sender, currentUser, message, time, readBy = [] }) => {
 
   return (
     <div className={`flex flex-col space-y-1 ${isSent ? "items-end" : "items-start"}`}>
-      <span className="text-xs text-black-600">{`${sender.firstName} ${sender.lastName}`}</span>
+        <div className="flex flex-row gap-2">
+          <span className="text-xs text-black-600">{`${sender.firstName} ${sender.lastName}`}</span>
+            {isSent && (
+              <div className="flex space-x-2">
+                <button className="text-gray-300 hover:text-black">
+                  <Pencil size={14} />
+                </button>
+                <button className="text-gray-300 hover:text-black">
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            )}
+        </div>
       <div className={`px-4 py-2 rounded-lg max-w-xs shadow-md relative ${isSent ? "bg-indigo-600 text-white" : "bg-emerald-400 text-black"
         }`}>
         <p className="break-words">{message}</p>
