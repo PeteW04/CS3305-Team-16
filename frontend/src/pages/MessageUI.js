@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Smile, Send } from "lucide-react";
+import { Smile, Send, Users } from "lucide-react";
 import ChatList from "../components/ChatList";
 import ChatBubble from "../components/chatBubble";
 import "../CSS-files/MessageUI.css";
@@ -7,8 +7,8 @@ import { getMessages, getChannels, markMessagesRead } from "../api/channel";
 import { sendMessage } from "../api/message";
 import socket from "../utils/socket";
 import { useAuth } from "../context/AuthContext";
-import NavBar from '../components/NavBar';
-import Sidebar from '../components/sidebar';
+import NavBar from "../components/NavBar";
+import Sidebar from "../components/sidebar";
 
 export default function MessageUI() {
   const { user, isLoading } = useAuth();
@@ -21,7 +21,8 @@ export default function MessageUI() {
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {
-      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
     }
   };
 
@@ -32,7 +33,7 @@ export default function MessageUI() {
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
-      chats.forEach(chat => {
+      chats.forEach((chat) => {
         socket.emit("joinRoom", chat._id);
       });
     }
@@ -42,7 +43,6 @@ export default function MessageUI() {
       }
     };
   }, [chats]);
-
 
   useEffect(() => {
     const fetchChats = async () => {
@@ -58,25 +58,28 @@ export default function MessageUI() {
     fetchChats();
   }, []);
 
-
   useEffect(() => {
     if (user?._id) {
       const handleGlobalNewMessage = (newMsg) => {
-        setChats(prevChats =>
-          prevChats.map(chat => {
+        setChats((prevChats) =>
+          prevChats.map((chat) => {
             if (chat._id === newMsg.channelId) {
               const isChatOpen = selectedChat?._id === chat._id;
               const isFromOtherUser = newMsg.senderId._id !== user._id;
 
               return {
                 ...chat,
-                unreadCount: isChatOpen ? 0 : (isFromOtherUser ? (chat.unreadCount || 0) + 1 : chat.unreadCount),
+                unreadCount: isChatOpen
+                  ? 0
+                  : isFromOtherUser
+                  ? (chat.unreadCount || 0) + 1
+                  : chat.unreadCount,
                 latestMessage: {
                   text: newMsg.text,
                   createdAt: newMsg.createdAt,
                   senderId: newMsg.senderId,
-                  readBy: newMsg.readBy
-                }
+                  readBy: newMsg.readBy,
+                },
               };
             }
             return chat;
@@ -84,7 +87,7 @@ export default function MessageUI() {
         );
 
         if (selectedChat?._id === newMsg.channelId) {
-          setSelectedChat(prev => ({
+          setSelectedChat((prev) => ({
             ...prev,
             messages: [...prev.messages, newMsg],
           }));
@@ -93,18 +96,22 @@ export default function MessageUI() {
       };
 
       const handleMessageRead = ({ channelId, messages }) => {
-        setChats(prevChats => prevChats.map(chat =>
-          chat._id === channelId
-            ? {
-              ...chat,
-              unreadCount: 0,
-              latestMessage: {
-                ...chat.latestMessage,
-                readBy: messages.find(m => m._id === chat.latestMessage?._id)?.readBy || []
-              }
-            }
-            : chat
-        ));
+        setChats((prevChats) =>
+          prevChats.map((chat) =>
+            chat._id === channelId
+              ? {
+                  ...chat,
+                  unreadCount: 0,
+                  latestMessage: {
+                    ...chat.latestMessage,
+                    readBy:
+                      messages.find((m) => m._id === chat.latestMessage?._id)
+                        ?.readBy || [],
+                  },
+                }
+              : chat
+          )
+        );
       };
       socket.on("newMessage", handleGlobalNewMessage);
       socket.on("messagesRead", handleMessageRead);
@@ -114,7 +121,6 @@ export default function MessageUI() {
       };
     }
   }, [selectedChat?._id, user?._id]);
-
 
   const handleChatSelect = async (chat) => {
     if (!chat || !chat._id) {
@@ -126,11 +132,13 @@ export default function MessageUI() {
       const messages = await getMessages(chat._id);
       setSelectedChat({ ...chat, messages });
 
-      socket.emit("joinRoom", chat._id);  // Notify server user has opened chat
+      socket.emit("joinRoom", chat._id); // Notify server user has opened chat
 
-      setChats(prevChats => prevChats.map(c =>
-        c._id === chat._id ? { ...c, unreadCount: 0 } : c
-      ));
+      setChats((prevChats) =>
+        prevChats.map((c) =>
+          c._id === chat._id ? { ...c, unreadCount: 0 } : c
+        )
+      );
 
       await markMessagesRead(chat._id);
     } catch (error) {
@@ -144,22 +152,24 @@ export default function MessageUI() {
       try {
         const newMessage = await sendMessage({
           channelId: selectedChat._id,
-          text: message
+          text: message,
         });
 
-        setChats(prevChats => prevChats.map(chat =>
-          chat._id === selectedChat._id
-            ? {
-              ...chat,
-              latestMessage: {
-                text: newMessage.text,
-                createdAt: newMessage.createdAt,
-                senderId: newMessage.senderId,
-                readBy: newMessage.readBy
-              }
-            }
-            : chat
-        ));
+        setChats((prevChats) =>
+          prevChats.map((chat) =>
+            chat._id === selectedChat._id
+              ? {
+                  ...chat,
+                  latestMessage: {
+                    text: newMessage.text,
+                    createdAt: newMessage.createdAt,
+                    senderId: newMessage.senderId,
+                    readBy: newMessage.readBy,
+                  },
+                }
+              : chat
+          )
+        );
 
         setMessage("");
         setTimeout(scrollToBottom, 100);
@@ -192,37 +202,67 @@ export default function MessageUI() {
         <main className="p-6 flex-1 overflow-hidden">
           <div className="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
             <div className="flex flex-1 overflow-hidden h-[calc(100vh-180px)]">
-              <ChatList chatData={chats} onChatSelect={handleChatSelect} onNewChat={handleNewChat} />
+              <ChatList
+                chatData={chats}
+                onChatSelect={handleChatSelect}
+                onNewChat={handleNewChat}
+              />
               <div className="flex-1 flex flex-col overflow-hidden border-l border-gray-200">
-                <div className="messages flex-1 overflow-y-auto px-4" ref={messagesContainerRef}>
+                <div
+                  className="messages flex-1 overflow-y-auto py-0 px-4"
+                  ref={messagesContainerRef}
+                >
                   {selectedChat ? (
-                    selectedChat.messages && selectedChat.messages.length > 0 ? (
+                    selectedChat.messages &&
+                    selectedChat.messages.length > 0 ? (
+                      
                       <>
+                        <div className="flex flex-row sticky top-0 bg-white shadow-lg border-gray-200 p-6 rounded-b-lg z-50">
+                          {selectedChat.type === "group" ? <Users className="w-8 h-8 rounded object-cover"/> : <img
+                            src={user.profilePicture}
+                            alt={`${user.firstName} ${user.lastName}`}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />}
+                          
+                          <div className="pt-2 pl-3 font-semibold">
+                            {selectedChat.name}
+                          </div>
+                        </div>
                         {selectedChat.messages.map((msg, index) => (
                           <ChatBubble
                             key={index}
                             sender={msg.senderId}
                             currentUser={user._id}
                             message={msg.text}
-                            time={new Date(msg.createdAt).toLocaleString('en-US', {
-                              hour: 'numeric',
-                              minute: '2-digit',
-                              hour12: true
-                            })}
+                            time={new Date(msg.createdAt).toLocaleString(
+                              "en-US",
+                              {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                hour12: true,
+                              }
+                            )}
                             readBy={msg.readBy}
                           />
                         ))}
                         <div ref={messagesEndRef} />
                       </>
                     ) : (
-                      <p className="text-center text-gray-500 mt-4">No messages in this chat yet.</p>
+                      <p className="text-center text-gray-500 mt-4">
+                        No messages in this chat yet.
+                      </p>
                     )
                   ) : (
-                    <p className="text-center text-gray-500 mt-4">Select a chat to start messaging</p>
+                    <p className="text-center text-gray-500 mt-4">
+                      Select a chat to start messaging
+                    </p>
                   )}
                 </div>
                 {selectedChat && (
-                  <form className="chat-input border-t border-gray-200 p-4" onSubmit={handleSendMessage}>
+                  <form
+                    className="chat-input border-t border-gray-200 p-4"
+                    onSubmit={handleSendMessage}
+                  >
                     <button type="button" className="emoji-button">
                       <Smile size={20} />
                     </button>
