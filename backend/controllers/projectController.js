@@ -8,6 +8,9 @@ import { createChannel } from './messageController.js';
 export const getAllProjects = async (req, res) => {
     try {
         // Automatically filter by the user's organizationId
+
+        console.log("User organizationId:", req.user.organizationId);
+
         const projects = await Project.find({ organization: req.user.organizationId });
 
         res.status(200).json(projects);
@@ -34,14 +37,42 @@ export const getAllProjectsByOrg = async (req, res) => {
 export const getProjectById = async (req, res) => {
     try {
         const { projectId } = req.params;
+
         const project = await Project.findById(projectId);
         if (!project) {
             return res.status(404).json({error: 'Project not found'});
         }
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized access to this project' });
-        }
+
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'Unauthorized access to this project' });
+        //}
+
         res.status(200).json(project);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+};
+
+// Get a projects tasks
+export const getTasks = async (req, res) => {
+    try {
+        const { projectId } = req.params;
+        const project = await Project.findById(projectId).populate("tasks");
+
+        if (!project) {
+            console.log('Project not found');
+            return res.status(404).json({error: 'Project not found'});
+        }
+
+        console.log("Fetched project:", project);  // ✅ Log project details
+        console.log("Project tasks:", project.tasks);  // ✅ Log tasks
+
+        if (!Array.isArray(project.tasks)) {
+            console.error("Tasks is not an array:", project.tasks);
+            return res.status(500).json({ error: "Invalid task data" });
+        }
+
+        res.status(200).json(project.tasks);
     } catch (error) {
         res.status(500).json({error: error.message});
     }
@@ -51,7 +82,12 @@ export const getProjectById = async (req, res) => {
 export const createProject = async (req, res) => {
     try {
         const {title, description, organization, deadline} = req.body;
-        const newProject = await Project.create({title, description, organization, deadline});
+        const newProject = await Project.create({
+            title,
+            description,
+            organization: req.user.organizationId,
+            deadline
+          });
         res.status(201).json(newProject);
     } catch (error) {
         res.status(400).json({error: error.message});
@@ -196,31 +232,44 @@ export const addTask = async (req, res) => {
 
         // Ensure a valid project id
         const project = await Project.findById(projectId);
-        if (!project){
-            return res.status(404).json({ error: 'Project not found' });
+
+        if (!project ) {
+            return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const updatedProject = await createTask(projectId, task);
+        const newTask = await createTask(projectId, task);
 
-        // Ensure the project exists
-        if (!updatedProject) {
+        // Ensure the new task exists
+        if (!newTask) {
             return res.status(404).json({ error: 'Unable to add task' });
         }
 
-        res.status(200).json({ message: 'Task added successfully', updatedProject });
+        // Add the task to the project
+        project.tasks.push(newTask._id);
+        await project.save();
+
+        res.status(200).json({ message: 'Task added successfully', newTask });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
 
-// PUT: Remove a task from a project
+// DELETE: Remove a task from a project
 export const removeTask = async (req, res) => {
     try {
         const {  projectId, taskId } = req.params;
+        console.log('removeTask projectId: ', projectId);
+        console.log('removeTask taskId: ', taskId);
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(taskId)) {
             return res.status(400).json({ error: 'Invalid projectId or taskId' });
+        }
+
+        const task = await Task.findById(taskId);
+        // Ensure the task exists
+        if (!task) {
+            return res.status(404).json({ error: 'Task not found' });
         }
 
         const project = await Project.findById(projectId);
@@ -230,16 +279,19 @@ export const removeTask = async (req, res) => {
         }
 
         // Ensure that the modifying user is part of the organization
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to modify this project, as it is outside of your organization' });
-        }
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'Unauthorized to modify this project, as it is outside of your organization' });
+        //}
 
-        project.tasks.addToSet(taskId);
+        await deleteTask(projectId, taskId);
+
+        project.tasks = project.tasks.filter(task => task.toString() !== taskId);
         await project.save();
 
-        res.status(200).json({ message: 'Task added successfully', project });
+        return res.status(200).json({ message: 'Task successfully deleted', project });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("Error deleting task: ", error.message);
+        return res.status(500).json({ error: error.message });
     }
 };
 

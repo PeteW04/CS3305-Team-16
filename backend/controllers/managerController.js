@@ -19,7 +19,7 @@ export const inviteEmployee = async (req, res) => {
         expires.setDate(expires.getDate() + 7);
 
         const invite = await Invite.create({ email, token, expires, organizationId });
-        const link = `http://localhost:3000/employeeSignup?token=${token}`
+        const link = `http://localhost:3000/usersignup?token=${token}`
         const subject = `You have been invited to join ${organization.name}!`
         const html = `
             <p>Hello,</p>

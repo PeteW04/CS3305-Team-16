@@ -1,72 +1,89 @@
-"use client"
+import { MessageCircle } from "lucide-react"
+import "../CSS-files/MessageListcomponent.css"
 
-import { useState } from "react"
-import { Plus, Users, Briefcase, MessageSquare, ChevronDown, ChevronRight } from "lucide-react"
-import "../CSS-files/MessageList.css"
+const messages = [
+  {
+    id: 1,
+    sender: "Dorian F. Gray",
+    preview: "Enter your message description h...",
+    time: "12:25",
+    unread: 2,
+  },
+  {
+    id: 2,
+    sender: "Lebron James",
+    preview: "Enter your message description h...",
+    time: "12:25",
+  },
+  {
+    id: 3,
+    sender: "Kaori D. Miyazono",
+    preview: "Enter your message description h...",
+    time: "12:25",
+  },
+  {
+    id: 4,
+    sender: "Saylor Twift",
+    preview: "Enter your message description h...",
+    time: "12:25",
+    unread: 2,
+  },
+  {
+    id: 2,
+    sender: "Lebron James",
+    preview: "Enter your message description h...",
+    time: "12:25",
+  },
+  {
+    id: 3,
+    sender: "Kaori D. Miyazono",
+    preview: "Enter your message description h...",
+    time: "12:25",
+  },
+  {
+    id: 4,
+    sender: "Saylor Twift",
+    preview: "Enter your message description h...",
+    time: "12:25",
+    unread: 2,
+  },
+]
 
-
-
-export default function ChatList({ onChatSelect, chatData}) {
-  const [activeChat, setActiveChat] = useState(null)
-  const [expandedSections, setExpandedSections] = useState({
-    directMessages: true,
-    groupChats: true,
-    projectChats: true,
-  })
-
-  const handleChatClick = (chat) => {
-    setActiveChat(chat.id)
-    onChatSelect(chat)
-  }
-
-  const toggleSection = (section) => {
-    setExpandedSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }))
-  }
-
-  const renderChatItem = (chat) => (
-    <div
-      key={chat.id}
-      className={`chat-item ${activeChat === chat.id ? "active" : ""}`}
-      onClick={() => handleChatClick(chat)}
-    >
-      <div className="chat-item-content">
-        <div className="chat-item-header">
-          <span className="chat-item-name">{chat.name}</span>
-          <span className="chat-item-time">{chat.time}</span>
-        </div>
-        <p className="chat-item-message">{chat.message}</p>
-      </div>
-      {chat.unread > 0 && <div className="chat-item-badge">{chat.unread}</div>}
-    </div>
-  )
-
-  const renderChatSection = (title, icon, chats, sectionKey) => (
-    <div className="chat-category">
-      <h3 className="category-title" onClick={() => toggleSection(sectionKey)}>
-        {expandedSections[sectionKey] ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-        {icon}
-        <span>{title}</span>
-      </h3>
-      <div className={`chat-items ${expandedSections[sectionKey] ? "expanded" : ""}`}>{chats.map(renderChatItem)}</div>
-    </div>
-  )
-
+export default function MessageList() {
   return (
-    <div className="chat-list">
-      <div className="chat-list-header">
-        <button className="new-chat-button">
-          <Plus size={16} />
-          <span>Add New Chat</span>
-        </button>
-      </div>
-      <div className="chats">
-        {renderChatSection("Direct Messages", <MessageSquare size={16} />, chatData.directMessages, "directMessages")}
-        {renderChatSection("Group Chats", <Users size={16} />, chatData.groupChats, "groupChats")}
-        {renderChatSection("Project Chats", <Briefcase size={16} />, chatData.projectChats, "projectChats")}
+    <div className="container">
+      <div className="message-box">
+        <div className="header">
+          <div className="title">
+            <MessageCircle className="message-icon" />
+            <span>Message</span>
+          </div>
+          <div className="avatar-group">
+            {[...Array(4)].map((_, i) => (
+              <div key={i} className="avatar">
+                <img src="/placeholder.svg?height=40&width=40" alt="User avatar" />
+              </div>
+            ))}
+            <div className="avatar-more">+2</div>
+          </div>
+        </div>
+
+        <div className="message-list">
+          {messages.map((message) => (
+            <div key={message.id} className="message-item">
+              <div className="message-content">
+                <h3>{message.sender}</h3>
+                <p>{message.preview}</p>
+              </div>
+              <div className="message-meta">
+                <span className="time">{message.time}</span>
+                {message.unread && <span className="unread-badge">{message.unread}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
 }
+

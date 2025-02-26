@@ -5,6 +5,11 @@ const channelSchema = new mongoose.Schema({
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
     name: { type: String },
     projectId: { type: mongoose.Schema.Types.ObjectId, ref: 'Project' },
+    latestMessage: {
+        text: String,
+        createdAt: Date,
+        senderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    }
 });
 
 export default mongoose.model('Channel', channelSchema);

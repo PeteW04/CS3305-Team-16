@@ -1,11 +1,12 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { loginAPI, validateTokenAPI } from "../api/auth"; // Import API functions
+import { loginAPI, validateTokenAPI } from "../api/auth";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // Stores user information
+    const [isLoading, setIsLoading] = useState(true);
+    const [user, setUser] = useState(null);
     const [token, setToken] = useState(localStorage.getItem("authToken") || ""); // Get token from localStorage
     const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ export const AuthProvider = ({ children }) => {
             localStorage.setItem("authToken", result.token);
             navigate("/tasks");
         } catch (error) {
-            alert(error.message);
+            throw error; 
         }
     };
 
@@ -29,19 +30,29 @@ export const AuthProvider = ({ children }) => {
     }, [navigate]);
 
     useEffect(() => {
-        const storedToken = localStorage.getItem("authToken");
-        if (storedToken) {
-            validateTokenAPI(storedToken)
-                .then((userData) => {
-                    setUser(userData);
-                    setToken(storedToken);
-                })
-                .catch(() => logout());
-        }
+        const validateAuth = async () => {
+            const storedToken = localStorage.getItem("authToken");
+            if (!storedToken) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const userData = await validateTokenAPI(storedToken);
+                setUser(userData);
+                setToken(storedToken);
+            } catch (error) {
+                logout();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        validateAuth();
     }, [logout]);
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout }}>
+        <AuthContext.Provider value={{ user, token, login, logout, isLoading }}>
             {children}
         </AuthContext.Provider>
     );

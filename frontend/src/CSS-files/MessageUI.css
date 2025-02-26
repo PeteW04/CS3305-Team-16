@@ -6,22 +6,22 @@
     padding-top: 64px
   }
 
-  /* Main Content Styles */
   .main-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     background-color: #fff;
     overflow: hidden;
+    height: 100%;
   }
 
-  /* Chat Container Styles */
   .chat-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     background-color: #fff;
     color: #0d062d;
+    overflow-y: auto;
   }
   
   .chat-title {
@@ -68,8 +68,11 @@
   /* Messages Styles */
   .messages {
     flex: 1;
-    padding: 24px;
+    padding: 16px;
     overflow-y: auto;
+    height: 100%;
+    scroll-behavior: smooth;
+    overscroll-behavior: contain;
   }
   
   .date-divider {
@@ -127,14 +130,16 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding: 16px 24px;
+    padding: 16px;
     border-top: 1px solid #f2f2f2;
+    background-color: #fff;
   }
   
   .chat-input input {
     flex: 1;
     padding: 12px;
-    border: none;
+    border: 1px solid #f2f2f2;
+    border-radius: 6px;
     outline: none;
     font-size: 14px;
   }
@@ -151,6 +156,14 @@
   .emoji-button:hover,
   .send-button:hover {
     color: #5030e5;
+  }
+  
+  .chat-list {
+    width: 300px;
+    min-width: 300px;
+    height: 100%;
+    overflow-y: auto;
+    border-right: 1px solid #f2f2f2;
   }
   
   

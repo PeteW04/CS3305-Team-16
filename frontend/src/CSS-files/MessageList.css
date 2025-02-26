@@ -5,6 +5,7 @@
   border-right: 1px solid #f2f2f2;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .chat-list-header {
@@ -76,6 +77,31 @@
   cursor: pointer;
   border-left: 3px solid transparent;
   transition: all 0.2s;
+  position: relative; /* Add this */
+}
+
+.chat-item-badge {
+  background-color: #4f46e5;
+  color: white;
+  font-size: 12px;
+  min-width: 20px;
+  height: 20px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  position: absolute; /* Add this */
+  right: 16px; /* Add this */
+  top: 50%; /* Add this */
+  transform: translateY(-50%); /* Add this */
+  display: flex; /* Add this */
+  align-items: center; /* Add this */
+  justify-content: center; /* Add this */
+}
+
+/* Update chat-item-content to avoid overlap with badge */
+.chat-item-content {
+  flex: 1;
+  min-width: 0;
+  padding-right: 30px; /* Add this to prevent text overlap with badge */
 }
 
 .chat-item:hover {

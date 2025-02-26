@@ -1,9 +1,34 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight } from "lucide-react";
 import { Link } from 'react-router-dom';
-
+import { getProjects } from '../api/project.js'
 
 function Sidebar({ isMinimized, toggleSidebar }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Retrieve token from localStorage
+  const token = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const projects = await getProjects();
+        setProjects(projects);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchProjects();
+  }, []); 
+
+  if (loading) return <div>Loading projects...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <nav className={`h-screen bg-white border-r border-gray-300 p-4 transition-all ${isMinimized ? "w-20" : "w-64"}`}>
       {/* Profile Section */}
@@ -15,8 +40,8 @@ function Sidebar({ isMinimized, toggleSidebar }) {
       {/* Menu Section */}
       <ul className="mt-6 space-y-2">
         <Link to="/"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
-        <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
-        <Link to="/tasks"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
+        <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
+        <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
         <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Members" /></Link>
         <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
@@ -30,11 +55,13 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <div className="mt-6 px-2">
           <h2 className="text-gray-500 text-sm uppercase font-semibold mb-2">My Projects</h2>
           <ul className="space-y-2">
-            <ProjectItem name="Mobile App" color="bg-green-500" />
-            <ProjectItem name="Website Redesign" color="bg-yellow-500" />
-            <ProjectItem name="Design System" color="bg-purple-400" />
-            <ProjectItem name="Wireframes" color="bg-blue-500" />
-            <ProjectItem name="Software App" color="bg-green-500" />
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <ProjectItem key={project._id} projectId={project._id} name={project.title} color="bg-blue-500" />
+              ))
+            ) : (
+              <p className="text-gray-400">You're not working on any projects</p>
+            )}
           </ul>
         </div>
       )}
@@ -59,11 +86,13 @@ function SidebarItem({ isMinimized, icon, text }) {
   );
 }
 
-function ProjectItem({ name, color }) {
+function ProjectItem({ projectId, name, color }) {
   return (
     <li className="flex items-center space-x-2 text-gray-700 hover:bg-gray-100 rounded-md cursor-pointer transition-all">
-      <span className={`w-3 h-3 ${color} rounded-full`}></span>
-      <span>{name}</span>
+      <Link to={`/tasks/${projectId}`} className="flex items-center space-x-2 p-2 w-full">
+        <span className={`w-3 h-3 ${color} rounded-full`}></span>
+        <span>{name}</span>
+      </Link>
     </li>
   );
 }

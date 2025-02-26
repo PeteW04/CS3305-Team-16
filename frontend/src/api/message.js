@@ -1,10 +1,15 @@
+import { getAuthToken } from "../utils/token.js";
+
 const API_URL = "http://localhost:5000/message";
 
 export const sendMessage = async (messageData) => {
     try {
         const response = await fetch(`${API_URL}/send`, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
             body: JSON.stringify(messageData),
         });
 
@@ -24,7 +29,10 @@ export const editMessage = async (messageId, text) => {
     try {
         const response = await fetch(`${API_URL}/edit/${messageId}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
             body: JSON.stringify({ text }),
         });
 
@@ -44,6 +52,10 @@ export const deleteMessage = async (messageId) => {
     try {
         const response = await fetch(`${API_URL}/delete/${messageId}`, {
             method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`, // Attach JWT token
+            },
         });
 
         if (!response.ok) {
@@ -55,5 +67,18 @@ export const deleteMessage = async (messageId) => {
     } catch (error) {
         console.error("Error deleting message:", error.message);
         throw error;
+    }
+};
+
+export const markMessagesRead = async (channelId) => {
+    try {
+        const res = await fetch(`/mark-read/${channelId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${getAuthToken()}`, }
+        });
+        return await res.json();
+    } catch (error) {
+        console.error('Error marking message read:', error);
+        return null;
     }
 };

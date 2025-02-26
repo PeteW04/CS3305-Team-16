@@ -1,31 +1,54 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { ChevronDown } from "lucide-react"
-import "../CSS-files/ProjectSummary.css"
+import { useState, useEffect } from "react";
+import { ChevronDown } from "lucide-react";
+import "../CSS-files/ProjectSummary.css";
 
 export default function ProjectSummary() {
-  const generateProjects = () => {
-    const projectList = [];
-    for (let i = 1; i <= 8; i++) {
-      projectList.push({
-        name: `Project ${i}`,
-        manager: `Name ${i}`,
-        dueDate: "September 11, 2001",
-        status: "in-progress", // "At risk" status should automatically be set when due date is less than 7 days away
-      });
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Retrieve authToken from localStorage
+  const authToken = localStorage.getItem("authToken");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      if (!authToken) {
+        setError("No authToken found. Please log in.");
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await fetch("http://localhost:5000/project", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          credentials: "include",
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch projects");
+        }
+        const data = await response.json();
+        setProjects(data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     }
-    return projectList;
-  };
-  
-  const [projects] = useState(generateProjects());
+    fetchProjects();
+  }, [authToken]); 
+
+  if (loading) return <div>Loading projects...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
-    <div className="container">
-      
+    <div className="ProjectSummary">
+    <div className="container1">
       <div className="filter-container">
-      <h1 className="ProjectBoxHeader">Project Summary</h1>
-        
+        <h1 className="ProjectBoxHeader">Project Summary</h1>
         <button className="filter-button">
           Project
           <ChevronDown className="icon" />
@@ -44,7 +67,7 @@ export default function ProjectSummary() {
         <table className="table">
           <thead>
             <tr>
-              <th>Project Summary</th>
+              <th>Project</th>
               <th>Project Manager</th>
               <th>Due Date</th>
               <th>Status</th>
@@ -53,12 +76,14 @@ export default function ProjectSummary() {
           <tbody>
             {projects.map((project, index) => (
               <tr key={index}>
-                <td>{project.name}</td>
-                <td className="manager-name">{project.manager}</td>
-                <td className="due-date">{project.dueDate}</td>
+                <td>{project.title}</td>
+                <td className="manager-name">{project.manager ? project.manager : "N/A"}</td>
+                <td className="due-date">
+                  {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}
+                </td>
                 <td>
-                  <span className={`status ${project.status}`}>
-                    {project.status.charAt(0).toUpperCase() + project.status.slice(1)}
+                  <span className={`status ${project.status.toLowerCase().replace(" ", "-")}`}>
+                    {project.status}
                   </span>
                 </td>
               </tr>
@@ -67,6 +92,6 @@ export default function ProjectSummary() {
         </table>
       </div>
     </div>
-  )
+    </div>
+  );
 }
-
