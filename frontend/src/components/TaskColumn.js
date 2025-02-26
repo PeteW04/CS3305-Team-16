@@ -6,13 +6,20 @@ import NewTaskModal from './NewTaskModal';
 
 function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, onEditTask, onDeleteTask }) {
   const [showNewTaskModal, setShowNewTaskModal] = useState(false);
+  const statusMap = {
+    "To Do": "todo",
+    "In Progress": "progress",
+    "Done": "done"
+  }
   const [{ isOver }, drop] = useDrop(() => ({
     accept: 'TASK',
-    drop: (item) => onTaskDrop(item._id, title),
+    drop: (item) => onTaskDrop(item._id, statusMap[title]),
     collect: (monitor) => ({
       isOver: monitor.isOver(),
     }),
   }));
+
+  console.log(tasks);
 
   const handleAddTask = (taskData) => {
     onAddTask(taskData);
@@ -22,9 +29,8 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
   return (
     <div
       ref={drop}
-      className={`flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4 h-screen overflow-y-auto ${
-        isOver ? 'bg-gray-100' : ''
-      }`}
+      className={`flex-1 min-w-[300px] bg-gray-50 rounded-xl p-4 h-screen overflow-y-auto ${isOver ? 'bg-gray-100' : ''
+        }`}
     >
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center gap-2">
@@ -35,7 +41,7 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
           </span>
         </div>
         {title === 'To Do' && (
-          <button 
+          <button
             className="p-1 hover:bg-gray-200 rounded"
             onClick={() => setShowNewTaskModal(true)}
           >
@@ -43,14 +49,14 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
           </button>
         )}
       </div>
-      
+
       <div className={`h-0.5 ${accentColor} mb-4 opacity-50`} />
 
       <div className="space-y-3">
         {tasks.map((task) => (
-          <TaskCard 
-            key={task._id} 
-            task={task} 
+          <TaskCard
+            key={task._id}
+            task={task}
             onEdit={onEditTask}
             onDelete={onDeleteTask}
           />
@@ -58,7 +64,7 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
       </div>
 
       {showNewTaskModal && (
-        <NewTaskModal 
+        <NewTaskModal
           onClose={() => setShowNewTaskModal(false)}
           onSubmit={handleAddTask}
         />

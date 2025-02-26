@@ -4,16 +4,16 @@ import Project from '../models/Projects.js';
 
 // Get all tasks
 export const getAllTasks = async (req, res) => {
-    try{
+    try {
         // Using populate is necessary as organizationId is not stored in task, but it is in the associated project
         const tasks = await Task.find().populate({
             path: 'project',
-            match: { organization: req.user.organizationId } 
+            match: { organization: req.user.organizationId }
         });
         res.status(200).json(tasks);
     }
     catch (error) {
-        return res.status(500).json({error: error.message});
+        return res.status(500).json({ error: error.message });
     }
 };
 
@@ -22,7 +22,7 @@ export const getTaskById = async (req, res) => {
     try {
         const task = await Task.findById(req.params.id);
         if (!task) {
-            return res.status(404).json({error: 'Task not found'});
+            return res.status(404).json({ error: 'Task not found' });
         }
 
         const project = await Project.findById(task.project);
@@ -36,14 +36,26 @@ export const getTaskById = async (req, res) => {
     }
 };
 
+export const getTasksByUser = async (req, res) => {
+    const userId = req.user._id;
+    try {
+        const usersTasks = await Task.find({ user: userId });
+        return res.status(200).json(usersTasks);
+    } catch (e) {
+        console.error("Error in getTaskByUser: ", e.message);
+        return res.status(500).json({ error: e.message });
+    }
+}
+
 // Create a task
-export const createTask = async (projectId, task) => {
+export const createTask = async (projectId, task, userId) => {
     try {
         const newTask = await Task.create({
-            title : task.title,
+            title: task.title,
             project: projectId,
-            description : task.description,
-    });
+            description: task.description,
+            user: userId
+        });
         return newTask;
     }
     catch (error) {
@@ -61,9 +73,9 @@ export const updateTask = async (req, res) => {
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
-        
+
         //if (!project || project.organization.toString() !== req.user.organizationId) {
-            //return res.status(403).json({ message: 'Unauthorized to update this task' });
+        //return res.status(403).json({ message: 'Unauthorized to update this task' });
         //}
 
         const updatedTask = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -76,20 +88,16 @@ export const updateTask = async (req, res) => {
 // Update a tasks status
 export const updateTaskStatus = async (req, res) => {
     try {
-        console.log('Received request body:', req.body);
 
         const { id } = req.params;
-        const { status } = req.body; // Only allow status updates
+        const { status } = req.body;
         const task = await Task.findById(id);
         const validStatuses = ["todo", "progress", "done"];
-
-        console.log('updateTaskStatus taskId:', id); // Log taskId to check if it's correct
-        console.log('updateTaskStatus newStatus:', status); // Log newStatus to verify the value
 
         if (!validStatuses.includes(status)) {
             return res.status(404).json({ error: 'Invalid Status' });
         }
-        
+
         if (!task) {
             return res.status(404).json({ error: 'Task not found' });
         }
@@ -105,10 +113,8 @@ export const updateTaskStatus = async (req, res) => {
 
 
 // Delete a task from the project
-export const deleteTask = async (taskId) => {
+export const deleteTask = async () => {
     try {
-        console.log('Controller taskId: ', taskId);
-
         // Delete the task from the database
         await Task.findByIdAndDelete(req.params.id);
 
