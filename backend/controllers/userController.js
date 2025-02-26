@@ -83,31 +83,51 @@ export const changePassword = async (req, res) => {
 export const getUserProfile = async (req, res) => {
     try {
       const user = await User.findById(req.user.id);
-      
       if (!user) return res.status(404).json({ error: 'User not found' });
-      res.json(user);
+  
+      const userObj = user.toObject();
+      if (userObj.profilePicture && userObj.profilePicture.data) {
+        userObj.profilePicture = `data:${userObj.profilePicture.contentType};base64,${userObj.profilePicture.data.toString('base64')}`;
+      }
+      res.json(userObj);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
+  
 
-  export const updateProfilePicture = async (req, res) => {
+// In userController.js
+export const updateProfilePicture = async (req, res) => {
     try {
       if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });
       }
       
-    const filePath = req.file.path; 
+      // Retrieve the file's Buffer and mimetype from memory
+      const buffer = req.file.buffer;
+      const contentType = req.file.mimetype;
       
-      // Update the user's profilePicture field with the new file path
+      // Update the user's profilePicture field with the binary data and its type
       const user = await User.findByIdAndUpdate(
         req.user.id,
-        { profilePicture: filePath },
+        { profilePicture: { data: buffer, contentType: contentType } },
         { new: true }
       );
       
-      res.json(user);
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+      
+      // Convert the stored Buffer to a Base64 data URL for easy display on the frontend
+      const userObj = user.toObject();
+      if (userObj.profilePicture && userObj.profilePicture.data) {
+        userObj.profilePicture = `data:${userObj.profilePicture.contentType};base64,${userObj.profilePicture.data.toString('base64')}`;
+      }
+      
+      res.json(userObj);
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
   };
+  
+  
