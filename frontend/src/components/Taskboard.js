@@ -28,26 +28,20 @@ function Taskboard({ projectId }) {
     if (projectId) fetchTasks();
   }, [projectId]);
 
-  const statusMap = {
-    'To Do': 'todo',
-    'On Progress': 'progress',
-    'Done': 'done'
-  };
-
   const getTasksByStatus = (status) => {
-    return tasks.filter(task => task.status === statusMap[status]);
+    return tasks.filter(task => task.status === status);
   };
 
 
   const handleTaskDrop = async (taskId, newStatus) => {
     console.log("Handle Task Drop taskID: ", taskId);
     console.log("Handle Task Drop newStatus: ", newStatus);
-    console.log("Handle Task Drop transmitted status: ", statusMap[newStatus]);
+    console.log("Handle Task Drop transmitted status: ", newStatus);
 
     try {
       // Update on Backend
-      const updatedTask = await changeTaskStatus(taskId, statusMap[newStatus]);
-      
+      const updatedTask = await changeTaskStatus(taskId, newStatus);
+
       // Update on Frontend
       setTasks(prevTasks =>
         prevTasks.map(task =>
@@ -65,7 +59,7 @@ function Taskboard({ projectId }) {
       // Update on Backend
       console.log("handleAddTask taskData: ", taskData);
       const newTask = await addTaskToProject(projectId, taskData);
-  
+
       // Update on Frontend
       setTasks(prevTasks => [...prevTasks, newTask]);
       console.log(newTask);
@@ -113,29 +107,29 @@ function Taskboard({ projectId }) {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex gap-6 overflow-y-auto">
-        <TaskColumn 
-          title="To Do" 
-          tasks={getTasksByStatus('To Do')} 
-          count={getTasksByStatus('To Do').length}
+        <TaskColumn
+          title="To Do"
+          tasks={getTasksByStatus('todo')}
+          count={getTasksByStatus('todo').length}
           accentColor="bg-indigo-500"
           onTaskDrop={handleTaskDrop}
           onAddTask={handleAddTask}
           onEditTask={handleEditTask}
           onDeleteTask={handleDeleteTask}
         />
-        <TaskColumn 
-          title="On Progress" 
-          tasks={getTasksByStatus('On Progress')} 
-          count={getTasksByStatus('On Progress').length}
+        <TaskColumn
+          title="In Progress"
+          tasks={getTasksByStatus('progress')}
+          count={getTasksByStatus('progress').length}
           accentColor="bg-orange-500"
           onTaskDrop={handleTaskDrop}
           onEditTask={handleEditTask}
           onDeleteTask={handleDeleteTask}
         />
-        <TaskColumn 
-          title="Done" 
-          tasks={getTasksByStatus('Done')} 
-          count={getTasksByStatus('Done').length}
+        <TaskColumn
+          title="Done"
+          tasks={getTasksByStatus('done')}
+          count={getTasksByStatus('done').length}
           accentColor="bg-green-500"
           onTaskDrop={handleTaskDrop}
           onEditTask={handleEditTask}

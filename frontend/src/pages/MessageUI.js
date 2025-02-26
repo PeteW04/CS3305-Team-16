@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Smile, Send } from "lucide-react";
+import { Smile, Send, Users } from "lucide-react";
 import ChatList from "../components/ChatList";
 import ChatBubble from "../components/chatBubble";
 import "../CSS-files/MessageUI.css";
@@ -209,19 +209,21 @@ export default function MessageUI() {
               />
               <div className="flex-1 flex flex-col overflow-hidden border-l border-gray-200">
                 <div
-                  className="messages pt-0 mt-0 flex-1 overflow-y-auto px-4"
+                  className="messages flex-1 overflow-y-auto py-0 px-4"
                   ref={messagesContainerRef}
                 >
                   {selectedChat ? (
                     selectedChat.messages &&
                     selectedChat.messages.length > 0 ? (
+                      
                       <>
                         <div className="flex flex-row sticky top-0 bg-white shadow-lg border-gray-200 p-6 rounded-b-lg z-50">
-                          <img
+                          {selectedChat.type === "group" ? <Users className="w-8 h-8 rounded object-cover"/> : <img
                             src={user.profilePicture}
                             alt={`${user.firstName} ${user.lastName}`}
                             className="w-8 h-8 rounded-full object-cover"
-                          />
+                          />}
+                          
                           <div className="pt-2 pl-3 font-semibold">
                             {selectedChat.name}
                           </div>
