@@ -47,7 +47,7 @@ function Taskboard({ projectId }) {
     try {
       // Update on Backend
       const updatedTask = await changeTaskStatus(taskId, statusMap[newStatus]);
-      
+
       // Update on Frontend
       setTasks(prevTasks =>
         prevTasks.map(task =>
@@ -65,7 +65,7 @@ function Taskboard({ projectId }) {
       // Update on Backend
       console.log("handleAddTask taskData: ", taskData);
       const newTask = await addTaskToProject(projectId, taskData);
-  
+
       // Update on Frontend
       setTasks(prevTasks => [...prevTasks, newTask]);
       console.log(newTask);
@@ -113,9 +113,9 @@ function Taskboard({ projectId }) {
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="flex gap-6 overflow-y-auto">
-        <TaskColumn 
-          title="To Do" 
-          tasks={getTasksByStatus('To Do')} 
+        <TaskColumn
+          title="To Do"
+          tasks={getTasksByStatus('To Do')}
           count={getTasksByStatus('To Do').length}
           accentColor="bg-indigo-500"
           onTaskDrop={handleTaskDrop}
@@ -123,18 +123,18 @@ function Taskboard({ projectId }) {
           onEditTask={handleEditTask}
           onDeleteTask={handleDeleteTask}
         />
-        <TaskColumn 
-          title="On Progress" 
-          tasks={getTasksByStatus('On Progress')} 
+        <TaskColumn
+          title="In Progress"
+          tasks={getTasksByStatus('On Progress')}
           count={getTasksByStatus('On Progress').length}
           accentColor="bg-orange-500"
           onTaskDrop={handleTaskDrop}
           onEditTask={handleEditTask}
           onDeleteTask={handleDeleteTask}
         />
-        <TaskColumn 
-          title="Done" 
-          tasks={getTasksByStatus('Done')} 
+        <TaskColumn
+          title="Done"
+          tasks={getTasksByStatus('Done')}
           count={getTasksByStatus('Done').length}
           accentColor="bg-green-500"
           onTaskDrop={handleTaskDrop}
