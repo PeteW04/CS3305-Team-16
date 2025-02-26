@@ -7,10 +7,10 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     role: { type: String, enum: ["manager", "employee"], default: "employee" },
     organizationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Organization' },
-    profilePicture: { 
-        type: String,
-        default: '' 
-      },
+    profilePicture: {
+        data: Buffer,
+        contentType: String
+      }
 });
 
 export default mongoose.model('User', userSchema);
