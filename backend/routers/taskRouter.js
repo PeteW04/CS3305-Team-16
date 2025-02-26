@@ -1,11 +1,13 @@
 import express from 'express';
-import { getAllTasks, getTaskById, createTask, updateTask, updateTaskStatus, deleteTask } from '../controllers/taskController.js';
-import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
+import { getAllTasks, getTaskById, createTask, updateTask, updateTaskStatus, deleteTask, getTasksByUser } from '../controllers/taskController.js';
 
 const taskRouter = express.Router();
 
 // Get all tasks
 taskRouter.get('/', getAllTasks);
+
+// Get tasks by user
+taskRouter.get('/userTasks', getTasksByUser);
 
 // Get a task by id
 taskRouter.get('/:id', getTaskById);

@@ -150,17 +150,14 @@
 .task-list::-webkit-scrollbar {
   width: 6px;
 }
-
 .task-list::-webkit-scrollbar-track {
-  background: #e9e9e9; 
+  background: #e9e9e9;
   border-radius: 10px;
 }
-
 .task-list::-webkit-scrollbar-thumb {
-  background: #2b5ce6; 
+  background: #2b5ce6;
   border-radius: 10px;
 }
-
 .task-list::-webkit-scrollbar-thumb:hover {
-  background: #1f49b2; 
+  background: #1f49b2;
 }
