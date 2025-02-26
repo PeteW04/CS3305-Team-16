@@ -2,6 +2,7 @@ import React from 'react';
 import { X, Settings, LogOut, User as UserIcon } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getProfilePictureUrl } from "../api/users";
 
 function ProfileModal({ onClose }) {
   const { user, isLoading, logout } = useAuth();
@@ -25,8 +26,16 @@ function ProfileModal({ onClose }) {
         <div className="p-4 border-b">
           <div className="flex justify-between items-start">
             <div className="flex items-center gap-3">
-              <div className="bg-indigo-100 p-2 rounded-full">
-                <UserIcon className="w-6 h-6 text-indigo-600" />
+            <div className="bg-indigo-100 p-2 rounded-full">
+                {user.profilePicture ? (
+                  <img
+                    src={getProfilePictureUrl(user.profilePicture)}
+                    alt="User Profile"
+                    className="w-6 h-6 rounded-full object-cover"
+                  />
+                ) : (
+                  <UserIcon className="w-6 h-6 text-indigo-600" />
+                )}
               </div>
               <div>
                 <h3 className="font-semibold">{name}</h3>
