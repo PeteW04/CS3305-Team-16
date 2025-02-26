@@ -28,25 +28,19 @@ function Taskboard({ projectId }) {
     if (projectId) fetchTasks();
   }, [projectId]);
 
-  const statusMap = {
-    'To Do': 'todo',
-    'On Progress': 'progress',
-    'Done': 'done'
-  };
-
   const getTasksByStatus = (status) => {
-    return tasks.filter(task => task.status === statusMap[status]);
+    return tasks.filter(task => task.status === status);
   };
 
 
   const handleTaskDrop = async (taskId, newStatus) => {
     console.log("Handle Task Drop taskID: ", taskId);
     console.log("Handle Task Drop newStatus: ", newStatus);
-    console.log("Handle Task Drop transmitted status: ", statusMap[newStatus]);
+    console.log("Handle Task Drop transmitted status: ", newStatus);
 
     try {
       // Update on Backend
-      const updatedTask = await changeTaskStatus(taskId, statusMap[newStatus]);
+      const updatedTask = await changeTaskStatus(taskId, newStatus);
 
       // Update on Frontend
       setTasks(prevTasks =>
@@ -115,8 +109,8 @@ function Taskboard({ projectId }) {
       <div className="flex gap-6 overflow-y-auto">
         <TaskColumn
           title="To Do"
-          tasks={getTasksByStatus('To Do')}
-          count={getTasksByStatus('To Do').length}
+          tasks={getTasksByStatus('todo')}
+          count={getTasksByStatus('todo').length}
           accentColor="bg-indigo-500"
           onTaskDrop={handleTaskDrop}
           onAddTask={handleAddTask}
@@ -125,8 +119,8 @@ function Taskboard({ projectId }) {
         />
         <TaskColumn
           title="In Progress"
-          tasks={getTasksByStatus('On Progress')}
-          count={getTasksByStatus('On Progress').length}
+          tasks={getTasksByStatus('progress')}
+          count={getTasksByStatus('progress').length}
           accentColor="bg-orange-500"
           onTaskDrop={handleTaskDrop}
           onEditTask={handleEditTask}
@@ -134,8 +128,8 @@ function Taskboard({ projectId }) {
         />
         <TaskColumn
           title="Done"
-          tasks={getTasksByStatus('Done')}
-          count={getTasksByStatus('Done').length}
+          tasks={getTasksByStatus('done')}
+          count={getTasksByStatus('done').length}
           accentColor="bg-green-500"
           onTaskDrop={handleTaskDrop}
           onEditTask={handleEditTask}
