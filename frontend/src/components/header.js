@@ -49,7 +49,7 @@ function Header() {
           <div className="flex items-center space-x-4">
             {user ? (
               <Link
-                to="/tasks"
+                to="/dashboard"
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition-colors"
               >
                 Dashboard
