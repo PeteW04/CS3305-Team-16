@@ -100,16 +100,21 @@ function UserListModal({ onClose }) {
           </div>
         </div>
 
-        {/* Menu Items */}
-        <div className="p-2">
-          <Link
-            to="/settings"
-            className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
-            onClick={onClose}
-          >
-            <Settings className="w-4 h-4" />
-            <span>Settings</span>
-          </Link>
+                {/* Project Actions */}
+                <div className="p-4 border-b">
+          <h4 className="font-semibold mb-3">Project Actions</h4>
+          <div className="space-y-2">
+            <button
+              className="w-full flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
+              onClick={() => {
+                // Add logic to assign a project
+                console.log('Assign Project');
+              }}
+            >
+              <Plus className="w-4 h-4" />
+              <span>Assign Project</span>
+            </button>
+          </div>
         </div>
       </div>
     </div>
