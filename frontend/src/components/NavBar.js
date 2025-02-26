@@ -33,12 +33,6 @@ const NavBar = () => {
 
       {/* Right section */}
       <div className="header-right">
-        <Link to="/calendar" className="icon-button">
-          <Calendar />
-        </Link>
-        <Link to="/message" className="icon-button">
-          <Mail />
-        </Link>
         <div className="notification-button">
           <Bell />
           <span className="notification-dot"></span>
