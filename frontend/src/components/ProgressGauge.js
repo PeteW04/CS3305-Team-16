@@ -39,7 +39,7 @@ const ProgressGauge = () => {
 
   const completedDegree = (tasks.completedTasks / tasks.total) * 180;
   const inProgressDegree = (tasks.inProgressTasks / tasks.total) * 180;
-  const incompleteDegree = (tasks.incompleteTasks / tasks.total) * 180; // Add 
+  const incompleteDegree = (tasks.incompleteTasks / tasks.total) * 180;
   const completedPercent = tasks.total > 0
     ? Math.round((tasks.completedTasks / tasks.total) * 100)
     : 100;
@@ -82,8 +82,8 @@ const ProgressGauge = () => {
               <g className="tick-marks">
                 {Array.from({ length: 50 }).map((_, i) => {
                   const angle = (i * 180) / 49
-                  const start = polarToCartesian(200, 200, 200, angle)
-                  const end = polarToCartesian(200, 200, 210, angle)
+                  const start = polarToCartesian(200, 200, 180, angle)
+                  const end = polarToCartesian(200, 200, 200, angle)
                   return (
                     <line
                       key={i}
@@ -102,21 +102,26 @@ const ProgressGauge = () => {
               {/* Gauge segments */}
               <g>
                 {/* Incomplete (base layer) */}
-                <path d={createArc(0, 180, 180)} className="gauge-segment incomplete" />
+                <path d={createArc(0, 180, 180)} className={`gauge-segment ${tasks.total === 0 ? 'completed' : 'incomplete'}`} />
 
                 {/* Completed (only show if > 0%) */}
                 {tasks.completedTasks > 0 && (
-                  <path d={createArc(180 - completedDegree, 180, 180)}
-                    className="gauge-segment completed" />
+                  <path
+                    d={createArc(180 - completedDegree, 180, 180)}
+                    className="gauge-segment completed"
+                  />
                 )}
 
                 {/* In Progress (only show if > 0%) */}
                 {tasks.inProgressTasks > 0 && (
-                  <path d={createArc(
-                    180 - completedDegree - inProgressDegree,
-                    180 - completedDegree,
-                    180
-                  )} className="gauge-segment in-progress" />
+                  <path
+                    d={createArc(
+                      180 - completedDegree - inProgressDegree,
+                      180 - completedDegree,
+                      180
+                    )}
+                    className="gauge-segment in-progress"
+                  />
                 )}
               </g>
             </g>
@@ -151,4 +156,3 @@ const ProgressGauge = () => {
 }
 
 export default ProgressGauge
-
