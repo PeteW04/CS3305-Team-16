@@ -45,7 +45,7 @@ function ProfileModal({ onClose }) {
         {/* Menu Items */}
         <div className="p-2">
           <Link
-            to="/settings"
+            to="/userprofile"
             className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
             onClick={onClose}
           >
