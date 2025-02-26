@@ -1,5 +1,6 @@
 import Project from '../models/Projects.js';
 import Task from '../models/Task.js';
+import Channel from '../models/Channel.js';
 import mongoose from 'mongoose';
 import { createTask, deleteTask } from './taskController.js';
 import { createChannel } from './messageController.js';
@@ -80,17 +81,35 @@ export const getTasks = async (req, res) => {
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
+    const { title, description, deadline, employees } = req.body;
+    const { id } = req.user;
+
     try {
-        const {title, description, organization, deadline} = req.body;
+        employees.push(id);
+
+        // Create the project
         const newProject = await Project.create({
             title,
             description,
             organization: req.user.organizationId,
+            employees,
+            manager: req.user._id,
             deadline
           });
+
+        // Create the message channel
+        const channel = await Channel.create({ type: 'project', members: employees, name: newProject.title, projectId: newProject._id });
+
+        // Link the channel to the project
+        newProject.chat = channel._id;
+        await newProject.save();
+
+        // Return the new project
         res.status(201).json(newProject);
-    } catch (error) {
-        res.status(400).json({error: error.message});
+
+    } catch (e) {
+        console.error("Error in createProject:", e.message);
+        return res.status(500).json({ message: e.message });
     }
 };
 
