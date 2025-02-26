@@ -39,9 +39,9 @@ function Sidebar({ isMinimized, toggleSidebar }) {
 
       {/* Menu Section */}
       <ul className="mt-6 space-y-2">
-        <Link to="/"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
+        <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
         <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
-        <Link to="/tasks"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
+        <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
         <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Members" /></Link>
         <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
