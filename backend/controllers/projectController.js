@@ -229,24 +229,38 @@ export const addEmployee = async (req, res) => {
 // PUT: Remove a worker from a project
 export const removeEmployee = async (req, res) => {
     try {
-        const { employeeId, projectId } = req.params;
+        const { employeeId, projectId } = req.body;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(employeeId)) {
             return res.status(400).json({ error: 'Invalid projectId or employeeId' });
         }
 
+        // Remove the employee from the project
         const project = await Project.findByIdAndUpdate(
             projectId, 
             { $pull: { employees: employeeId } },
             { new: true }
         );
 
+        // Ensure the updated project exists
         if (!project) {
             return res.status(404).json({ error: 'Failed to remove employee' });
         }
 
-        res.status(200).json({ message: 'Employee added successfully', project });
+        // Remove employee from the chat
+        const chat = await Channel.findByIdAndUpdate(
+            project.chat, 
+            { $pull: { members: employeeId } },
+            { new: true }
+        );
+
+        // Ensure the updated app exists
+        if (!chat) {
+            return res.status(404).json({ error: 'Chat not found' });
+        }
+
+        res.status(200).json({ message: 'Employee removed successfully', project });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
