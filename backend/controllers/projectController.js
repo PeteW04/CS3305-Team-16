@@ -181,7 +181,7 @@ export const changeDeadline = async (req, res) => {
 // PUT: Add a worker to a project
 export const addEmployee = async (req, res) => {
     try {
-        const { employeeId, projectId } = req.params;
+        const { employeeId, projectId } = req.body;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(employeeId)) {
@@ -194,16 +194,26 @@ export const addEmployee = async (req, res) => {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'You cannot modify a project outside of your organization' });
+        // Check if the employee is already in the project
+        if (project.employees.includes(employeeId)) {
+            return res.status(404).json({ error: 'This employee is already in the project' });
         }
+
+        const chat = await Channel.findById(project.chat);
+
+        if (!chat) {
+            return res.status(404).json({ error: 'Chat not found' });
+        }
+
+        //if (project.organization.toString() !== req.user.organizationId) {
+        //    return res.status(403).json({ message: 'You cannot modify a project outside of your organization' });
+        //}
 
         project.employees.addToSet(employeeId);
         await project.save();
 
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
-        }
+        chat.members.addToSet(employeeId);
+        await chat.save();
 
         res.status(200).json({ message: 'Employee added successfully', project });
     } catch (error) {

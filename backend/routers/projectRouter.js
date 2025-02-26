@@ -29,7 +29,7 @@ projectRouter.put('/change-description/projectId/:projectId/newDescription/:newD
 projectRouter.put('/change-deadline/projectId/:projectId/newDeadline/:newDeadline', checkUserRole('manager'), changeDeadline);
 
 // Add an employee
-projectRouter.put('/projectId/:projectId/employees/add/employeeId/:employeeId', checkUserRole('manager'), addEmployee);
+projectRouter.put('/employees/add', checkUserRole('manager'), addEmployee);
 
 // Remove an Employee
 projectRouter.put('/projectId/:projectId/employees/remove/employeeId/:employeeId', checkUserRole('manager'), removeEmployee);
