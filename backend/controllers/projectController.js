@@ -9,14 +9,12 @@ export const getAllProjects = async (req, res) => {
     try {
         // Automatically filter by the user's organizationId
 
-        console.log("User organizationId:", req.user.organizationId);
-
         const projects = await Project.find({ organization: req.user.organizationId });
 
         res.status(200).json(projects);
     }
-    catch (error){
-        res.status(500).json({error: error.message});
+    catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -28,8 +26,8 @@ export const getAllProjectsByOrg = async (req, res) => {
 
         res.status(200).json(projects);
     }
-    catch (error){
-        res.status(500).json({error: error.message});
+    catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -40,7 +38,7 @@ export const getProjectById = async (req, res) => {
 
         const project = await Project.findById(projectId);
         if (!project) {
-            return res.status(404).json({error: 'Project not found'});
+            return res.status(404).json({ error: 'Project not found' });
         }
 
         //if (project.organization.toString() !== req.user.organizationId) {
@@ -49,7 +47,7 @@ export const getProjectById = async (req, res) => {
 
         res.status(200).json(project);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };
 
@@ -60,12 +58,9 @@ export const getTasks = async (req, res) => {
         const project = await Project.findById(projectId).populate("tasks");
 
         if (!project) {
-            console.log('Project not found');
-            return res.status(404).json({error: 'Project not found'});
+            console.error('Project not found');
+            return res.status(404).json({ error: 'Project not found' });
         }
-
-        console.log("Fetched project:", project);  // ✅ Log project details
-        console.log("Project tasks:", project.tasks);  // ✅ Log tasks
 
         if (!Array.isArray(project.tasks)) {
             console.error("Tasks is not an array:", project.tasks);
@@ -74,29 +69,29 @@ export const getTasks = async (req, res) => {
 
         res.status(200).json(project.tasks);
     } catch (error) {
-        res.status(500).json({error: error.message});
+        res.status(500).json({ error: error.message });
     }
 };
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
     try {
-        const {title, description, organization, deadline} = req.body;
+        const { title, description, organization, deadline } = req.body;
         const newProject = await Project.create({
             title,
             description,
             organization: req.user.organizationId,
             deadline
-          });
+        });
         res.status(201).json(newProject);
     } catch (error) {
-        res.status(400).json({error: error.message});
+        res.status(400).json({ error: error.message });
     }
 };
 
 // PUT: Change project name
 export const changeTitle = async (req, res) => {
-    try{
+    try {
         const { projectId, newTitle } = req.params;
 
         // Find the project and update its title
@@ -119,7 +114,7 @@ export const changeTitle = async (req, res) => {
 
 // PUT: Change project description
 export const changeDescription = async (req, res) => {
-    try{
+    try {
         const { projectId, newDescription } = req.params;
 
         // Find the project and update its description
@@ -143,7 +138,7 @@ export const changeDescription = async (req, res) => {
 
 // PUT: Change project deadline
 export const changeDeadline = async (req, res) => {
-    try{
+    try {
         const { projectId, newDeadline } = req.params;
 
         // Find the project and update its deadline
@@ -208,7 +203,7 @@ export const removeEmployee = async (req, res) => {
         }
 
         const project = await Project.findByIdAndUpdate(
-            projectId, 
+            projectId,
             { $pull: { employees: employeeId } },
             { new: true }
         );
@@ -229,15 +224,16 @@ export const addTask = async (req, res) => {
         const { projectId } = req.params;
         const { title, description, deadline } = req.body;
         const task = { title: title, description: description, deadline: deadline }
+        const userId = req.user._id;
 
         // Ensure a valid project id
         const project = await Project.findById(projectId);
 
-        if (!project ) {
+        if (!project) {
             return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const newTask = await createTask(projectId, task);
+        const newTask = await createTask(projectId, task, userId);
 
         // Ensure the new task exists
         if (!newTask) {
@@ -257,9 +253,7 @@ export const addTask = async (req, res) => {
 // DELETE: Remove a task from a project
 export const removeTask = async (req, res) => {
     try {
-        const {  projectId, taskId } = req.params;
-        console.log('removeTask projectId: ', projectId);
-        console.log('removeTask taskId: ', taskId);
+        const { projectId, taskId } = req.params;
 
         // Validate ObjectId
         if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(taskId)) {
@@ -305,8 +299,8 @@ export const updateTaskStatus = async (req, res) => {
         const { taskId, projectId, status } = req.params;
 
         // Check if the new status is valid
-        const possibleStatus = ['New', 'In Progress', 'Completed'];
-        if (!possibleStatus.includes(status)){
+        const possibleStatus = ['todo', 'progress', 'done'];
+        if (!possibleStatus.includes(status)) {
             return res.status(400).json({ error: 'Invalid status value' });
         }
 
@@ -337,12 +331,12 @@ export const updateTaskStatus = async (req, res) => {
 
 // PUT: Update the status of the project
 export const updateStatus = async (req, res) => {
-    try{
+    try {
         const { projectId, status } = req.params;
 
         // Check if the new status is valid
         const possibleStatus = ['New', 'In Progress', 'Completed'];
-        if (!possibleStatus.includes(status)){
+        if (!possibleStatus.includes(status)) {
             return res.status(400).json({ error: 'Invalid status value' });
         }
 
