@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
             setUser(result.user);
             setToken(result.token);
             localStorage.setItem("authToken", result.token);
-            navigate("/tasks");
+            navigate("/dashboard");
         } catch (error) {
             throw error; 
         }
