@@ -14,8 +14,9 @@ function Header() {
     '/message',
     '/calendar',
     '/settings',
-    '/UserProfile',
-    '/test'
+    '/userprofile',
+    '/test',
+    '/dashboard'
   ];
 
   // List of auth routes where header should appear
