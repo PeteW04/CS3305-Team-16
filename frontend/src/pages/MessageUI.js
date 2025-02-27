@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useRef } from "react";
 import { Smile, Send, Users } from "lucide-react";
 import ChatList from "../components/ChatList";
@@ -7,8 +8,7 @@ import { getMessages, getChannels, markMessagesRead } from "../api/channel";
 import { sendMessage, editMessage, deleteMessage } from "../api/message";
 import socket from "../utils/socket";
 import { useAuth } from "../context/AuthContext";
-import NavBar from "../components/NavBar";
-import Sidebar from "../components/sidebar";
+import { useParams } from "react-router-dom";
 
 export default function MessageUI() {
   const { user, isLoading } = useAuth();
@@ -18,6 +18,7 @@ export default function MessageUI() {
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
   const [isMinimized, setIsMinimized] = useState(false);
+  const { projectId } = useParams();
 
   const scrollToBottom = () => {
     if (messagesContainerRef.current) {

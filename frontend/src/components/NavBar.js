@@ -6,8 +6,6 @@ import NotificationModal from "./NotificationModal";
 import { useAuth } from "../context/AuthContext";
 import { getProfilePictureUrl } from "../api/users";
 
-
-
 const NavBar = () => {
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showNotificationModal, setShowNotificationModal] = useState(false); 
@@ -15,14 +13,12 @@ const NavBar = () => {
 
   console.log("User profile picture URL:", user.profilePicture);
 
-
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="header">
+    <nav className="header">
       {/* Left section */}
       <div className="header-left">
         <button className="menu-button">
@@ -77,7 +73,7 @@ const NavBar = () => {
         <NotificationModal onClose={() => setShowNotificationModal(false)} />
       )}
       </div>
-    </div>
+    </nav>
   );
 };
 
