@@ -6,7 +6,7 @@ function NewTaskModal({ onClose, onSubmit }) {
     title: '',
     description: '',
     priority: 'Low',
-    status: 'New'  // Maps to 'todo' in frontend
+    status: 'todo'
   });
 
   const handleSubmit = (e) => {
@@ -19,7 +19,7 @@ function NewTaskModal({ onClose, onSubmit }) {
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Create New Task</h2>
-          <button 
+          <button
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded"
           >
