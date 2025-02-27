@@ -17,7 +17,6 @@ export default function MessageUI() {
   const [chats, setChats] = useState([]);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
-  const [isMinimized, setIsMinimized] = useState(false);
   const { projectId } = useParams();
 
   const scrollToBottom = () => {
@@ -254,106 +253,94 @@ export default function MessageUI() {
     setSelectedChat(newChat);
   };
 
-  const toggleSidebar = () => {
-    setIsMinimized(!isMinimized);
-  };
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 h-screen flex flex-col overflow-hidden">
-      <header className="bg-white border-b border-gray-200">
-        <NavBar />
-      </header>
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
-        <main className="p-6 flex-1 overflow-hidden">
-          <div className="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
-            <div className="flex flex-1 overflow-hidden h-[calc(100vh-180px)]">
-              <ChatList
-                chatData={chats}
-                onChatSelect={handleChatSelect}
-                onNewChat={handleNewChat}
-              />
-              <div className="flex-1 flex flex-col overflow-hidden border-l border-gray-200">
-                <div
-                  className="messages flex-1 overflow-y-auto py-0 px-4"
-                  ref={messagesContainerRef}
-                >
-                  {selectedChat ? (
-                    selectedChat.messages &&
-                      selectedChat.messages.length > 0 ? (
+    <div className="h-full w-full p-6">
+      <div className="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
+        <div className="flex flex-1 overflow-hidden h-[calc(100vh-180px)]">
+          <ChatList
+            chatData={chats}
+            onChatSelect={handleChatSelect}
+            onNewChat={handleNewChat}
+          />
+          <div className="flex-1 flex flex-col overflow-hidden border-l border-gray-200">
+            <div
+              className="messages flex-1 overflow-y-auto py-0 px-4"
+              ref={messagesContainerRef}
+            >
+              {selectedChat ? (
+                selectedChat.messages &&
+                  selectedChat.messages.length > 0 ? (
 
-                      <>
-                        <div className="flex flex-row sticky top-0 bg-white shadow-lg border-gray-200 p-6 rounded-b-lg z-50">
-                          {selectedChat.type === "group" ? <Users className="w-8 h-8 rounded object-cover" /> : <img
-                            src={user.profilePicture}
-                            alt={`${user.firstName} ${user.lastName}`}
-                            className="w-8 h-8 rounded-full object-cover"
-                          />}
+                  <>
+                    <div className="flex flex-row sticky top-0 bg-white shadow-lg border-gray-200 p-6 rounded-b-lg z-50">
+                      {selectedChat.type === "group" ? <Users className="w-8 h-8 rounded object-cover" /> : <img
+                        src={user.profilePicture}
+                        alt={`${user.firstName} ${user.lastName}`}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />}
 
-                          <div className="pt-2 pl-3 font-semibold">
-                            {selectedChat.name}
-                          </div>
-                        </div>
-                        {selectedChat.messages.map((msg, index) => (
-                          <ChatBubble
-                            key={index}
-                            sender={msg.senderId}
-                            currentUser={user._id}
-                            message={msg.text}
-                            time={new Date(msg.createdAt).toLocaleString(
-                              "en-US",
-                              {
-                                hour: "numeric",
-                                minute: "2-digit",
-                                hour12: true,
-                              }
-                            )}
-                            readBy={msg.readBy}
-                            onEdit={handleEditMessage}
-                            onDelete={handleDeleteMessage}
-                            messageId={msg._id}
-                          />
-                        ))}
-                        <div ref={messagesEndRef} />
-                      </>
-                    ) : (
-                      <p className="text-center text-gray-500 mt-4">
-                        No messages in this chat yet.
-                      </p>
-                    )
-                  ) : (
-                    <p className="text-center text-gray-500 mt-4">
-                      Select a chat to start messaging
-                    </p>
-                  )}
-                </div>
-                {selectedChat && (
-                  <form
-                    className="chat-input border-t border-gray-200 p-4"
-                    onSubmit={handleSendMessage}
-                  >
-                    <button type="button" className="emoji-button">
-                      <Smile size={20} />
-                    </button>
-                    <input
-                      type="text"
-                      placeholder="Start typing..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                    />
-                    <button type="submit" className="send-button">
-                      <Send size={20} />
-                    </button>
-                  </form>
-                )}
-              </div>
+                      <div className="pt-2 pl-3 font-semibold">
+                        {selectedChat.name}
+                      </div>
+                    </div>
+                    {selectedChat.messages.map((msg, index) => (
+                      <ChatBubble
+                        key={index}
+                        sender={msg.senderId}
+                        currentUser={user._id}
+                        message={msg.text}
+                        time={new Date(msg.createdAt).toLocaleString(
+                          "en-US",
+                          {
+                            hour: "numeric",
+                            minute: "2-digit",
+                            hour12: true,
+                          }
+                        )}
+                        readBy={msg.readBy}
+                        onEdit={handleEditMessage}
+                        onDelete={handleDeleteMessage}
+                        messageId={msg._id}
+                      />
+                    ))}
+                    <div ref={messagesEndRef} />
+                  </>
+                ) : (
+                  <p className="text-center text-gray-500 mt-4">
+                    No messages in this chat yet.
+                  </p>
+                )
+              ) : (
+                <p className="text-center text-gray-500 mt-4">
+                  Select a chat to start messaging
+                </p>
+              )}
             </div>
+            {selectedChat && (
+              <form
+                className="chat-input border-t border-gray-200 p-4"
+                onSubmit={handleSendMessage}
+              >
+                <button type="button" className="emoji-button">
+                  <Smile size={20} />
+                </button>
+                <input
+                  type="text"
+                  placeholder="Start typing..."
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+                <button type="submit" className="send-button">
+                  <Send size={20} />
+                </button>
+              </form>
+            )}
           </div>
-        </main>
+        </div>
       </div>
     </div>
   );
