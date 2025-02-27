@@ -24,7 +24,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
     }
 
     fetchProjects();
-  }, []); 
+  }, []);
 
   if (loading) return <div>Loading projects...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -42,15 +42,11 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
         <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
         <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
-<<<<<<< HEAD
-        <Link to="#"><SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Members" /></Link>
-=======
         <Link to="/calendar"><SidebarItem isMinimized={isMinimized} icon={<Calendar size={20} />} text="Calendar" /></Link>
->>>>>>> 63c03a202997b1e0c0397ab4c3d769bd00c4acfb
         <Link to="/userprofile"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
       </ul>
 
-      
+
       {/* Divider */}
       {!isMinimized && <div className="h-px bg-[#787486]/20 my-6" />}
 
@@ -75,7 +71,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         onClick={toggleSidebar}
         className="absolute bottom-4 left-4 p-2 bg-indigo-500 rounded-full text-white"
       >
-        {!isMinimized ? <ChevronsLeft size={24}/> : <ChevronsRight size={24}/>}
+        {!isMinimized ? <ChevronsLeft size={24} /> : <ChevronsRight size={24} />}
       </button>
     </nav>
   );
