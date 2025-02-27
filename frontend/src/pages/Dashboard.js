@@ -18,9 +18,9 @@ function Dashboard() {
   return (
     <main className="flex h-screen pt-16">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
+      <div className="bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-50">
         <NavBar />
-      </header>
+      </div>
       {/* Sidebar */}
       <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
       <div className="dashboard" style={{ display: "flex", flex: 1, height: "100%",paddingBottom: "1%" }}>

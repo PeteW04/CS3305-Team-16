@@ -22,7 +22,7 @@ const NavBar = () => {
   }
 
   return (
-    <header className="header">
+    <div className="header">
       {/* Left section */}
       <div className="header-left">
         <button className="menu-button">
@@ -77,7 +77,7 @@ const NavBar = () => {
         <NotificationModal onClose={() => setShowNotificationModal(false)} />
       )}
       </div>
-    </header>
+    </div>
   );
 };
 
