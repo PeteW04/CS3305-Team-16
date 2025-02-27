@@ -1,5 +1,7 @@
 import Sidebar from "../components/sidebar";
 import React, { useState, useEffect } from "react";
+import NavBar from "../components/NavBar";
+
 import {
   getUserProfile,
   updateUserProfilePicture,
@@ -75,13 +77,14 @@ const UserProfile = ({}) => {
   }
 
   return (
-    <div className="min-h-screen h-screen flex flex-col">
-      <div className="bg-gray-100 flex flex-1 pt-16 overflow-hidden">
-        <Sidebar
-          isMinimized={isMinimized}
-          toggleSidebar={() => setIsMinimized(!isMinimized)}
-        />
-        {/* Profile divs */}
+    <div className="min-h-screen bg-gray-50 h-screen flex flex-col">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200">
+        <NavBar />
+      </header>
+    {/* Main content */}
+   <div className="flex flex-1 overflow-hidden">
+    <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
         <div className="flex flex-1 h-full justify-center p-6 overflow-y-auto">
           <div className="flex flex-col h-min bg-white shadow-lg rounded-2xl p-6">
             <h2 className="text-3xl font-semibold text-center">My Profile</h2>
