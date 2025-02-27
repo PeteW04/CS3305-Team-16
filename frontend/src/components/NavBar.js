@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Menu, Search, Calendar, Mail, Bell, User } from "lucide-react";
+import { Menu, Search, Calendar, Mail, Bell, User, Layout } from "lucide-react";
 import "../CSS-files/NavBar.css";
 import ProfileModal from "./ProfileModal";
 import NotificationModal from "./NotificationModal"; 
 import { useAuth } from "../context/AuthContext";
 import { getProfilePictureUrl } from "../api/users";
+import { Link } from 'react-router-dom';
 
 
 
@@ -25,9 +26,11 @@ const NavBar = () => {
     <div className="header">
       {/* Left section */}
       <div className="header-left">
-        <button className="menu-button">
-          <Menu />
-        </button>
+        {/* Profile Section */}
+        <Link to="/dashboard" className="flex items-center space-x-2 px-2 py-4">
+          <Layout className="w-8 h-8 text-indigo-600" />
+          <span className="text-xl font-bold text-gray-900">Clack</span>
+        </Link>
       </div>
 
       {/* Center section - Search */}

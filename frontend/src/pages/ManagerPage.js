@@ -15,7 +15,7 @@ export default function ManagerPage() {
   return (
     <div className="dashboard">
       {/* Left Sidebar */}
-      <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+      <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
 
       {/* Main Content */}
       <div className="main-content">

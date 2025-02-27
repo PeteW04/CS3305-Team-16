@@ -17,7 +17,7 @@ function TestPage() {
   return (
     <main className="flex h-screen pt-16">
       {/* Sidebar */}
-      <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+      <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
       <div className="dashboard" style={{display:"inline-flex"}}>
 
       {/* Dashboard */}

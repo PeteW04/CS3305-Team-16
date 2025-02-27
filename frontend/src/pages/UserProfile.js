@@ -84,7 +84,7 @@ const UserProfile = ({}) => {
       </header>
     {/* Main content */}
    <div className="flex flex-1 overflow-hidden">
-    <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+    <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
         <div className="flex flex-1 h-full justify-center p-6 overflow-y-auto">
           <div className="flex flex-col h-min bg-white shadow-lg rounded-2xl p-6">
             <h2 className="text-3xl font-semibold text-center">My Profile</h2>

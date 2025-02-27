@@ -22,7 +22,7 @@ function Dashboard() {
         <NavBar />
       </div>
       {/* Sidebar */}
-      <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+      <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
       <div className="dashboard" style={{ display: "flex", flex: 1, height: "100%",paddingBottom: "1%" }}>
         {/* Dashboard */}
         <div

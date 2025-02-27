@@ -38,7 +38,7 @@ function Task() {
 
       {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar isMinimized={isMinimized} toggleSidebar={() => setIsMinimized(!isMinimized)} />
+        <Sidebar isMinimized={!isMinimized} toggleSidebar={() => setIsMinimized(!isMinimized)} />
         <main className="p-6 flex-1 h-full overflow-y-auto">
           <div className="mb-6">
             <h1 className="text-2xl font-bold text-gray-900">

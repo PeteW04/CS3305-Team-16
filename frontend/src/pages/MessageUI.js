@@ -267,7 +267,7 @@ export default function MessageUI() {
         <NavBar />
       </header>
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+        <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
         <main className="p-6 flex-1 overflow-hidden">
           <div className="bg-white rounded-xl shadow-sm p-6 h-full flex flex-col">
             <div className="flex flex-1 overflow-hidden h-[calc(100vh-180px)]">

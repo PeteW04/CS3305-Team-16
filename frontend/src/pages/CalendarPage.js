@@ -18,7 +18,7 @@ const CalendarPage = () => {
             </header>
             {/* Main content */}
             <div className="flex flex-1 overflow-hidden">
-                <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+                <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
                 <main className="p-6 flex-1 h-full overflow-y-auto">
                     <div className="max-w-2xl mx-auto">
                         <div className="bg-white rounded-xl shadow-sm p-6">
