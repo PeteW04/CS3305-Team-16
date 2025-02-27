@@ -48,13 +48,14 @@ export const getTasksByUser = async (req, res) => {
 }
 
 // Create a task
-export const createTask = async (projectId, task, userId) => {
+export const createTask = async (projectId, task, userId, priority) => {
     try {
         const newTask = await Task.create({
             title: task.title,
             project: projectId,
             description: task.description,
-            user: userId
+            user: userId,
+            priority
         });
         return newTask;
     }
