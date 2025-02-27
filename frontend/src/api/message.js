@@ -41,7 +41,8 @@ export const editMessage = async (messageId, text) => {
             throw new Error(errorData.message || "Failed to edit message");
         }
 
-        return await response.json();
+        const updatedMessage = await response.json();
+        return updatedMessage;
     } catch (error) {
         console.error("Error editing message:", error.message);
         throw error;
@@ -63,7 +64,7 @@ export const deleteMessage = async (messageId) => {
             throw new Error(errorData.message || "Failed to delete message");
         }
 
-        return await response.json();
+        return { messageId };
     } catch (error) {
         console.error("Error deleting message:", error.message);
         throw error;
