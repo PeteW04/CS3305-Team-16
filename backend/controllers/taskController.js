@@ -1,5 +1,6 @@
 import Task from '../models/Task.js';
 import Project from '../models/Projects.js';
+import mongoose from 'mongoose';
 
 
 // Get all tasks
@@ -46,6 +47,27 @@ export const getTasksByUser = async (req, res) => {
         return res.status(500).json({ error: e.message });
     }
 }
+
+export const getTasksByUserID = async (req, res) => {
+    try {
+        // 1. Get userId from URL params instead of body
+        const { userId } = req.params;
+
+        // 2. Validate ObjectId format
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ error: 'Invalid user ID format' });
+        }
+
+        // 3. Use find() with query object
+        const usersTasks = await Task.find({ user: userId });
+
+        return res.status(200).json(usersTasks);
+    } catch (e) {
+        console.error("Error in getTaskByUser: ", e.message);
+        return res.status(500).json({ error: e.message });
+    }
+}
+
 
 // Create a task
 export const createTask = async (projectId, task, userId, priority) => {

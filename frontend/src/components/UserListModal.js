@@ -1,22 +1,37 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { X, Settings, User as UserIcon, Plus, List } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { getUserById } from '../api/users';
+import { getTasksByUserID } from '../api/task';
 
-function UserListModal({ onClose }) {
-  const { user, isLoading } = useAuth(); 
-  const name = `${user.firstName} ${user.lastName}`;
-  const email = user.email;
+function UserListModal({ onClose, userId }) {
+  const [user, setUser] = useState(null);
+  const [tasks, setTasks] = useState([])
+  const [isLoading, setLoading] = useState(true);
 
-  // Placeholder data for tasks (replace with actual data from your backend or state)
-  const tasks = [
-    { id: 1, title: 'Task 1', status: 'In Progress' },
-    { id: 2, title: 'Task 2', status: 'Completed' },
-    { id: 3, title: 'Task 3', status: 'Pending' },
-  ];
 
-  const numberOfTasks = tasks.length;
+  useEffect(() => {
+    console.log("Fetching USER")
+    const fetchUserInfo = async () => {
+      try {
+        const user = await getUserById(userId);
+        setUser(user);
+        const userTasks = await getTasksByUserID(userId);
+        console.log(userTasks);
+        setTasks(userTasks);
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    if (userId) {
+      fetchUserInfo();
+    }
+  }, [userId]);
+
+  const numberOfTasks = tasks?.length || 0;
   if (isLoading) {
     return <div>Loading...</div>; // Or your LoadingSpinner component
   }
@@ -38,8 +53,8 @@ function UserListModal({ onClose }) {
                 <UserIcon className="w-6 h-6 text-indigo-600" />
               </div>
               <div>
-                <h3 className="font-semibold">{name}</h3>
-                <p className="text-sm text-gray-600">{email}</p>
+                <h3 className="font-semibold">{`${user.firstName} ${user.lastName}`}</h3>
+                <p className="text-sm text-gray-600">{user.email}</p>
               </div>
             </div>
             <button
@@ -55,13 +70,13 @@ function UserListModal({ onClose }) {
         <div className="p-4 border-b">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold">Profile Information</h4>
-            <Link
+            {/* <Link
               to="/edit-profile"
               className="text-sm text-indigo-600 hover:underline"
               onClick={onClose}
             >
               Edit
-            </Link>
+            </Link> */}
           </div>
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -89,19 +104,19 @@ function UserListModal({ onClose }) {
               <Plus className="w-4 h-4" />
               <span>Assign Task</span>
             </button>
-            <Link
+            {/* <Link
               to="/tasks"
               className="flex items-center gap-2 px-3 py-2 hover:bg-gray-50 rounded-lg"
               onClick={onClose}
             >
               <List className="w-4 h-4" />
               <span>View All Tasks</span>
-            </Link>
+            </Link> */}
           </div>
         </div>
 
-                {/* Project Actions */}
-                <div className="p-4 border-b">
+        {/* Project Actions */}
+        <div className="p-4 border-b">
           <h4 className="font-semibold mb-3">Project Actions</h4>
           <div className="space-y-2">
             <button
