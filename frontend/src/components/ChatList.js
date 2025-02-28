@@ -73,7 +73,7 @@ export default function ChatList({ onChatSelect, chatData, onNewChat }) {
           </div>
           <p className="chat-item-message">
             {latestMessage
-              ? `${latestMessage.senderId.firstName}: ${latestMessage.text}`
+              ? `${latestMessage.senderId?.firstName || 'Unknown user'}: ${latestMessage.text}`
               : "No messages yet"}
           </p>
         </div>
