@@ -1,19 +1,33 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, User } from "lucide-react";
 import AssignUsersDialog from "../components/inviteUserModal";
 import EditProjectDialog from "../components/EditProjectModal";
 import DeleteProjectDialog from "../components/DeleteProjectModal";
 import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
-import { projects } from "../DummyData/projects"; 
 import "../CSS-files/ProjectPage.css";
+import { getProjects } from '../api/project.js'
 
 function ProjectPage() {
+  const [projects, setProjects] = useState([]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [selectedProjectName, setSelectedProjectName] = useState("");
+
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const projects = await getProjects();
+        setProjects(projects);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+        setProjects([]);
+      }
+    }
+    fetchProjects();
+  }, []);
 
   const currentProject =
     projects.find((p) => p.title === selectedProjectName) || projects[0];
