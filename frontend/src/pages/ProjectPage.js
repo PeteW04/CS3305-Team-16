@@ -16,7 +16,7 @@ function ProjectPage() {
   const [selectedProjectName, setSelectedProjectName] = useState("");
 
   const currentProject =
-    projects.find((p) => p.name === selectedProjectName) || projects[0];
+    projects.find((p) => p.title === selectedProjectName) || projects[0];
 
   return (
     <div className="dashboard">
@@ -73,15 +73,17 @@ function ProjectPage() {
             >
               <option value="">Select a Project</option>
               {projects.map((project) => (
-                <option key={project.id} value={project.name}>
-                  {project.name}
+                <option key={project._id} value={project.title}>
+                  {project.title}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Display Project Summary for the Selected Project */}
+          {/* Display Project Summary for the Selected Project 
           <ProjectSummary project={currentProject} />
+          */}
+          
         </div>
       </div>
 
@@ -113,7 +115,7 @@ function ProjectPage() {
           project={currentProject} 
           onClose={() => setIsDeleteDialogOpen(false)}
           onDelete={() => {
-            console.log("Deleting project:", currentProject.id); 
+            console.log("Deleting project:", currentProject._id); 
             setIsDeleteDialogOpen(false);
           }}
         />
