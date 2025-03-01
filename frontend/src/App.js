@@ -17,7 +17,7 @@ import ResetPassword from './pages/ResetPassword';
 import TestPage from './pages/Component-Test';
 import Task from './pages/Task';
 import MessageUI from './pages/MessageUI';
-import ProjectSummary from './components/ProjectSummary';
+import ProjectPage from './pages/ProjectPage';
 import Dashboard from './pages/Dashboard';
 import CalendarPage from './pages/CalendarPage';
 
@@ -41,7 +41,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/tasks" element={<Task />} />
               <Route path="/tasks/:projectId" element={<Task />} />
-              <Route path="/projects" element={<ProjectSummary />} />
+              <Route path="/projects" element={<ProjectPage />} />
               <Route path="/message" element={<MessageUI />} />
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/test" element={<TestPage />} />
