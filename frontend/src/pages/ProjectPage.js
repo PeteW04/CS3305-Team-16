@@ -94,9 +94,10 @@ function ProjectPage() {
             </select>
           </div>
 
-          {/* Display Project Summary for the Selected Project 
+          { console.log('Project Page, currentProject: ', currentProject)
+          /* Display Project Summary for the Selected Project */}
           <ProjectSummary project={currentProject} />
-          */}
+          
           
         </div>
       </div>
