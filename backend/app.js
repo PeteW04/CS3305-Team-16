@@ -10,6 +10,7 @@ import projectRouter from './routers/projectRouter.js';
 import taskRouter from './routers/taskRouter.js';
 import channelRouter from './routers/channelRouter.js';
 import messageRouter from './routers/messageRouter.js';
+import notificationRouter from './routers/notificationRouter.js';
 import { authenticate } from './middleware/authMiddleware.js';
 import { socketAuthentication } from './middleware/socketMiddleware.js';
 import managerRouter from './routers/managerRouter.js';
@@ -23,7 +24,7 @@ const app = express();
 const server = createServer(app);
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:3000", 
+        origin: "http://localhost:3000",
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -32,14 +33,14 @@ const io = new Server(server, {
 // MIDDLEWARE
 app.use(cors({
     origin: 'http://localhost:3000',
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
-  }));
+}));
 app.options('*', cors({
     origin: 'http://localhost:3000',
-    methods: ['GET','POST','PUT','DELETE','OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true,
-  }));
+}));
 
 app.use((req, res, next) => {
     req.io = io;
@@ -60,6 +61,7 @@ app.use('/task', authenticate, taskRouter);
 
 app.use('/message', authenticate, messageRouter);
 app.use('/channel', authenticate, channelRouter);
+app.use('/notifications', authenticate, notificationRouter);
 
 app.use('/uploads', express.static('uploads'))
 

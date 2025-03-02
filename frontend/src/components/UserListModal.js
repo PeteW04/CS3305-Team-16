@@ -4,6 +4,7 @@ import { getUserById } from '../api/users';
 import { getTasksByUserID } from '../api/task';
 import AssignTaskModal from './AssignTaskModal';
 import AssignProjectModal from './AssignProjectModal';
+import { addTaskToProject, addEmployeeToProject } from '../api/project';
 
 function UserListModal({ onClose, userId }) {
   const [user, setUser] = useState(null);
@@ -13,7 +14,6 @@ function UserListModal({ onClose, userId }) {
   const [showAssignProjectModal, setShowAssignProjectModal] = useState(false);
 
   useEffect(() => {
-    console.log("Fetching USER")
     const fetchUserInfo = async () => {
       try {
         const user = await getUserById(userId);
@@ -33,9 +33,45 @@ function UserListModal({ onClose, userId }) {
     }
   }, [userId]);
 
+  const handleAssignTask = async (taskData) => {
+    try {
+      // Call your task helper
+      const newTask = await addTaskToProject(taskData.projectId, {
+        title: taskData.title,
+        description: taskData.description,
+        priority: taskData.priority,
+        user: userId // Add user ID to task data
+      });
+
+      // Update local state
+      setTasks(prev => [...prev, newTask]);
+      setShowAssignTaskModal(false);
+    } catch (error) {
+      console.error("Task assignment failed:", error);
+      // Add error state handling here
+    }
+  };
+
+  const handleAssignProject = async (projectId) => {
+    try {
+      // Call your project helper
+      await addEmployeeToProject(projectId, userId);
+
+      // Update local state
+      setUser(prev => ({
+        ...prev,
+        projects: [...prev.projects, projectId]
+      }));
+      setShowAssignProjectModal(false);
+    } catch (error) {
+      console.error("Project assignment failed:", error);
+      // Add error state handling here
+    }
+  };
+
   const numberOfTasks = tasks?.length || 0;
   if (isLoading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   const handleModalClick = (e) => {
@@ -128,6 +164,7 @@ function UserListModal({ onClose, userId }) {
       {showAssignTaskModal && (
         <AssignTaskModal
           onClose={() => setShowAssignTaskModal(false)}
+          onSubmit={handleAssignTask}
           userId={userId}
         />
       )}
@@ -136,6 +173,7 @@ function UserListModal({ onClose, userId }) {
       {showAssignProjectModal && (
         <AssignProjectModal
           onClose={() => setShowAssignProjectModal(false)}
+          onSubmit={handleAssignProject}
           userId={userId}
         />
       )}
