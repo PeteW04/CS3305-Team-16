@@ -8,7 +8,7 @@ A full-stack workflow management application built with React and Node.js, featu
 - Pete White (Backend)
 - Feilim White (Frontend)
 - Ronan O'Driscoll (Backend)
-- Victor Zidomi (Frontend)
+- Victor Zedomi (Frontend)
 - Mark Burns (Backend)
 - Eamon Gaharan (Frontend)
 
