@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MoreHorizontal } from 'lucide-react';
 import PriorityBadge from './PriorityBadge';
 import { useDrag } from 'react-dnd';
@@ -16,6 +16,9 @@ function TaskCard({ task, onEdit, onDelete }) {
     }),
   }));
 
+  useEffect(() => {
+    console.log(task)
+  })
   const handleEdit = (taskData) => {
     onEdit(taskData);
     setShowEditModal(false);
@@ -24,13 +27,12 @@ function TaskCard({ task, onEdit, onDelete }) {
   return (
     <div
       ref={drag}
-      className={`bg-white p-4 rounded-lg shadow-sm ${
-        isDragging ? 'opacity-50' : ''
-      } cursor-move`}
+      className={`bg-white p-4 rounded-lg shadow-sm ${isDragging ? 'opacity-50' : ''
+        } cursor-move`}
     >
       <div className="flex justify-between items-start mb-2">
         <PriorityBadge priority={task.priority} status={task.status} />
-        <button 
+        <button
           className="p-1 hover:bg-gray-100 rounded"
           onClick={(e) => {
             e.stopPropagation();

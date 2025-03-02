@@ -1,57 +1,113 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../CSS-files/UserList.css";
-import { initialusers } from "../DummyData/userlist";
+import { inviteEmployee } from "../api/manager";
+import { deleteUser, getUsersInOrganization } from "../api/users";
 import UserListModal from "./UserListModal";
+import AddMemberModal from "./AddMemberModal";
 
 const UserList = () => {
-  const [users, setUsers] = useState(initialusers);
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showUserListModal, setShowUserListModal] = useState(false);
-  const [selectedUserId, setSelectedUserId] = useState(null); // Track the selected user ID
+  const [showAddMemberModal, setShowAddMemberModal] = useState(false);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleRemoveUser = (userId) => {
-    setUsers(users.filter((user) => user.id !== userId));
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const users = await getUsersInOrganization();
+        setUsers(users);
+
+      } catch (err) {
+        setError(err.message);
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  const handleAddMember = async (email) => {
+    try {
+      await inviteEmployee({ email });
+    } catch (err) {
+      console.error("Add member error:", err);
+    }
   };
+
+  if (loading) return <div>Loading users...</div>;
+  if (error) return <div>Error: {error}</div>;
+
+  const handleRemoveUser = async (userId) => {
+    try {
+      await deleteUser(userId)
+      setUsers(users.filter((user) => user._id !== userId));
+    } catch (err) {
+      console.error("Remove user error:", err);
+    }
+  }
 
   const handleViewProfile = (userId) => {
     console.log(`Viewing profile of user with ID: ${userId}`);
-    setSelectedUserId(userId); // Set the selected user ID
-    setShowUserListModal(true); // Show the modal
+    setSelectedUserId(userId);
+    setShowUserListModal(true);
+    console.log('Modal state after click:', showUserListModal);
   };
 
   const handleAddUser = () => {
-    const newUser = {
-      id: users.length + 1,
-      name: `New User ${users.length + 1}`,
-      role: "Team Member",
-    };
-    setUsers([...users, newUser]);
+    setShowAddMemberModal(true);
   };
+
+  const filteredUsers = users.filter((user) => {
+    const fullName = `${user.firstName?.toLowerCase()} ${user.lastName?.toLowerCase()}`;
+    return fullName.includes(searchQuery.toLowerCase());
+  });
+
+
+
+
 
   return (
     <div className="user-list">
       <div className="user-list-header">
         <h2>Team Members</h2>
+        <div className="header-actions">
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-bar"
+          />
+          <button className="add-member-button" onClick={handleAddUser}>
+            Add Member
+          </button>
+        </div>
       </div>
       <div className="users-container">
-        {users.map((user) => (
-          <div key={user.id} className="user-item">
+        {filteredUsers.map((user) => (
+          <div key={user._id} className="user-item">
             <div className="user-info">
               <div className="avatar"></div>
               <div className="user-details">
-                <p className="user-name">{user.name}</p>
+                <p className="user-name">{`${user.firstName} ${user.lastName}`}</p>
                 <p className="user-role">{user.role}</p>
               </div>
             </div>
             <div className="user-actions">
               <button
                 className="action-button view-profile"
-                onClick={() => handleViewProfile(user.id)} // Fixed onClick handler
+                onClick={() => handleViewProfile(user._id)}
               >
                 View
               </button>
               <button
                 className="action-button remove-user"
-                onClick={() => handleRemoveUser(user.id)}
+                onClick={() => handleRemoveUser(user._id)}
               >
                 Remove
               </button>
@@ -59,17 +115,20 @@ const UserList = () => {
           </div>
         ))}
       </div>
-      <div className="add-user-container">
-        <button className="add-user-button" onClick={handleAddUser}>
-          Add New User
-        </button>
-      </div>
 
-      {/* Render the modal outside the loop */}
+      {/* UserListModal for viewing profiles */}
       {showUserListModal && (
         <UserListModal
           onClose={() => setShowUserListModal(false)}
-          userId={selectedUserId} // Pass the selected user ID to the modal
+          userId={selectedUserId}
+        />
+      )}
+
+      {/* AddMemberModal for adding new members */}
+      {showAddMemberModal && (
+        <AddMemberModal
+          onClose={() => setShowAddMemberModal(false)}
+          onAddMember={handleAddMember}
         />
       )}
     </div>

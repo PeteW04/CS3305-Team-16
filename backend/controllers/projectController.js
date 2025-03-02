@@ -76,24 +76,22 @@ export const getTasks = async (req, res) => {
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
-    const { title, description, deadline, employees } = req.body;
+    const { title, description, deadline} = req.body;
     const { id } = req.user;
 
     try {
-        employees.push(id);
-
         // Create the project
         const newProject = await Project.create({
             title,
             description,
             organization: req.user.organizationId,
-            employees,
+            employees: [id],
             manager: req.user._id,
             deadline
         });
 
         // Create the message channel
-        const channel = await Channel.create({ type: 'project', members: employees, name: newProject.title, projectId: newProject._id });
+        const channel = await Channel.create({ type: 'project', members: [id], name: newProject.title, projectId: newProject._id });
 
         // Link the channel to the project
         newProject.chat = channel._id;
@@ -251,8 +249,8 @@ export const removeEmployee = async (req, res) => {
 export const addTask = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { title, description, deadline } = req.body;
-        const task = { title: title, description: description, deadline: deadline }
+        const { title, description, deadline, priority } = req.body;
+        const task = { title: title, description: description, deadline: deadline, priority }
         const userId = req.user._id;
 
         // Ensure a valid project id
@@ -262,13 +260,12 @@ export const addTask = async (req, res) => {
             return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const newTask = await createTask(projectId, task, userId);
+        const newTask = await createTask(projectId, task, userId, priority);
 
         // Ensure the new task exists
         if (!newTask) {
             return res.status(404).json({ error: 'Unable to add task' });
         }
-
         // Add the task to the project
         project.tasks.push(newTask._id);
         await project.save();

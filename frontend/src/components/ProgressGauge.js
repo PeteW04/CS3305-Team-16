@@ -82,8 +82,8 @@ const ProgressGauge = () => {
               <g className="tick-marks">
                 {Array.from({ length: 50 }).map((_, i) => {
                   const angle = (i * 180) / 49
-                  const start = polarToCartesian(200, 200, 180, angle)
-                  const end = polarToCartesian(200, 200, 200, angle)
+                  const start = polarToCartesian(200, 200, 200, angle)
+                  const end = polarToCartesian(200, 200, 210, angle)
                   return (
                     <line
                       key={i}
