@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Home, MessageSquare, ListChecks, Users, Settings, Layout, ChevronsLeft, ChevronsRight, Calendar } from "lucide-react";
+import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Calendar } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { getProjects } from '../api/project.js'
 
@@ -31,12 +31,6 @@ function Sidebar({ isMinimized, toggleSidebar }) {
 
   return (
     <nav className={`h-screen bg-white border-r border-gray-300 p-4 transition-all ${isMinimized ? "w-20" : "w-64"}`}>
-      {/* Profile Section */}
-      <Link to="/dashboard" className="flex items-center space-x-2 px-2 py-4">
-        <Layout className="w-8 h-8 text-indigo-600" />
-        {!isMinimized && <span className="text-xl font-bold text-gray-900">Clack</span>}
-      </Link>
-
       {/* Menu Section */}
       <ul className="mt-6 space-y-2">
         <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
@@ -71,7 +65,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         onClick={toggleSidebar}
         className="absolute bottom-4 left-4 p-2 bg-indigo-500 rounded-full text-white"
       >
-        {!isMinimized ? <ChevronsLeft size={24} /> : <ChevronsRight size={24} />}
+        {!isMinimized ? <X size={24} /> : <Menu size={24} />}
       </button>
     </nav>
   );
