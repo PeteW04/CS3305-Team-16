@@ -4,7 +4,7 @@ import NavBar from './NavBar';
 import Sidebar from './sidebar';
 
 function Layout() {
-  const [isMinimized, setIsMinimized] = React.useState(false);
+  const [isMinimized, setIsMinimized] = React.useState(true);
 
   const toggleSidebar = () => {
     setIsMinimized(!isMinimized);
