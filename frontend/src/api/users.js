@@ -126,40 +126,15 @@ export async function changeUserPassword(newPassword) {
   }
 }
 
-<<<<<<< HEAD
+
   export const getProfilePictureUrl = (profilePicture) => {
-    if (!profilePicture || !profilePicture.data || !profilePicture.data.data) return "";
+    if (!profilePicture) return "";
+    
     if (typeof profilePicture === "string") return profilePicture;
     
     const { contentType, data } = profilePicture;
-    if (!data.data) return "";
-    
-    const byteArray = new Uint8Array(data.data);
-    const blob = new Blob([byteArray], { type: contentType });
-    return URL.createObjectURL(blob);
+    const bytes = data.data; 
+    const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
+    const base64String = window.btoa(binary);
+    return `data:${contentType};base64,${base64String}`;
   };
-
-//   export const getProfilePictureUrl = (profilePicture) => {
-//     if (!profilePicture) return "";
-    
-//     if (typeof profilePicture === "string") return profilePicture;
-    
-//     const { contentType, data } = profilePicture;
-//     const bytes = data.data; 
-//     const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
-//     const base64String = window.btoa(binary);
-//     return `data:${contentType};base64,${base64String}`;
-//   };
-=======
-export const getProfilePictureUrl = (profilePicture) => {
-  if (!profilePicture) return "";
-
-  if (typeof profilePicture === "string") return profilePicture;
-
-  const { contentType, data } = profilePicture;
-  const bytes = data.data;
-  const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
-  const base64String = window.btoa(binary);
-  return `data:${contentType};base64,${base64String}`;
-};
->>>>>>> 31a7d50a95eafbd850a35c3dac97c0925d7612a3
