@@ -6,7 +6,7 @@ export const getChannels = async (req, res) => {
     try {
         const userId = req.user.id;
         const channels = await Channel.find({ members: userId })
-            .populate("members", "firstName lastName email")
+            .populate("members", "firstName lastName email profilePicture")
             .populate("projectId", "name")
             .populate({
                 path: 'latestMessage.senderId',
