@@ -23,17 +23,17 @@ A full-stack workflow management application built with React and Node.js, featu
   - Kanban board interface
   - Task prioritization
   - Status tracking
-  - Task assignments
+  - Assign task priority
 
 - **Team Communication**
   - Real-time chat functionality
   - Project-specific channels
   - Direct messaging
+  - Group chats
 
 - **Calendar Integration**
   - Project deadline visualization
-  - Task scheduling
-  - Event management
+  - Keep track of upcoming deadlines
 
 ## Technology Stack
 
