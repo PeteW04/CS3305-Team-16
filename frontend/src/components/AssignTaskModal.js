@@ -1,27 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { projects } from "../DummyData/projects"
+import { getProjects } from '../api/project'; // Import your projects helper
 
-function AssignTaskModal({ onClose, userId }) {
-  const [taskName, setTaskName] = useState('');
-  const [taskDescription, setTaskDescription] = useState('');
-  const [taskPriority, setTaskPriority] = useState('Low');
-  const [selectedProject, setSelectedProject] = useState('');
+function AssignTaskModal({ onClose, onSubmit, userId }) {
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    priority: 'Low',
+    projectId: ''
+  });
 
-  const handleAssignTask = (e) => {
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        console.log(data);
+        setProjects(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Project fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log(`Assigning task to user ${userId}:`, {
-      project: selectedProject,
-      taskName,
-      taskDescription,
-      taskPriority,
+    onSubmit({
+      projectId: formData.projectId,
+      title: formData.title,
+      description: formData.description,
+      priority: formData.priority,
+      userId: userId
     });
+    onClose();
+  };
 
-    setTaskName('');
-    setTaskDescription('');
-    setTaskPriority('Low');
-    setSelectedProject('');
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   return (
@@ -33,61 +58,80 @@ function AssignTaskModal({ onClose, userId }) {
             <X className="w-5 h-5" />
           </button>
         </div>
-        <form onSubmit={handleAssignTask}>
+
+        <form onSubmit={handleSubmit}>
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Project</label>
-              <select
-                value={selectedProject}
-                onChange={(e) => setSelectedProject(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="">Select a project</option>
-                {projects.map((project) => (
-                  <option key={project.id} value={project.id}>
-                    {project.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                type="text"
-                value={taskName}
-                onChange={(e) => setTaskName(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Description</label>
-              <textarea
-                value={taskDescription}
-                onChange={(e) => setTaskDescription(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                rows="3"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Priority</label>
-              <select
-                value={taskPriority}
-                onChange={(e) => setTaskPriority(e.target.value)}
-                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                required
-              >
-                <option value="Low">Low</option>
-                <option value="High">High</option>
-              </select>
-            </div>
+            {loading ? (
+              <div className="text-center py-4">Loading projects...</div>
+            ) : error ? (
+              <div className="text-red-500 text-center p-4">{error}</div>
+            ) : (
+              <>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Project</label>
+                  <select
+                    name="projectId"
+                    value={formData.projectId}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    required
+                  >
+                    <option value="">Select a project</option>
+                    {projects.map((project) => (
+                      <option key={project._id} value={project._id}>
+                        {project.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    rows="3"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Priority</label>
+                  <select
+                    name="priority"
+                    value={formData.priority}
+                    onChange={handleChange}
+                    className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                    required
+                  >
+                    <option value="Low">Low</option>
+                    {/* <option value="Medium">Medium</option> */}
+                    <option value="High">High</option>
+                  </select>
+                </div>
+              </>
+            )}
+
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
+              disabled={loading || !formData.projectId}
+              className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Assign Task
+              {loading ? 'Assigning...' : 'Assign Task'}
             </button>
           </div>
         </form>
