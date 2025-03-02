@@ -9,9 +9,9 @@ function EditProjectDialog({ project, onClose, onSave }) {
 
   useEffect(() => {
     if (project) {
-      setName(project.name || "")
+      setName(project.title || "")
       setManager(project.manager || "")
-      setDueDate(project.dueDate || "")
+      setDueDate(project.deadline || "")
       setDescription("Create a user flow of social application design")
     }
   }, [project])

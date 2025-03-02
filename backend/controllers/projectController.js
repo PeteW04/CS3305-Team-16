@@ -76,24 +76,22 @@ export const getTasks = async (req, res) => {
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
-    const { title, description, deadline, employees } = req.body;
+    const { title, description, deadline} = req.body;
     const { id } = req.user;
 
     try {
-        employees.push(id);
-
         // Create the project
         const newProject = await Project.create({
             title,
             description,
             organization: req.user.organizationId,
-            employees,
+            employees: [id],
             manager: req.user._id,
             deadline
         });
 
         // Create the message channel
-        const channel = await Channel.create({ type: 'project', members: employees, name: newProject.title, projectId: newProject._id });
+        const channel = await Channel.create({ type: 'project', members: [id], name: newProject.title, projectId: newProject._id });
 
         // Link the channel to the project
         newProject.chat = channel._id;
