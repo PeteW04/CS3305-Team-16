@@ -13,12 +13,17 @@ const NavBar = () => {
   const [showNotificationModal, setShowNotificationModal] = useState(false); 
   const { user, isLoading } = useAuth();
 
-  console.log("User profile picture URL:", user.profilePicture);
+  console.log("User profile picture URL:", user?.profilePicture);
+
 
 
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!user) {
+    return <div>No user data available</div>;
   }
 
   return (
@@ -51,8 +56,8 @@ const NavBar = () => {
 
         <div className="profile-section" onClick={() => setShowProfileModal(true)}>
   <div className="flex items-center gap-2 cursor-pointer">
-    <div className="bg-indigo-100 p-2 rounded-full">
-      {user.profilePicture ? (
+   <div className="bg-indigo-100 p-2 rounded-full">
+      {user?.profilePicture ? (
         <img
           src={getProfilePictureUrl(user.profilePicture)}
           alt="User Profile"
