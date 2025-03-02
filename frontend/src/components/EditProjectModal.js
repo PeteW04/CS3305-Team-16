@@ -26,7 +26,7 @@ function EditProjectDialog({ project, onClose, onSave }) {
         deadline,
         description,
       }
-      // Call the updateProject function
+      // Call the updatingProject function
       console.log('Handle Submit');
       console.log(project._id, data);
       const updatedProject = await updatingProject(project._id, data);
@@ -35,7 +35,6 @@ function EditProjectDialog({ project, onClose, onSave }) {
     } catch (error) {
       console.error("Error updating project:", error.message);
     }
-    
   }
 
   return (

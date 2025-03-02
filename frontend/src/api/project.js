@@ -183,6 +183,7 @@ export const deleteTaskFromProject = async (projectId, taskId) => {
 
 export const deletingProject = async (projectId) => {
     try {
+        console.log('deletingProject projectId', projectId);
         const response = await fetch(`${API_URL}/${projectId}`, {
             method: 'DELETE',
             headers: {

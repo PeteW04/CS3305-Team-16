@@ -337,21 +337,17 @@ export const updateStatus = async (req, res) => {
 // DELETE: Delete a project
 export const deleteProject = async (req, res) => {
     try {
-        const { projectId } = req.params;
+        const { id } = req.params;
 
         // Verify that the project exists
-        const project = await Project.findById(projectId);
+        const project = await Project.findById(id);
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        if (project.organization.toString() !== req.user.organizationId) {
-            return res.status(403).json({ message: 'Unauthorized to modify this project, as it is outside of your organisation' });
-        }
-
-        await Project.findByIdAndDelete(projectId);
+        const deletedProject = await Project.findByIdAndDelete(id);
         
-        return { message: 'Task deleted successfully' }
+        res.status(200).json(deletedProject);
     } catch (error) {
         console.error("Error deleting project: ", error.message);
         res.status(500).json({ error: error.message });

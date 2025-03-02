@@ -132,8 +132,9 @@ function ProjectPage() {
         <DeleteProjectDialog
           project={currentProject} 
           onClose={() => setIsDeleteDialogOpen(false)}
-          onDelete={() => {
+          onDelete={(deletedProject) => {
             console.log("Deleting project:", currentProject._id); 
+            setProjects((prevProjects) => prevProjects.filter((p) => p._id !== deletedProject._id));
             setIsDeleteDialogOpen(false);
           }}
         />
