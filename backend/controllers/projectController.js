@@ -251,8 +251,8 @@ export const removeEmployee = async (req, res) => {
 export const addTask = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { title, description, deadline } = req.body;
-        const task = { title: title, description: description, deadline: deadline }
+        const { title, description, deadline, priority } = req.body;
+        const task = { title: title, description: description, deadline: deadline, priority }
         const userId = req.user._id;
 
         // Ensure a valid project id
@@ -262,13 +262,12 @@ export const addTask = async (req, res) => {
             return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const newTask = await createTask(projectId, task, userId);
+        const newTask = await createTask(projectId, task, userId, priority);
 
         // Ensure the new task exists
         if (!newTask) {
             return res.status(404).json({ error: 'Unable to add task' });
         }
-
         // Add the task to the project
         project.tasks.push(newTask._id);
         await project.save();

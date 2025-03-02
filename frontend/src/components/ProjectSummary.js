@@ -67,10 +67,10 @@ export default function ProjectSummary() {
         <table className="table">
           <thead>
             <tr>
-              <th>Project</th>
-              <th>Project Manager</th>
-              <th>Due Date</th>
-              <th>Status</th>
+            <th className="project-column">Project</th>
+                <th className="manager-column">Project Manager</th>
+                <th className="date-column">Due Date</th>
+                <th className="status-column">Status</th>
             </tr>
           </thead>
           <tbody>
