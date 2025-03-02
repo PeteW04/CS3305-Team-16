@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, changeTitle, changeDescription, changeDeadline, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus } from '../controllers/projectController.js';
+import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, updateProject, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus } from '../controllers/projectController.js';
 import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
 
 const projectRouter = express.Router();
@@ -19,14 +19,8 @@ projectRouter.get('/:projectId/tasks', checkUserRole('manager'), getTasks);
 // Create new project
 projectRouter.post('/', checkUserRole('manager'), createProject);
 
-// Change project name
-projectRouter.put('/change-title/projectId/:projectId/newTitle/:newTitle', checkUserRole('manager'), changeTitle);
-
-// Change project description
-projectRouter.put('/change-description/projectId/:projectId/newDescription/:newDescription', checkUserRole('manager'), changeDescription);
-
-// Change project deadline
-projectRouter.put('/change-deadline/projectId/:projectId/newDeadline/:newDeadline', checkUserRole('manager'), changeDeadline);
+// Update Project
+projectRouter.put('/:id', checkUserRole('manager'), updateProject);
 
 // Add an employee
 projectRouter.put('/employees/add', checkUserRole('manager'), addEmployee);

@@ -106,75 +106,22 @@ export const createProject = async (req, res) => {
     }
 };
 
-// PUT: Change project name
-export const changeTitle = async (req, res) => {
+// PUT: Update project 
+export const updateProject = async (req, res) => {
     try {
-        const { projectId, newTitle } = req.params;
+        const project = await Project.findById(req.params.id);
 
-        // Find the project and update its title
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { title: newTitle },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json({ message: 'Project title updated', project });
+        const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(updatedProject);
     } catch (error) {
+        console.error("Error in Update Project:", error.message);
         res.status(500).json({ error: error.message });
     }
-};
-
-// PUT: Change project description
-export const changeDescription = async (req, res) => {
-    try {
-        const { projectId, newDescription } = req.params;
-
-        // Find the project and update its description
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { description: newDescription },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
-        }
-
-        res.status(200).json({ message: 'Project description updated', project });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-// PUT: Change project deadline
-export const changeDeadline = async (req, res) => {
-    try {
-        const { projectId, newDeadline } = req.params;
-
-        // Find the project and update its deadline
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { deadline: newDeadline },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
-        }
-
-        res.status(200).json({ message: 'Project deadline updated', project });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+}
 
 // PUT: Add a worker to a project
 export const addEmployee = async (req, res) => {
