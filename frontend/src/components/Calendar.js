@@ -101,7 +101,7 @@ const Calendar = () => {
                 </div>
 
                 <div className="calendar-grid">
-                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(day => (
+                    {['S', 'M', 'T', 'W', 'Th', 'F', 'Sa'].map(day => (
                         <div key={day} className="day-name">
                             {day}
                         </div>
