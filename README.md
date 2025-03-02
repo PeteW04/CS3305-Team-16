@@ -42,7 +42,6 @@ A full-stack workflow management application built with React and Node.js, featu
 - TailwindCSS
 - Socket.io-client
 - React Router DOM
-- Axios for API calls
 
 ### Backend
 - Node.js

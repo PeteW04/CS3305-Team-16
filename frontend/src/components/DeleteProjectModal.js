@@ -14,7 +14,7 @@ function DeleteProjectDialog({ project, onClose, onDelete }) {
             Delete Project
           </h2>
           <p className="text-sm text-gray-500 mt-1">
-            Are you sure you want to delete "{project?.name}"? This action cannot be undone.
+            Are you sure you want to delete "{project?.title}"? This action cannot be undone.
           </p>
         </div>
 
