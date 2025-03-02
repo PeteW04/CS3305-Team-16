@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, updateProject, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus } from '../controllers/projectController.js';
+import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, updateProject, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus, deleteProject } from '../controllers/projectController.js';
 import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
 
 const projectRouter = express.Router();
@@ -39,5 +39,8 @@ projectRouter.put('/projectId/:projectId/tasks/taskId/:taskId/status/:status', u
 
 // Update the projects status ['New', 'In Progress', 'Completed']
 projectRouter.put('/projectId/:projectId/status/:status', updateStatus);
+
+// Delete a project
+projectRouter.delete('/:id', checkUserRole('manager'), deleteProject);
 
 export default projectRouter;
