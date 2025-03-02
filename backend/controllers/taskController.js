@@ -1,6 +1,8 @@
 import Task from '../models/Task.js';
 import Project from '../models/Projects.js';
 import mongoose from 'mongoose';
+import { createNotification } from './notificationController.js';
+
 
 
 // Get all tasks
@@ -69,7 +71,6 @@ export const getTasksByUserID = async (req, res) => {
 }
 
 
-// Create a task
 export const createTask = async (projectId, task, userId, priority) => {
     try {
         const newTask = await Task.create({
@@ -79,6 +80,14 @@ export const createTask = async (projectId, task, userId, priority) => {
             user: userId,
             priority
         });
+
+        await createNotification(
+            userId,
+            'task',
+            `New task assigned: ${task.title}`,
+            newTask._id
+        );
+
         return newTask;
     }
     catch (error) {

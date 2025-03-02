@@ -1,12 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 import { projects } from "../DummyData/projects"
+import { getProjects } from '../api/project';
 
-function AssignProjectModal({ onClose, userId }) {
+function AssignProjectModal({ onClose, onSubmit, userId }) {
   const [selectedProject, setSelectedProject] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleAssignProject = () => {
-    console.log(`Assigning project to user ${userId}:`, selectedProject);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await getProjects();
+        setProjects(data);
+      } catch (err) {
+        setError(err.message);
+        console.error("Project fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProjects();
+  }, []);
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!selectedProject) return;
+    onSubmit(selectedProject);
     onClose();
   };
 
@@ -29,14 +52,14 @@ function AssignProjectModal({ onClose, userId }) {
             >
               <option value="">Select a project</option>
               {projects.map((project) => (
-                <option key={project.id} value={project.id}>
-                  {project.name}
+                <option key={project._id} value={project._id}>
+                  {project.title}
                 </option>
               ))}
             </select>
           </div>
           <button
-            onClick={handleAssignProject}
+            onClick={handleSubmit}
             className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700"
           >
             Assign Project

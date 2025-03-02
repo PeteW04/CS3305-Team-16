@@ -1,5 +1,6 @@
 import Message from "../models/Message.js";
 import Channel from "../models/Channel.js";
+import { createNotification } from "./notificationController.js";
 
 export const getChannels = async (req, res) => {
     try {
@@ -137,6 +138,31 @@ export const sendMessage = async (req, res) => {
         });
         message = await message.populate('senderId', 'firstName lastName _id');
 
+        // Get channel details
+        const channel = await Channel.findById(channelId)
+            .populate('members', '_id firstName lastName');
+
+        // Create notifications and emit real-time updates
+        if (channel?.members) {
+            channel.members
+                .filter(member => member._id.toString() !== req.user._id.toString())
+                .forEach(async (member) => {
+                    try {
+                        const notification = await createNotification(
+                            member._id,
+                            'message',
+                            `New message in ${channel.name || 'chat'} from ${req.user.firstName}: ${text.substring(0, 40)}...`,
+                            channelId
+                        );
+
+                        req.io.to(member._id.toString()).emit('new-notification', notification);
+
+                    } catch (error) {
+                        console.error(`Notification failed for user ${member._id}:`, error);
+                    }
+                });
+        }
+
         await Channel.findByIdAndUpdate(channelId, {
             latestMessage: {
                 text,
@@ -153,6 +179,8 @@ export const sendMessage = async (req, res) => {
         return res.status(500).json({ message: e.message });
     }
 };
+
+
 
 export const editMessage = async (req, res) => {
     const { messageId } = req.params;
