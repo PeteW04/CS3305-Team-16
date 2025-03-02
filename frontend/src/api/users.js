@@ -127,14 +127,31 @@ export async function changeUserPassword(newPassword) {
 }
 
 
-  export const getProfilePictureUrl = (profilePicture) => {
+export const getProfilePictureUrl = (profilePicture) => {
     if (!profilePicture) return "";
-    
-    if (typeof profilePicture === "string") return profilePicture;
-    
+  
+    if (typeof profilePicture === "string") {
+      return profilePicture;
+    }
+  
     const { contentType, data } = profilePicture;
-    const bytes = data.data; 
-    const binary = bytes.reduce((acc, byte) => acc + String.fromCharCode(byte), "");
+  
+    if (typeof data === "string") {
+      return `data:${contentType};base64,${data}`;
+    }
+  
+    const byteArray = data && data.data ? data.data : data;
+    if (!Array.isArray(byteArray)) {
+      console.error("Expected an array of bytes but got:", byteArray);
+      return "";
+    }
+  
+    const binary = byteArray.reduce(
+      (acc, byte) => acc + String.fromCharCode(byte),
+      ""
+    );
     const base64String = window.btoa(binary);
     return `data:${contentType};base64,${base64String}`;
   };
+  
+  
