@@ -162,9 +162,6 @@ export const addEmployeeToProject = async (projectId, employeeId) => {
 
 export const deleteTaskFromProject = async (projectId, taskId) => {
     try {
-        console.log('deleteTaskFromProject projectId: ', projectId);
-        console.log('deleteTaskFromProject taskId: ', taskId);
-
         const response = await fetch(`${API_URL}/projectId/${projectId}/tasks/remove/taskId/${taskId}`, {
             method: 'DELETE',
             headers: {
@@ -183,3 +180,23 @@ export const deleteTaskFromProject = async (projectId, taskId) => {
     }
 }
 
+
+export const deletingProject = async (projectId) => {
+    try {
+        const response = await fetch(`${API_URL}/${projectId}`, {
+            method: 'DELETE',
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+                'Content-Type': 'application/json'
+            },
+        });
+
+        if (!response.ok) throw new Error('Failed to delete project');
+
+        // Return the response 
+        return await response.json();
+    } catch (error) {
+        console.error("Error deleting project:", error.message);
+        throw error;
+    }
+}
