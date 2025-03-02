@@ -17,6 +17,7 @@ body {
   border-radius: 24px;
   padding: 16px;
   min-width: fit-content;
+  min-height:500px ;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   margin: 24px;
 }
@@ -107,6 +108,7 @@ body {
   justify-content: center;
   margin: 0 auto;;
   transition: background-color 0.2s;
+  position: relative;
 }
 
 .date-button:hover:not(.prev-month):not(.selected) {
@@ -121,27 +123,15 @@ body {
 .date-button.selected {
   background-color: #4339f2;
   color: white;
+  text-align: center;
+  
 }
 
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .calendar {
-    padding: 20px;
-  }
 
-  .calendar-grid {
-    gap: 12px;
-  }
 
-  .date-button {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-  }
-}
 
-/* Selected Date Projects */
 .selected-date-projects {
+  
   margin-top: 16px;
   padding: 16px;
   background-color: #ffffff;
@@ -189,16 +179,17 @@ body {
 
 /* Project Count Indicator */
 .project-count {
-  position: absolute;
-  top: 4px;
-  right: 4px;
+  position: absolute; 
+  top: -1px; 
+  right: -1px; 
   background-color: #d8727d;
   color: white;
   font-size: 10px;
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  display: flex;
+  display: flex; 
   align-items: center;
   justify-content: center;
+  z-index: 1; 
 }
