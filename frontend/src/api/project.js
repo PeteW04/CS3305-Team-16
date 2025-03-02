@@ -56,6 +56,32 @@ export const getProject = async (projectId) => {
     }
 }
 
+export const updatingProject = async (projectId, data) => {
+    try {
+        console.log('updatingProject Project');
+        console.log(projectId, data);
+        const response = await fetch(`${API_URL}/${projectId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to update project");
+        }
+        
+        console.log('Response: ', response);
+        return await response.json();
+
+    } catch (error) {
+        console.error("Error updating project:", error.message);
+        throw error;
+    }
+}
+
 export const getProjectTasks = async (projectId) => {
     try {
         const response = await fetch(`${API_URL}/${projectId}/tasks`, {

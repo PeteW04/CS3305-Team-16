@@ -94,8 +94,7 @@ function ProjectPage() {
             </select>
           </div>
 
-          { console.log('Project Page, currentProject: ', currentProject)
-          /* Display Project Summary for the Selected Project */}
+          { /* Display Project Summary for the Selected Project */}
           <ProjectSummary project={currentProject} />
           
           
@@ -108,7 +107,11 @@ function ProjectPage() {
           project={currentProject} 
           onClose={() => setIsEditDialogOpen(false)}
           onSave={(updatedProject) => {
-            console.log("Updating project:", updatedProject);
+            setProjects((prevProjects) =>
+              prevProjects.map((p) =>
+                p._id === updatedProject._id ? updatedProject : p
+              )
+            );
             setIsEditDialogOpen(false);
           }}
         />

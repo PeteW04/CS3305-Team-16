@@ -109,6 +109,7 @@ export const createProject = async (req, res) => {
 // PUT: Update project 
 export const updateProject = async (req, res) => {
     try {
+        console.log("Request Received");
         const project = await Project.findById(req.params.id);
 
         if (!project) {
