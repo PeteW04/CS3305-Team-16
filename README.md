@@ -4,13 +4,13 @@ A full-stack workflow management application built with React and Node.js, featu
 
 ## Team Members
 
-- Matthew Glavin
-- Pete White
-- Feilim White
-- Ronan O'Driscoll
-- Victor Zidomi
-- Mark Burns
-- Eamon Gaharan
+- Matthew Glavin (Frontend)
+- Pete White (Backend)
+- Feilim White (Frontend)
+- Ronan O'Driscoll (Backend)
+- Victor Zidomi (Frontend)
+- Mark Burns (Backend)
+- Eamon Gaharan (Frontend)
 
 ## Features
 
