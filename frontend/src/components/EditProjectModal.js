@@ -14,6 +14,9 @@ function EditProjectDialog({ project, onClose, onSave }) {
       setManager(project.manager || "")
       setDeadline(project.deadline || "")
       setDescription(project.description || "")
+      setManager(`${project.manager.firstName} ${project.manager.lastName}` || "")
+      setDeadline(new Date(project.deadline).toLocaleDateString() || "")
+      setDescription("Create a user flow of social application design")
     }
   }, [project])
 
@@ -30,7 +33,7 @@ function EditProjectDialog({ project, onClose, onSave }) {
       console.log('Handle Submit');
       console.log(project._id, data);
       const updatedProject = await updatingProject(project._id, data);
-      
+
       onSave(updatedProject);
     } catch (error) {
       console.error("Error updating project:", error.message);
@@ -112,11 +115,11 @@ function EditProjectDialog({ project, onClose, onSave }) {
               Cancel
             </button>
             <button
-            type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4f46e5] hover:bg-[#4338ca] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
-          >
-            Save Changes
-          </button>
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4f46e5] hover:bg-[#4338ca] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
+            >
+              Save Changes
+            </button>
           </div>
         </form>
       </div>

@@ -8,9 +8,8 @@ import { createChannel } from './messageController.js';
 // GET: List all Projects
 export const getAllProjects = async (req, res) => {
     try {
-        // Automatically filter by the user's organizationId
-
-        const projects = await Project.find({ organization: req.user.organizationId });
+        const projects = await Project.find({ organization: req.user.organizationId })
+            .populate('manager', 'firstName lastName');  // Add this line
 
         res.status(200).json(projects);
     }
@@ -18,6 +17,7 @@ export const getAllProjects = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // GET: List all Projects in an Organization
 export const getAllProjectsByOrg = async (req, res) => {
@@ -76,7 +76,7 @@ export const getTasks = async (req, res) => {
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
-    const { title, description, deadline} = req.body;
+    const { title, description, deadline } = req.body;
     const { id } = req.user;
 
     try {
@@ -348,7 +348,7 @@ export const deleteProject = async (req, res) => {
         const deletedProject = await Project.findByIdAndDelete(id);
 
         await Channel.findByIdAndDelete(deletedProject.chat);
-        
+
         res.status(200).json(deletedProject);
     } catch (error) {
         console.error("Error deleting project: ", error.message);

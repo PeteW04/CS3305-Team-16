@@ -31,7 +31,7 @@ const NavBar = () => {
     <div className="header">
       {/* Left section */}
       <div className="header-left">
-        <Link to="/" className="flex items-center space-x-2">
+        <Link to="/dashboard" className="flex items-center space-x-2">
           <Layout className="w-8 h-8 text-indigo-600" />
           <span className="text-xl font-bold text-gray-900">Clack</span>
         </Link>

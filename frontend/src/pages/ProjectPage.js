@@ -21,6 +21,9 @@ function ProjectPage() {
       try {
         const projects = await getProjects();
         setProjects(projects);
+        if (projects.length > 0) {
+          setSelectedProjectName(projects[0].title);
+        }
       } catch (error) {
         console.error('Error fetching tasks:', error);
         setProjects([]);
@@ -96,15 +99,15 @@ function ProjectPage() {
 
           { /* Display Project Summary for the Selected Project */}
           <ProjectSummary project={currentProject} />
-          
-          
+
+
         </div>
       </div>
 
       {/* Modals */}
       {isEditDialogOpen && (
         <EditProjectDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsEditDialogOpen(false)}
           onSave={(updatedProject) => {
             setProjects((prevProjects) =>
@@ -119,7 +122,7 @@ function ProjectPage() {
 
       {isAssignDialogOpen && (
         <AssignUsersDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsAssignDialogOpen(false)}
           onAssign={(userIds) => {
             console.log("Assigning users:", userIds);
@@ -130,10 +133,10 @@ function ProjectPage() {
 
       {isDeleteDialogOpen && (
         <DeleteProjectDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsDeleteDialogOpen(false)}
           onDelete={(deletedProject) => {
-            console.log("Deleting project:", currentProject._id); 
+            console.log("Deleting project:", currentProject._id);
             setProjects((prevProjects) => prevProjects.filter((p) => p._id !== deletedProject._id));
             setIsDeleteDialogOpen(false);
           }}
