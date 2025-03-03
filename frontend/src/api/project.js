@@ -31,7 +31,6 @@ export const getProjects = async () => {
 
 export const getProject = async (projectId) => {
     try {
-        // Send API request to get all projects, with the users token
         const response = await fetch(`${API_URL}/projectId/${projectId}`, {
             method: "GET",
             headers: {
@@ -52,6 +51,31 @@ export const getProject = async (projectId) => {
         // Catch any errors
     } catch (error) {
         console.error("Error fetching projects:", error.message);
+        throw error;
+    }
+}
+
+export const gettingProjectByUser = async (userId) => {
+    try {
+        const response = await fetch(`${API_URL}/user/${userId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${getAuthToken()}`,
+            },
+        });
+
+        // Ensure the response comes back ok
+        if (!response.ok) {
+            throw new Error("Failed to fetch user projects");
+        }
+
+        // Return the response 
+        return await response.json();
+
+        // Catch any errors
+    } catch (error) {
+        console.error("Error fetching user projects:", error.message);
         throw error;
     }
 }

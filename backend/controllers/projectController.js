@@ -75,6 +75,30 @@ export const getTasks = async (req, res) => {
     }
 };
 
+// Get a users projects
+export const getProjectsByUser = async (req, res) => {
+    try {
+        const {userId} = req.params;
+
+        // Ensure the user exists
+        const user = await User.findById(userId);
+        if (!user) {
+            console.error('User not found');
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const projects = await Project.find({ 
+            organization: req.user.organizationId,
+            employees: userId
+         })
+
+        res.status(200).json(projects);
+    }
+    catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
     const { title, description, deadline } = req.body;

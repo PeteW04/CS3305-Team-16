@@ -74,8 +74,8 @@ const MiniProgressGauge = () => {
               cx="60"
               cy="60"
               r={radius}
-              stroke="#6366f1"
-              strokeWidth="10" // Slightly increased stroke width
+              stroke="#10b981" 
+              strokeWidth="10" 
               fill="none"
               strokeLinecap="round"
               style={{
@@ -99,8 +99,8 @@ const MiniProgressGauge = () => {
           <div className="text-sm font-medium text-green-700">{tasks.completedTasks}</div>
           <div className="text-xs text-gray-500">Done</div>
         </div>
-        <div className="bg-yellow-50 rounded p-2">
-          <div className="text-sm font-medium text-yellow-700">{tasks.inProgressTasks}</div>
+        <div className="bg-orange-50 rounded p-2">
+          <div className="text-sm font-medium text-orange-700">{tasks.inProgressTasks}</div>
           <div className="text-xs text-gray-500">In Progress</div>
         </div>
         <div className="bg-gray-50 rounded p-2">
