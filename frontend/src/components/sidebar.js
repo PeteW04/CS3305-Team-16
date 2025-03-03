@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Calendar, Plus } from "lucide-react";
 import { Link } from 'react-router-dom';
-import { getProjects } from '../api/project.js'
+import { getProjects, creatingProject } from '../api/project.js'
 import CreateProjectModal from "./CreateProjectModal.js";
 
 function Sidebar({ isMinimized, toggleSidebar }) {
@@ -25,8 +25,10 @@ function Sidebar({ isMinimized, toggleSidebar }) {
     fetchProjects();
   }, []);
 
-  const handleCreateProject = (projectData) => {
-    console.log("Project created:", projectData); 
+  const handleCreateProject = async (projectData) => {
+    const newProject = await creatingProject(projectData);
+    setProjects((prevProjects) => [...prevProjects, newProject]);
+    console.log("Project created:", newProject); 
     setIsModalOpen(false); 
   };
 

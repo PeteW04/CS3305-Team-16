@@ -2,17 +2,15 @@ import { useState } from "react";
 import { Calendar } from "lucide-react";
 
 function CreateProjectModal({ onClose, onCreateProject }) {
-  const [name, setName] = useState("");
-  const [manager, setManager] = useState("");
-  const [dueDate, setDueDate] = useState("");
+  const [title, setTitle] = useState("");
+  const [deadline, setDeadline] = useState("");
   const [description, setDescription] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
     onCreateProject({
-      name,
-      manager,
-      dueDate,
+      title,
+      deadline,
       description,
     });
   };
@@ -35,8 +33,8 @@ function CreateProjectModal({ onClose, onCreateProject }) {
                 id="name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                 placeholder="Enter project name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>
@@ -48,11 +46,11 @@ function CreateProjectModal({ onClose, onCreateProject }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-left flex items-center focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-[#4f46e5]"
                 onClick={() => {
                   const date = prompt("Enter due date (MM/DD/YYYY):");
-                  if (date) setDueDate(date);
+                  if (date) setDeadline(date);
                 }}
               >
                 <Calendar className="mr-2 h-5 w-5 text-gray-400" />
-                {dueDate || "Select a date"}
+                {deadline || "Select a date"}
               </button>
             </div>
 
