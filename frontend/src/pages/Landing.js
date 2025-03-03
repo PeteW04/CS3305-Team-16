@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Layout, Zap, Users, ArrowRight } from 'lucide-react';
+import { MessageSquare, Layout, Zap, ArrowRight } from 'lucide-react';
 
 function Landing() {
   return (

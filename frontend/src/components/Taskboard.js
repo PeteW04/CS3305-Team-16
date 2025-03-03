@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import TaskColumn from './TaskColumn';
-import { initialTasks } from '../DummyData/tasks';
 import '../CSS-files/App.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';

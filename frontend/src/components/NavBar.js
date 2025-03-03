@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, Search, Calendar, Mail, Bell, User, Layout } from "lucide-react";
+import { Bell, User, Layout } from "lucide-react";
 import "../CSS-files/NavBar.css";
 import ProfileModal from "./ProfileModal";
 import { Link } from 'react-router-dom';

@@ -1,6 +1,5 @@
 
 import { useState } from "react"
-import Sidebar from "../components/sidebar"
 import UserList from "../components/UserList"
 import "../CSS-files/ManagerPage.css"
 
