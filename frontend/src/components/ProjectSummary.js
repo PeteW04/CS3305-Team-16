@@ -39,59 +39,61 @@ export default function ProjectSummary() {
       }
     }
     fetchProjects();
-  }, [authToken]); 
+  }, [authToken]);
 
   if (loading) return <div>Loading projects...</div>;
   if (error) return <div>Error: {error}</div>;
 
   return (
     <div className="ProjectSummary">
-    <div className="container1">
-      <div className="filter-container">
-        <h1 className="ProjectBoxHeader">Project Summary</h1>
-        <button className="filter-button">
-          Project
-          <ChevronDown className="icon" />
-        </button>
-        <button className="filter-button">
-          Project Manager
-          <ChevronDown className="icon" />
-        </button>
-        <button className="filter-button">
-          Status
-          <ChevronDown className="icon" />
-        </button>
-      </div>
+      <div className="container1">
+        <div className="filter-container">
+          <h1 className="ProjectBoxHeader">Project Summary</h1>
+          <button className="filter-button">
+            Project
+            <ChevronDown className="icon" />
+          </button>
+          <button className="filter-button">
+            Project Manager
+            <ChevronDown className="icon" />
+          </button>
+          <button className="filter-button">
+            Status
+            <ChevronDown className="icon" />
+          </button>
+        </div>
 
-      <div className="table-container">
-        <table className="table">
-          <thead>
-            <tr>
-            <th className="project-column">Project</th>
-                <th className="manager-column">Project Manager</th>
+        <div className="table-container">
+          <table className="table">
+            <thead>
+              <tr>
+                <th className="project-column">Project</th>
+                <th className="manager-column"></th>
                 <th className="date-column">Due Date</th>
                 <th className="status-column">Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((project, index) => (
-              <tr key={index}>
-                <td>{project.title}</td>
-                <td className="manager-name">{project.manager ? project.manager : "N/A"}</td>
-                <td className="due-date">
-                  {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}
-                </td>
-                <td>
-                  <span className={`status ${project.status.toLowerCase().replace(" ", "-")}`}>
-                    {project.status}
-                  </span>
-                </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {projects.map((project, index) => (
+                <tr key={index}>
+                  <td>{project.title}</td>
+                  <td className="manager-name">
+                    {project.manager?.firstName} {project.manager?.lastName || "N/A"}
+                  </td>
+                  <td className="due-date">
+                    {project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}
+                  </td>
+                  <td>
+                    <span className={`status ${project.status.toLowerCase().replace(" ", "-")}`}>
+                      {project.status}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
     </div>
   );
 }
