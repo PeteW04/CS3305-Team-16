@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getProjects } from '../../api/project';
 import { getProjectTasks } from '../../api/project';
+import PriorityBadge from '../PriorityBadge';
 
 const MiniTaskManager = () => {
   const [tasks, setTasks] = useState([]);
@@ -30,15 +31,6 @@ const MiniTaskManager = () => {
     fetchAllTasks();
   }, []);
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'todo': return 'bg-gray-200';
-      case 'progress': return 'bg-yellow-200';
-      case 'done': return 'bg-green-200';
-      default: return 'bg-gray-200';
-    }
-  };
-
   if (loading) return <div className="h-full flex items-center justify-center">Loading tasks...</div>;
   if (error) return <div className="h-full flex items-center justify-center text-red-500">Error: {error}</div>;
 
@@ -56,9 +48,7 @@ const MiniTaskManager = () => {
             <div key={task._id} className="mb-2 p-2 bg-gray-50 rounded-lg">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">{task.title}</span>
-                <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(task.status)}`}>
-                  {task.status}
-                </span>
+                <PriorityBadge priority={task.priority} status={task.status} />
               </div>
               {task.dueDate && (
                 <span className="text-xs text-gray-500">
