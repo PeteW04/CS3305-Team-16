@@ -19,8 +19,6 @@ function TaskColumn({ title, tasks, count, accentColor, onTaskDrop, onAddTask, o
     }),
   }));
 
-  console.log(tasks);
-
   const handleAddTask = (taskData) => {
     onAddTask(taskData);
     setShowNewTaskModal(false);

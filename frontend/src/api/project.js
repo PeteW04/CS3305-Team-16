@@ -182,10 +182,30 @@ export const deleteTaskFromProject = async (projectId, taskId) => {
     }
 }
 
+export const creatingProject = async (projectData) => {
+    try {
+        const response = await fetch(`${API_URL}/`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${getAuthToken()}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(projectData)
+        });
+
+        if (!response.ok) throw new Error('Failed to create project');
+
+        // Return the response 
+        return await response.json();
+    } catch (error) {
+        console.error("Error creating project:", error.message);
+        throw error;
+    }
+}
+
 
 export const deletingProject = async (projectId) => {
     try {
-        console.log('deletingProject projectId', projectId);
         const response = await fetch(`${API_URL}/${projectId}`, {
             method: 'DELETE',
             headers: {
