@@ -72,7 +72,7 @@ export const updatingProject = async (projectId, data) => {
         if (!response.ok) {
             throw new Error("Failed to update project");
         }
-        
+
         console.log('Response: ', response);
         return await response.json();
 
@@ -91,6 +91,7 @@ export const getProjectTasks = async (projectId) => {
             },
             credentials: "include",
         });
+        console.log(response);
 
         if (!response.ok) {
             throw new Error("Failed to fetch project tasks");

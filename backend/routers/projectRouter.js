@@ -14,7 +14,7 @@ projectRouter.get('/org/:org', getAllProjectsByOrg);
 projectRouter.get('/projectId/:projectId', getProjectById);
 
 // Get all tasks from a project
-projectRouter.get('/:projectId/tasks', checkUserRole('manager'), getTasks);
+projectRouter.get('/:projectId/tasks', getTasks);
 
 // Create new project
 projectRouter.post('/', checkUserRole('manager'), createProject);
