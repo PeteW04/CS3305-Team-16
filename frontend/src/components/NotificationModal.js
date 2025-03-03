@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Bell, CheckCircle, Mail } from 'lucide-react';
-import { notifications } from '../DummyData/notifications';
 import { getNotifications, deleteNotification } from '../api/notification';
 import socket from '../utils/socket';
 
