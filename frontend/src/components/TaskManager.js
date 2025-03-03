@@ -31,22 +31,9 @@ const [tasks, setTasks] = useState(generateTasks());
   return (
     <div className="taskmanagercontainer">
     <div className="task-manager">
-      <h1 className="TaskBoxHeader">Today's Tasks</h1>
+      <h2 className="TaskBoxHeader">Today's Tasks</h2>
 
-      <div className="tabs">
-        <button className={`tab ${activeTab === "all" ? "active" : ""}`} onClick={() => setActiveTab("all")}>
-          All <span className="count">{tasks.length}</span>
-        </button>
-        <button className={`tab ${activeTab === "important" ? "active" : ""}`} onClick={() => setActiveTab("important")}>
-          Important
-        </button>
-        <button className={`tab ${activeTab === "notes" ? "active" : ""}`} onClick={() => setActiveTab("notes")}>
-          Notes
-        </button>
-        <button className={`tab ${activeTab === "links" ? "active" : ""}`} onClick={() => setActiveTab("links")}>
-          Links
-        </button>
-      </div>
+      
 
       <div className="task-list">
         {tasks
