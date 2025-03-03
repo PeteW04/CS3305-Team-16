@@ -37,14 +37,6 @@ const NavBar = () => {
         </Link>
       </div>
 
-      {/* Center section - Search */}
-      <div className="search-container">
-        <div className="search-wrapper">
-          <Search className="search-icon" />
-          <input type="text" placeholder="Search for anything..." className="search-input" />
-        </div>
-      </div>
-
       {/* Right section */}
       <div className="header-right">
         {/* Notification Button */}
