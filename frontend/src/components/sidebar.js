@@ -25,8 +25,10 @@ function Sidebar({ isMinimized, toggleSidebar }) {
     fetchProjects();
   }, []);
 
-  const handleCreateProject = (projectData) => {
-    const newProject = creatingProject(projectData);
+  const handleCreateProject = async (projectData) => {
+    const newProject = await creatingProject(projectData);
+    console.log(newProject);
+    setProjects((prevProjects) => [...prevProjects, newProject]);
     console.log("Project created:", newProject); 
     setIsModalOpen(false); 
   };
