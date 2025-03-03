@@ -1,23 +1,28 @@
 import React from "react";
-import TaskManager from "../components/TaskManager";
-import ProjectSummary from "../components/ProjectSummary";
-import ProgressGauge from "../components/ProgressGauge";
-import Calendar from "../components/Calendar";
-import MessageList from "../components/MessageList";
 import "../CSS-files/Dashboard.css";
+import MiniCalendar from "../components/dashboard/MiniCalendar";
+import MiniProjectSummary from "../components/dashboard/MiniProjectSummary";
+import MiniProgressGauge from "../components/dashboard/MiniProgressGauge";
+import MiniTaskManager from "../components/dashboard/MiniTaskManager";
 
 function Dashboard() {
   return (
     <div className="p-6">
-      <div className="dashboard" style={{display:"flex", flexDirection: "row"}}>
-        <div className="dashboardother" style={{flexDirection: "row", display:"flex", flexWrap: "wrap"}}>
-          <div><ProjectSummary /></div>
-          <div><Calendar /></div>
-          <div><TaskManager /></div>
-          <div><ProgressGauge /></div>
-        </div>
-        <div className="chat" style={{position:"sticky", right:"0", top:"0", width:"fit-content", height:"100vh"}}>
-          <div><MessageList /></div>
+      <div className="outer-container" style={{
+        padding: "1rem",
+        backgroundColor: "#f5f5f5",
+        borderRadius: "8px",
+        boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+      }}>
+        <div className="dashboard-grid" style={{ 
+          display: "grid",
+          gridTemplateColumns: "repeat(2, 1fr)",
+          gap: "1rem"
+        }}>
+          <div><MiniProjectSummary /></div>
+          <div><MiniCalendar /></div>
+          <div><MiniTaskManager /></div>
+          <div><MiniProgressGauge /></div>
         </div>
       </div>
     </div>
