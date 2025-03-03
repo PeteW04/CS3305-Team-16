@@ -31,7 +31,6 @@ export const getProjects = async () => {
 
 export const getProject = async (projectId) => {
     try {
-        // Send API request to get all projects, with the users token
         const response = await fetch(`${API_URL}/projectId/${projectId}`, {
             method: "GET",
             headers: {
@@ -58,7 +57,6 @@ export const getProject = async (projectId) => {
 
 export const gettingProjectbyUser = async (userId) => {
     try {
-        // Send API request to get all projects, with the users token
         const response = await fetch(`${API_URL}/user/${userId}`, {
             method: "GET",
             headers: {
