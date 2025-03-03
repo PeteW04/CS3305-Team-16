@@ -75,7 +75,9 @@ export default function ProjectSummary() {
               {projects.map((project) => (
                 <tr key={project._id}>
                   <td>{project.title}</td>
-                  <td>{project.manager || "N/A"}</td>
+                  <td>
+                    {project.manager?.firstName} {project.manager?.lastName || "N/A"}
+                  </td>
                   <td>{project.deadline ? new Date(project.deadline).toLocaleDateString() : "No deadline"}</td>
                   <td>
                     <span className={`status-label ${project.status.toLowerCase().replace(" ", "-")}`}>
