@@ -16,7 +16,8 @@ function Header() {
     '/settings',
     '/userprofile',
     '/test',
-    '/dashboard'
+    '/dashboard',
+    '/managerpage'
   ];
 
   // List of auth routes where header should appear
