@@ -4,17 +4,14 @@ import { updatingProject } from '../api/project.js'
 
 function EditProjectDialog({ project, onClose, onSave }) {
   const [title, setTitle] = useState("")
-  const [manager, setManager] = useState("")
   const [deadline, setDeadline] = useState("")
   const [description, setDescription] = useState("")
 
   useEffect(() => {
     if (project) {
       setTitle(project.title || "")
-      setManager(project.manager || "")
       setDeadline(project.deadline || "")
       setDescription(project.description || "")
-      setManager(`${project.manager.firstName} ${project.manager.lastName}` || "")
       setDeadline(new Date(project.deadline).toLocaleDateString() || "")
       setDescription("Create a user flow of social application design")
     }
@@ -25,13 +22,10 @@ function EditProjectDialog({ project, onClose, onSave }) {
     try {
       const data = {
         title,
-        manager,
         deadline,
         description,
       }
       // Call the updatingProject function
-      console.log('Handle Submit');
-      console.log(project._id, data);
       const updatedProject = await updatingProject(project._id, data);
 
       onSave(updatedProject);
@@ -59,19 +53,6 @@ function EditProjectDialog({ project, onClose, onSave }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                required
-              />
-            </div>
-
-            <div>
-              <label htmlFor="manager" className="block text-sm font-medium text-gray-700 mb-1">
-                Project Manager
-              </label>
-              <input
-                id="manager"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={manager}
-                onChange={(e) => setManager(e.target.value)}
                 required
               />
             </div>
