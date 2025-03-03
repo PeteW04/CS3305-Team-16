@@ -55,7 +55,7 @@ export const getProject = async (projectId) => {
     }
 }
 
-export const gettingProjectbyUser = async (userId) => {
+export const gettingProjectByUser = async (userId) => {
     try {
         const response = await fetch(`${API_URL}/user/${userId}`, {
             method: "GET",
