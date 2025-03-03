@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import '../src/CSS-files/App.css';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import ManagerRoute from './components/ManagerRoute';
 import Header from './components/header';
 import Layout from './components/Layout';
 // Pages
@@ -46,7 +47,11 @@ function App() {
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/test" element={<TestPage />} />
               <Route path="/userprofile" element={<UserProfile />} />
-              <Route path="/managerpage" element={<ManagerPage />} />
+              
+              {/* Manager-only route */}
+              <Route element={<ManagerRoute />}>
+                <Route path="/managerpage" element={<ManagerPage />} />
+              </Route>
             </Route>
           </Route>
         </Routes>

@@ -3,12 +3,15 @@ import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Cale
 import { Link } from 'react-router-dom';
 import { getProjects, creatingProject } from '../api/project.js'
 import CreateProjectModal from "./CreateProjectModal.js";
+import { useAuth } from '../context/AuthContext';
 
 function Sidebar({ isMinimized, toggleSidebar }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false); 
+  const { user } = useAuth();
+  const isManager = user && user.role === 'manager';
 
   useEffect(() => {
     async function fetchProjects() {
@@ -44,6 +47,11 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
         <Link to="/calendar"><SidebarItem isMinimized={isMinimized} icon={<Calendar size={20} />} text="Calendar" /></Link>
         <Link to="/userprofile"><SidebarItem isMinimized={isMinimized} icon={<Settings size={20} />} text="Settings" /></Link>
+        {isManager && (
+          <Link to="/managerpage">
+            <SidebarItem isMinimized={isMinimized} icon={<Users size={20} />} text="Team Management" />
+          </Link>
+        )}
       </ul>
 
 
