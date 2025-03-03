@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Calendar } from "lucide-react";
+import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Calendar, Plus } from "lucide-react";
 import { Link } from 'react-router-dom';
 import { getProjects } from '../api/project.js'
+import CreateProjectModal from "./CreateProjectModal.js";
 
 function Sidebar({ isMinimized, toggleSidebar }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); 
 
   useEffect(() => {
     async function fetchProjects() {
@@ -22,6 +24,11 @@ function Sidebar({ isMinimized, toggleSidebar }) {
 
     fetchProjects();
   }, []);
+
+  const handleCreateProject = (projectData) => {
+    console.log("Project created:", projectData); 
+    setIsModalOpen(false); 
+  };
 
   if (loading) return <div>Loading projects...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -44,7 +51,15 @@ function Sidebar({ isMinimized, toggleSidebar }) {
       {/* Projects Section */}
       {!isMinimized && (
         <div className="mt-6 px-2">
-          <h2 className="text-gray-500 text-sm uppercase font-semibold mb-2">My Projects</h2>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className="text-gray-500 text-sm uppercase font-semibold">My Projects</h2>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="p-1 hover:bg-gray-100 rounded-full"
+            >
+              <Plus size={16} className="text-gray-500" />
+            </button>
+          </div>
           <ul className="space-y-2">
             {projects.length > 0 ? (
               projects.map((project) => (
@@ -64,6 +79,13 @@ function Sidebar({ isMinimized, toggleSidebar }) {
       >
         {!isMinimized ? <X size={24} /> : <Menu size={24} />}
       </button>
+
+            {isModalOpen && (
+        <CreateProjectModal
+          onClose={() => setIsModalOpen(false)}
+          onCreateProject={handleCreateProject}
+        />
+      )}
     </nav>
   );
 }
