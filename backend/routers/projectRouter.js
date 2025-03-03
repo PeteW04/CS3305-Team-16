@@ -1,5 +1,5 @@
 import express from 'express';
-import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, updateProject, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus, deleteProject } from '../controllers/projectController.js';
+import { createProject, getAllProjects, getAllProjectsByOrg, getProjectById, getTasks, updateProject, addEmployee, removeEmployee, addTask, removeTask, updateTaskStatus, updateStatus, deleteProject, getProjectsByUser } from '../controllers/projectController.js';
 import { checkUserRole } from '../middleware/checkUserRoleMiddleware.js';
 
 const projectRouter = express.Router();
@@ -15,6 +15,9 @@ projectRouter.get('/projectId/:projectId', getProjectById);
 
 // Get all tasks from a project
 projectRouter.get('/:projectId/tasks', getTasks);
+
+// Get projects by user
+projectRouter.get('/user/:userId', getProjectsByUser);
 
 // Create new project
 projectRouter.post('/', checkUserRole('manager'), createProject);
