@@ -21,6 +21,9 @@ function ProjectPage() {
       try {
         const projects = await getProjects();
         setProjects(projects);
+        if (projects.length > 0) {
+          setSelectedProjectName(projects[0].title);
+        }
       } catch (error) {
         console.error('Error fetching tasks:', error);
         setProjects([]);
@@ -94,21 +97,24 @@ function ProjectPage() {
             </select>
           </div>
 
-          { console.log('Project Page, currentProject: ', currentProject)
-          /* Display Project Summary for the Selected Project */}
+          { /* Display Project Summary for the Selected Project */}
           <ProjectSummary project={currentProject} />
-          
-          
+
+
         </div>
       </div>
 
       {/* Modals */}
       {isEditDialogOpen && (
         <EditProjectDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsEditDialogOpen(false)}
           onSave={(updatedProject) => {
-            console.log("Updating project:", updatedProject);
+            setProjects((prevProjects) =>
+              prevProjects.map((p) =>
+                p._id === updatedProject._id ? updatedProject : p
+              )
+            );
             setIsEditDialogOpen(false);
           }}
         />
@@ -116,7 +122,7 @@ function ProjectPage() {
 
       {isAssignDialogOpen && (
         <AssignUsersDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsAssignDialogOpen(false)}
           onAssign={(userIds) => {
             console.log("Assigning users:", userIds);
@@ -127,10 +133,11 @@ function ProjectPage() {
 
       {isDeleteDialogOpen && (
         <DeleteProjectDialog
-          project={currentProject} 
+          project={currentProject}
           onClose={() => setIsDeleteDialogOpen(false)}
-          onDelete={() => {
-            console.log("Deleting project:", currentProject._id); 
+          onDelete={(deletedProject) => {
+            console.log("Deleting project:", currentProject._id);
+            setProjects((prevProjects) => prevProjects.filter((p) => p._id !== deletedProject._id));
             setIsDeleteDialogOpen(false);
           }}
         />

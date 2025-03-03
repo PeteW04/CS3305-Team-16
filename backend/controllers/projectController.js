@@ -8,9 +8,8 @@ import { createChannel } from './messageController.js';
 // GET: List all Projects
 export const getAllProjects = async (req, res) => {
     try {
-        // Automatically filter by the user's organizationId
-
-        const projects = await Project.find({ organization: req.user.organizationId });
+        const projects = await Project.find({ organization: req.user.organizationId })
+            .populate('manager', 'firstName lastName');  // Add this line
 
         res.status(200).json(projects);
     }
@@ -18,6 +17,7 @@ export const getAllProjects = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 // GET: List all Projects in an Organization
 export const getAllProjectsByOrg = async (req, res) => {
@@ -76,7 +76,7 @@ export const getTasks = async (req, res) => {
 
 // POST: Create a new Project within an Organization 
 export const createProject = async (req, res) => {
-    const { title, description, deadline} = req.body;
+    const { title, description, deadline } = req.body;
     const { id } = req.user;
 
     try {
@@ -106,75 +106,23 @@ export const createProject = async (req, res) => {
     }
 };
 
-// PUT: Change project name
-export const changeTitle = async (req, res) => {
+// PUT: Update project 
+export const updateProject = async (req, res) => {
     try {
-        const { projectId, newTitle } = req.params;
+        console.log("Request Received");
+        const project = await Project.findById(req.params.id);
 
-        // Find the project and update its title
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { title: newTitle },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        res.status(200).json({ message: 'Project title updated', project });
+        const updatedProject = await Project.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        res.status(200).json(updatedProject);
     } catch (error) {
+        console.error("Error in Update Project:", error.message);
         res.status(500).json({ error: error.message });
     }
-};
-
-// PUT: Change project description
-export const changeDescription = async (req, res) => {
-    try {
-        const { projectId, newDescription } = req.params;
-
-        // Find the project and update its description
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { description: newDescription },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
-        }
-
-        res.status(200).json({ message: 'Project description updated', project });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
-
-
-// PUT: Change project deadline
-export const changeDeadline = async (req, res) => {
-    try {
-        const { projectId, newDeadline } = req.params;
-
-        // Find the project and update its deadline
-        const project = await Project.findByIdAndUpdate(
-            projectId,
-            { deadline: newDeadline },
-            { new: true }
-        );
-
-        // Verify that the updated project exists
-        if (!project) {
-            return res.status(404).json({ error: 'Project not found' });
-        }
-
-        res.status(200).json({ message: 'Project deadline updated', project });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-};
+}
 
 // PUT: Add a worker to a project
 export const addEmployee = async (req, res) => {
@@ -385,3 +333,25 @@ export const updateStatus = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
+// DELETE: Delete a project
+export const deleteProject = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Verify that the project exists
+        const project = await Project.findById(id);
+        if (!project) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        const deletedProject = await Project.findByIdAndDelete(id);
+
+        await Channel.findByIdAndDelete(deletedProject.chat);
+
+        res.status(200).json(deletedProject);
+    } catch (error) {
+        console.error("Error deleting project: ", error.message);
+        res.status(500).json({ error: error.message });
+    }
+}

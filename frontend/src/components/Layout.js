@@ -14,7 +14,7 @@ function Layout() {
     <div className="h-screen flex flex-col">
       <NavBar />
       <div className="flex flex-1 overflow-hidden">
-        <Sidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+        <Sidebar isMinimized={!isMinimized} toggleSidebar={toggleSidebar} />
         <main className="flex-1 h-full overflow-y-auto">
           <Outlet />
         </main>

@@ -1,8 +1,15 @@
 import { AlertTriangle } from "lucide-react"
+import { deletingProject } from '../api/project.js'
 
 function DeleteProjectDialog({ project, onClose, onDelete }) {
-  const handleDelete = () => {
-    onDelete()
+  const handleDelete = async () => {
+    try {
+      // Call the deletingProject function
+      const deletedProject = await deletingProject(project._id);
+      onDelete(deletedProject);
+    } catch (error) {
+      console.error("Error deleting project:", error.message);
+    }
   }
 
   return (

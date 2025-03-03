@@ -1,30 +1,43 @@
 import { useState, useEffect } from "react"
 import { Calendar } from "lucide-react"
+import { updatingProject } from '../api/project.js'
 
 function EditProjectDialog({ project, onClose, onSave }) {
-  const [name, setName] = useState("")
+  const [title, setTitle] = useState("")
   const [manager, setManager] = useState("")
-  const [dueDate, setDueDate] = useState("")
+  const [deadline, setDeadline] = useState("")
   const [description, setDescription] = useState("")
 
   useEffect(() => {
     if (project) {
-      setName(project.title || "")
+      setTitle(project.title || "")
       setManager(project.manager || "")
-      setDueDate(project.deadline || "")
+      setDeadline(project.deadline || "")
+      setDescription(project.description || "")
+      setManager(`${project.manager.firstName} ${project.manager.lastName}` || "")
+      setDeadline(new Date(project.deadline).toLocaleDateString() || "")
       setDescription("Create a user flow of social application design")
     }
   }, [project])
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    onSave({
-      ...project,
-      name,
-      manager,
-      dueDate,
-      description,
-    })
+    try {
+      const data = {
+        title,
+        manager,
+        deadline,
+        description,
+      }
+      // Call the updatingProject function
+      console.log('Handle Submit');
+      console.log(project._id, data);
+      const updatedProject = await updatingProject(project._id, data);
+
+      onSave(updatedProject);
+    } catch (error) {
+      console.error("Error updating project:", error.message);
+    }
   }
 
   return (
@@ -44,8 +57,8 @@ function EditProjectDialog({ project, onClose, onSave }) {
               <input
                 id="name"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
                 required
               />
             </div>
@@ -70,12 +83,12 @@ function EditProjectDialog({ project, onClose, onSave }) {
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-left flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                 onClick={() => {
                   // In a real app, this would open a date picker
-                  const date = prompt("Enter due date (MM/DD/YYYY):", dueDate)
-                  if (date) setDueDate(date)
+                  const date = prompt("Enter due date (MM/DD/YYYY):", deadline)
+                  if (date) setDeadline(date)
                 }}
               >
                 <Calendar className="mr-2 h-5 w-5 text-gray-400" />
-                {dueDate || "Select a date"}
+                {deadline || "Select a date"}
               </button>
             </div>
 
@@ -102,11 +115,11 @@ function EditProjectDialog({ project, onClose, onSave }) {
               Cancel
             </button>
             <button
-            type="submit"
-            className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4f46e5] hover:bg-[#4338ca] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
-          >
-            Save Changes
-          </button>
+              type="submit"
+              className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#4f46e5] hover:bg-[#4338ca] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#4f46e5]"
+            >
+              Save Changes
+            </button>
           </div>
         </form>
       </div>
