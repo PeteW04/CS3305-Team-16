@@ -346,6 +346,8 @@ export const deleteProject = async (req, res) => {
         }
 
         const deletedProject = await Project.findByIdAndDelete(id);
+
+        await Channel.findByIdAndDelete(deletedProject.chat);
         
         res.status(200).json(deletedProject);
     } catch (error) {
