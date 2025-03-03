@@ -7,7 +7,12 @@ import AssignProjectModal from './AssignProjectModal';
 import { addTaskToProject, addEmployeeToProject } from '../api/project';
 
 function UserListModal({ onClose, userId }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState({
+    projects: [],
+    firstName: '',
+    lastName: '',
+    email: ''
+  });
   const [tasks, setTasks] = useState([])
   const [isLoading, setLoading] = useState(true);
   const [showAssignTaskModal, setShowAssignTaskModal] = useState(false);
@@ -17,7 +22,12 @@ function UserListModal({ onClose, userId }) {
     const fetchUserInfo = async () => {
       try {
         const user = await getUserById(userId);
-        setUser(user);
+        setUser({
+          projects: user.projects || [],  // Ensure projects array exists
+          firstName: user.firstName || '',
+          lastName: user.lastName || '',
+          email: user.email || ''
+        });
         const userTasks = await getTasksByUserID(userId);
         console.log(userTasks);
         setTasks(userTasks);
@@ -54,20 +64,21 @@ function UserListModal({ onClose, userId }) {
 
   const handleAssignProject = async (projectId) => {
     try {
-      // Call your project helper
-      await addEmployeeToProject(projectId, userId);
+      console.log(`Assigning project ${projectId} to user ${userId}`);
+      await addEmployeeToProject(projectId, [userId]);
 
-      // Update local state
+      // Fixed state update
       setUser(prev => ({
         ...prev,
-        projects: [...prev.projects, projectId]
+        projects: [...(prev?.projects || []), projectId]
       }));
+
       setShowAssignProjectModal(false);
     } catch (error) {
       console.error("Project assignment failed:", error);
-      // Add error state handling here
     }
   };
+
 
   const numberOfTasks = tasks?.length || 0;
   if (isLoading) {
@@ -115,7 +126,9 @@ function UserListModal({ onClose, userId }) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Projects:</span>
-                <span className="text-sm font-medium">{user.projects || 'N/A'}</span>
+                <span className="text-sm font-medium">
+                  {user?.projects?.length || 'N/A'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="text-sm text-gray-600">Tasks Assigned:</span>

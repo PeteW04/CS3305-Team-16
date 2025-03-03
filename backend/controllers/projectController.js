@@ -139,13 +139,13 @@ export const addEmployee = async (req, res) => {
         }
 
         // Ensure the employee exists
-        for (let employeeId of employeeIds){
+        for (let employeeId of employeeIds) {
             const employee = await User.findById(employeeId);
             if (!employee) {
                 return res.status(404).json({ error: 'User not found' });
             }
         }
-    
+
         // Ensure the project has a text channel
         const chat = await Channel.findById(project.chat);
         if (!chat) {
@@ -153,7 +153,7 @@ export const addEmployee = async (req, res) => {
         }
 
         // Add employee to project and chat
-        for (let employeeId of employeeIds){
+        for (let employeeId of employeeIds) {
             project.employees.addToSet(employeeId);
             chat.members.addToSet(employeeId);
         }
@@ -162,6 +162,7 @@ export const addEmployee = async (req, res) => {
 
         res.status(200).json({ message: 'Employee added successfully', project });
     } catch (error) {
+        console.error("Error assigning project: ", error.message);
         res.status(500).json({ error: error.message });
     }
 };
