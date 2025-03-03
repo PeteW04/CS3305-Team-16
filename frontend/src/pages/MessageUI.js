@@ -9,6 +9,8 @@ import { sendMessage, editMessage, deleteMessage } from "../api/message";
 import socket from "../utils/socket";
 import { useAuth } from "../context/AuthContext";
 import { useParams } from "react-router-dom";
+import { getProfilePictureUrl } from "../api/users.js";
+
 
 export default function MessageUI() {
   const { user, isLoading } = useAuth();
@@ -278,10 +280,11 @@ export default function MessageUI() {
                   <>
                     <div className="flex flex-row sticky top-0 bg-white shadow-lg border-gray-200 p-6 rounded-b-lg z-50">
                       {selectedChat.type === "group" ? <Users className="w-8 h-8 rounded object-cover" /> : <img
-                        src={user.profilePicture}
-                        alt={`${user.firstName} ${user.lastName}`}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />}
+                          src={getProfilePictureUrl(user.profilePicture)}
+                          alt={`${user.firstName} ${user.lastName}`}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      }
 
                       <div className="pt-2 pl-3 font-semibold">
                         {selectedChat.name}
