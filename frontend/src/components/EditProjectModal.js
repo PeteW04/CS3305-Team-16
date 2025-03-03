@@ -13,7 +13,7 @@ function EditProjectDialog({ project, onClose, onSave }) {
       setTitle(project.title || "")
       setManager(project.manager || "")
       setDeadline(project.deadline || "")
-      setDescription("Create a user flow of social application design")
+      setDescription(project.description || "")
     }
   }, [project])
 
