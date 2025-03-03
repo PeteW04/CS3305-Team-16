@@ -85,13 +85,13 @@ const Calendar = () => {
                         {currentDate.toLocaleString('default', { month: 'long' })} {currentDate.getFullYear()}
                     </h2>
                     <div className="nav-buttons">
-                        <button 
+                        <button
                             className="nav-buttonl"
                             onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}
                         >
                             {/* Previous month arrow */}
                         </button>
-                        <button 
+                        <button
                             className="nav-buttonr"
                             onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}
                         >
