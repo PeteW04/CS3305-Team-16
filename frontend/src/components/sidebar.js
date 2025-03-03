@@ -36,7 +36,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
   return (
     <nav className={`h-screen bg-white border-r border-gray-300 p-4 transition-all ${isMinimized ? "w-20" : "w-64"}`}>
       {/* Menu Section */}
-      <ul className="mt-6 space-y-2">
+      <ul className=" space-y-2">
         <Link to="/dashboard"><SidebarItem isMinimized={isMinimized} icon={<Home size={20} />} text="Home" /></Link>
         <Link to="/message"><SidebarItem isMinimized={isMinimized} icon={<MessageSquare size={20} />} text="Messages" /></Link>
         <Link to="/projects"><SidebarItem isMinimized={isMinimized} icon={<ListChecks size={20} />} text="Projects" /></Link>
