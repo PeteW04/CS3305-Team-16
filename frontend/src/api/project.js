@@ -133,8 +133,10 @@ export const addTaskToProject = async (projectId, taskData) => {
 }
 
 
-export const addEmployeeToProject = async (projectId, employeeId) => {
+export const addEmployeeToProject = async (projectId, employeeIds) => {
     try {
+        console.log('addEmployeeToProject projectId: ', projectId);
+        console.log('addEmployeeToProject employeeIds: ', employeeIds);
         const response = await fetch(`${API_URL}/employees/add`, {
             method: 'PUT',
             headers: {
@@ -143,18 +145,18 @@ export const addEmployeeToProject = async (projectId, employeeId) => {
             },
             body: JSON.stringify({
                 projectId,
-                employeeId
+                employeeIds
             })
         });
 
-        if (!response.ok) throw new Error('Failed to create task');
+        if (!response.ok) throw new Error('Failed to add employees');
 
         // Return the response 
         return await response.json();
 
         // Catch any errors
     } catch (error) {
-        console.error("Error fetching projects:", error.message);
+        console.error("Error adding employees:", error.message);
         throw error;
     }
 }

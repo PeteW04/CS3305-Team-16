@@ -1,5 +1,6 @@
 import Project from '../models/Projects.js';
 import Task from '../models/Task.js';
+import User from '../models/User.js';
 import Channel from '../models/Channel.js';
 import mongoose from 'mongoose';
 import { createTask, deleteTask } from './taskController.js';
@@ -127,38 +128,36 @@ export const updateProject = async (req, res) => {
 // PUT: Add a worker to a project
 export const addEmployee = async (req, res) => {
     try {
-        const { employeeId, projectId } = req.body;
+        const { employeeIds, projectId } = req.body;
+        console.log('addEmployee projectId: ', projectId);
+        console.log('addEmployee employeeIds: ', employeeIds);
 
-        // Validate ObjectId
-        if (!mongoose.Types.ObjectId.isValid(projectId) || !mongoose.Types.ObjectId.isValid(employeeId)) {
-            return res.status(400).json({ error: 'Invalid projectId or employeeId' });
-        }
-
+        // Ensure the project exists
         const project = await Project.findById(projectId);
-
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
 
-        // Check if the employee is already in the project
-        if (project.employees.includes(employeeId)) {
-            return res.status(404).json({ error: 'This employee is already in the project' });
+        // Ensure the employee exists
+        for (let employeeId of employeeIds){
+            const employee = await User.findById(employeeId);
+            if (!employee) {
+                return res.status(404).json({ error: 'User not found' });
+            }
         }
-
+    
+        // Ensure the project has a text channel
         const chat = await Channel.findById(project.chat);
-
         if (!chat) {
             return res.status(404).json({ error: 'Chat not found' });
         }
 
-        //if (project.organization.toString() !== req.user.organizationId) {
-        //    return res.status(403).json({ message: 'You cannot modify a project outside of your organization' });
-        //}
-
-        project.employees.addToSet(employeeId);
+        // Add employee to project and chat
+        for (let employeeId of employeeIds){
+            project.employees.addToSet(employeeId);
+            chat.members.addToSet(employeeId);
+        }
         await project.save();
-
-        chat.members.addToSet(employeeId);
         await chat.save();
 
         res.status(200).json({ message: 'Employee added successfully', project });

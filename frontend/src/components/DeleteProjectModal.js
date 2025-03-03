@@ -4,7 +4,6 @@ import { deletingProject } from '../api/project.js'
 function DeleteProjectDialog({ project, onClose, onDelete }) {
   const handleDelete = async () => {
     try {
-      // Call the deletingProject function
       const deletedProject = await deletingProject(project._id);
       onDelete(deletedProject);
     } catch (error) {

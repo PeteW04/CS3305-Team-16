@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Search, X } from "lucide-react";
 import { getUsersInOrganization } from '../api/users.js'
+import { addEmployeeToProject } from '../api/project.js'
 
 function AssignUsersDialog({ project, onClose, onAssign }) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -33,9 +34,14 @@ function AssignUsersDialog({ project, onClose, onAssign }) {
     );
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onAssign(selectedUsers);
+    try {
+      await addEmployeeToProject(project._id, selectedUsers);
+      onAssign(selectedUsers);
+    } catch (error) {
+      console.error("Error inviting users:", error.message);
+    }
   };
 
   return (
@@ -71,18 +77,18 @@ function AssignUsersDialog({ project, onClose, onAssign }) {
 
                   return (
                     <div
-                      key={user.id}
+                      key={user._id}
                       className="flex items-center gap-2 bg-gray-100 rounded-full px-3 py-1 text-sm"
                     >
                       <img
-                        src={user.avatar || "/placeholder.svg"}
-                        alt={user.name}
+                        src={user.profilePicture || "/placeholder.svg"}
+                        alt={`${user.firstName} ${user.lastName}`}
                         className="h-6 w-6 rounded-full"
                       />
-                      <span>{user.name}</span>
+                      <span>{user.firstName} {user.lastName}</span>
                       <button
                         type="button"
-                        onClick={() => toggleUser(user.id)}
+                        onClick={() => toggleUser(user._id)}
                         className="p-1 hover:bg-gray-200 rounded-full"
                       >
                         <X className="h-3 w-3 text-gray-500" />
@@ -98,29 +104,29 @@ function AssignUsersDialog({ project, onClose, onAssign }) {
               {filteredUsers.length > 0 ? (
                 filteredUsers.map((user) => (
                   <div
-                    key={user.id}
+                    key={user._id}
                     className="flex items-center justify-between p-2 hover:bg-gray-50 rounded-lg cursor-pointer"
-                    onClick={() => toggleUser(user.id)}
+                    onClick={() => toggleUser(user._id)}
                   >
                     <div className="flex items-center gap-3">
                       <img
-                        src={user.avatar || "/placeholder.svg"}
-                        alt={user.name}
+                        src={user.profilePicture || "/placeholder.svg"}
+                        alt={`${user.firstName} ${user.lastName}`}
                         className="h-8 w-8 rounded-full"
                       />
                       <div>
-                        <div className="font-medium">{user.name}</div>
+                        <div className="font-medium">{`${user.firstName} ${user.lastName}`}</div>
                         <div className="text-sm text-gray-500">{user.email}</div>
                       </div>
                     </div>
                     <div
                       className={`h-5 w-5 rounded-full border-2 flex items-center justify-center ${
-                        selectedUsers.includes(user.id)
+                        selectedUsers.includes(user._id)
                           ? "bg-indigo-500 border-indigo-500"
                           : "border-gray-300"
                       }`}
                     >
-                      {selectedUsers.includes(user.id) && (
+                      {selectedUsers.includes(user._id) && (
                         <svg
                           className="h-3 w-3 text-white"
                           fill="none"
