@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const projectSchema = new mongoose.Schema({
   title: {type: String, required: true},
-  description: {type: String, required: true},
+  description: {type: String},
   organization: {type: mongoose.Schema.Types.ObjectId, ref: 'Organization', required: true},
   tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }],
   chat: { type: mongoose.Schema.Types.ObjectId, ref: 'Chat'},
