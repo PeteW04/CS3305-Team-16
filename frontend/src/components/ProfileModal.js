@@ -19,7 +19,7 @@ function ProfileModal({ onClose }) {
       onClick={onClose}
     >
       <div
-        className="absolute right-4 top-20 w-64 bg-white rounded-xl shadow-lg"
+        className="absolute right-4 top-20 w-72 bg-white rounded-xl shadow-lg"
         onClick={e => e.stopPropagation()}
       >
         {/* Profile Header */}
