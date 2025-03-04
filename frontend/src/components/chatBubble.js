@@ -18,22 +18,23 @@ const ChatBubble = ({ sender, currentUser, message, time, readBy = [], onEdit, o
     }
     setIsEditing(!isEditing);
   };
+
   return (
-    <div className={`flex flex-col space-y-1 ${isSent ? "items-end" : "items-start"}`}>
+    <div className={`flex flex-col space-y-2 ${isSent ? "items-end" : "items-start"}`}>
       <div className="flex flex-row gap-2">
-        <span className="text-xs text-black-600">{`${sender.firstName} ${sender.lastName}`}</span>
+        <span className="text-sm text-gray-700">{`${sender.firstName} ${sender.lastName}`}</span>
         {isSent && (
           <div className="flex space-x-2">
-            <button onClick={handleEdit} className="text-gray-300 hover:text-black">
-              <Pencil size={14} />
+            <button onClick={handleEdit} className="text-gray-400 hover:text-black">
+              <Pencil size={16} />
             </button>
-            <button onClick={() => onDelete(messageId)} className="text-gray-300 hover:text-black">
-              <Trash2 size={14} />
+            <button onClick={() => onDelete(messageId)} className="text-gray-400 hover:text-black">
+              <Trash2 size={16} />
             </button>
           </div>
         )}
       </div>
-      <div className={`px-4 py-2 rounded-lg max-w-xs shadow-md relative ${isSent ? "bg-indigo-600 text-white" : "bg-emerald-400 text-black"
+      <div className={`px-4 py-3 rounded-lg max-w-md shadow-sm relative ${isSent ? "bg-indigo-600 text-white" : "bg-gray-100 text-black"
         }`}>
         {isEditing ? (
           <input
@@ -46,7 +47,7 @@ const ChatBubble = ({ sender, currentUser, message, time, readBy = [], onEdit, o
             autoFocus
           />
         ) : (
-          <p>{message}</p>
+          <p className="text-base">{message}</p>
         )}
 
         <div className="flex items-center justify-end text-xs text-gray-200 mt-1">
@@ -61,6 +62,5 @@ const ChatBubble = ({ sender, currentUser, message, time, readBy = [], onEdit, o
     </div>
   );
 };
-
 
 export default ChatBubble;
