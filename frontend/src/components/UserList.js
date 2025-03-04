@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../CSS-files/UserList.css";
 import { inviteEmployee } from "../api/manager";
-import { deleteUser, getUsersInOrganization } from "../api/users";
+import { deleteUser, getUsersInOrganization, getProfilePictureUrl } from "../api/users";
 import UserListModal from "./UserListModal";
 import AddMemberModal from "./AddMemberModal";
 
@@ -92,7 +92,21 @@ const UserList = () => {
         {filteredUsers.map((user) => (
           <div key={user._id} className="user-item">
             <div className="user-info">
-              <div className="avatar"></div>
+            <div className="avatar">
+                {user.profilePicture ? (
+                  <img
+                    src={getProfilePictureUrl(user.profilePicture)}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="user-avatar"
+                  />
+                ) : (
+                  <img
+                    src="/placeholder.svg?height=40&width=40"
+                    alt="User avatar"
+                    className="user-avatar"
+                  />
+                )}
+              </div>
               <div className="user-details">
                 <p className="user-name">{`${user.firstName} ${user.lastName}`}</p>
                 <p className="user-role">{user.role}</p>
