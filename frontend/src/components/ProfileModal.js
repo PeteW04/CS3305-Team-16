@@ -25,13 +25,13 @@ function ProfileModal({ onClose }) {
         {/* Profile Header */}
         <div className="p-4 border-b">
           <div className="flex justify-between items-start">
-            <div className="flex items-center gap-3">
-            <div className="bg-indigo-100 p-2 rounded-full">
+            <div className="flex items-center gap-3 cursor-pointer">
+              <div className="bg-indigo-100 p-0.5 rounded-full flex items-center justify-center overflow-hidden hover:bg-[#4f46e5] transition-colors duration-200">
                 {user.profilePicture ? (
                   <img
                     src={getProfilePictureUrl(user.profilePicture)}
                     alt="User Profile"
-                    className="w-6 h-6 rounded-full object-cover"
+                    className="w-10 h-10 rounded-full object-cover"
                   />
                 ) : (
                   <UserIcon className="w-6 h-6 text-indigo-600" />
