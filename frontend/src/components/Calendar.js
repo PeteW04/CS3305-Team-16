@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import { getProjects } from "../api/project";
+import { gettingProjectByUser } from "../api/project";
 import "../CSS-files/Calendar.css"; // Import the CSS file
 
 const Calendar = () => {
@@ -10,7 +10,7 @@ const Calendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const { token } = useAuth();
+  const { user, token } = useAuth();
   const daysOfWeek = ["S", "M", "T", "W", "Th", "F", "Sa"];
 
   useEffect(() => {
@@ -21,16 +21,22 @@ const Calendar = () => {
         return;
       }
       try {
-        const data = await getProjects();
-        setProjects(data);
+        if (user && user._id) {
+          const data = await gettingProjectByUser(user._id);
+          setProjects(data);
+        } else {
+          setProjects([]);
+        }
       } catch (err) {
         setError(err.message);
+        // Set projects to empty array to show empty calendar
+        setProjects([]);
       } finally {
         setLoading(false);
       }
     }
     fetchProjects();
-  }, [token]);
+  }, [token, user]);
 
   const getDaysInMonth = (date) => {
     return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
