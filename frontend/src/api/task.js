@@ -100,3 +100,33 @@ export const editTask = async (taskData) => {
         throw error;
     }
 }
+
+export const addEmployeeToTask = async (taskId, userId) => {
+  try {
+    console.log('addEmployeeToTask taskId: ', taskId);
+    console.log('addEmployeeToTask userId: ', userId);
+    
+    const response = await fetch(`${API_URL}/tasks/${taskId}/assign`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${getAuthToken()}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Failed to assign user to task');
+    }
+
+    // Return the response data
+    return await response.json();
+    
+  } catch (error) {
+    console.error("Error assigning user to task:", error.message);
+    throw error;
+  }
+};

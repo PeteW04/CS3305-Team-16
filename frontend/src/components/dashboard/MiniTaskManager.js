@@ -1,35 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { getProjects } from '../../api/project';
-import { getProjectTasks } from '../../api/project';
+import { getTasksByUserID } from '../../api/task';
+import { useAuth } from '../../context/AuthContext';
 import PriorityBadge from '../PriorityBadge';
 
 const MiniTaskManager = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchAllTasks = async () => {
+    const fetchUserTasks = async () => {
       try {
-        const projects = await getProjects();
-        const allTasksPromises = projects.map(project => getProjectTasks(project._id));
-        const allProjectTasks = await Promise.all(allTasksPromises);
-        
-        // Flatten all tasks into a single array and take first 4
-        const combinedTasks = allProjectTasks
-          .flat()
-          .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
-          .slice(0, 4);
-        
-        setTasks(combinedTasks);
+        if (user && user._id) {
+          const userTasks = await getTasksByUserID(user._id);
+          
+          // Sort by due date and take first 4
+          const sortedTasks = userTasks
+            .sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
+            .slice(0, 4);
+          
+          setTasks(sortedTasks);
+        } else {
+          setTasks([]);
+        }
       } catch (err) {
+        console.error("Error fetching tasks:", err.message);
         setError(err.message);
+        setTasks([]);
       } finally {
         setLoading(false);
       }
     };
-    fetchAllTasks();
-  }, []);
+    
+    fetchUserTasks();
+  }, [user]);
 
   if (loading) return <div className="h-full flex items-center justify-center">Loading tasks...</div>;
   if (error) return <div className="h-full flex items-center justify-center text-red-500">Error: {error}</div>;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { getProjects, getProjectTasks } from '../../api/project';
+import { getTasksByUserID } from '../../api/task';
+import { useAuth } from '../../context/AuthContext';
 
 const MiniProgressGauge = () => {
   const [tasks, setTasks] = useState({
@@ -10,29 +11,38 @@ const MiniProgressGauge = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
-    const fetchAllTasks = async () => {
+    const fetchUserTasks = async () => {
       try {
-        const projects = await getProjects();
-        const allTasksPromises = projects.map(project => getProjectTasks(project._id));
-        const allProjectTasks = await Promise.all(allTasksPromises);
-        
-        const allTasks = allProjectTasks.flat();
-        setTasks({
-          completedTasks: allTasks.filter(task => task.status === 'done').length,
-          inProgressTasks: allTasks.filter(task => task.status === 'progress').length,
-          incompleteTasks: allTasks.filter(task => task.status === 'todo').length,
-          total: allTasks.length
-        });
+        if (user && user._id) {
+          const userTasks = await getTasksByUserID(user._id);
+          
+          setTasks({
+            completedTasks: userTasks.filter(task => task.status === 'done').length,
+            inProgressTasks: userTasks.filter(task => task.status === 'progress').length,
+            incompleteTasks: userTasks.filter(task => task.status === 'todo').length,
+            total: userTasks.length
+          });
+        } else {
+          setTasks({
+            completedTasks: 0,
+            inProgressTasks: 0,
+            incompleteTasks: 0,
+            total: 0
+          });
+        }
       } catch (err) {
+        console.error("Error fetching tasks:", err.message);
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-    fetchAllTasks();
-  }, []);
+    
+    fetchUserTasks();
+  }, [user]);
 
   const completedPercent = tasks.total > 0
     ? Math.round((tasks.completedTasks / tasks.total) * 100)
