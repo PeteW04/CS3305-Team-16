@@ -5,6 +5,8 @@ import { getTasksByUserID } from '../api/task';
 import AssignTaskModal from './AssignTaskModal';
 import AssignProjectModal from './AssignProjectModal';
 import { addTaskToProject, addEmployeeToProject } from '../api/project';
+import { getProfilePictureUrl } from "../api/users";
+
 
 function UserListModal({ onClose, userId }) {
   const [user, setUser] = useState({
@@ -26,7 +28,8 @@ function UserListModal({ onClose, userId }) {
           projects: user.projects || [],  // Ensure projects array exists
           firstName: user.firstName || '',
           lastName: user.lastName || '',
-          email: user.email || ''
+          email: user.email || '',
+          profilePicture: user.profilePicture || null
         });
         const userTasks = await getTasksByUserID(userId);
         console.log(userTasks);
@@ -102,7 +105,17 @@ function UserListModal({ onClose, userId }) {
             <div className="flex justify-between items-start">
               <div className="flex items-center gap-3">
                 <div className="bg-indigo-100 p-2 rounded-full">
-                  <UserIcon className="w-6 h-6 text-indigo-600" />
+                {user.profilePicture ? (
+                  <img
+                    src={getProfilePictureUrl(user.profilePicture)}
+                    alt={`${user.firstName} ${user.lastName}`}
+                    className="w-12 h-12 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="bg-indigo-100 p-2 rounded-full">
+                    <UserIcon className="w-6 h-6 text-indigo-600" />
+                  </div>
+                )}
                 </div>
                 <div>
                   <h3 className="font-semibold">{`${user.firstName} ${user.lastName}`}</h3>
