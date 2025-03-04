@@ -5,7 +5,8 @@ import { hashPassword } from '../utils/passwordHash.js';
 export const getAllUsers = async (req, res) => {
   const { organizationId } = req.user;
   try {
-    const users = await User.find({ organizationId }).select("firstName lastName email _id");
+    const users = await User.find({ organizationId }).select("firstName lastName email _id profilePicture");
+
     return res.status(200).json(users);
   }
   catch (error) {

@@ -7,14 +7,17 @@ import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
 import "../CSS-files/ProjectPage.css";
 import { getProjects } from '../api/project.js'
+import { getUsersInOrganization, getProfilePictureUrl } from "../api/users";
+import { useAuth } from "../context/AuthContext";
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
   const [selectedProjectName, setSelectedProjectName] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchProjects() {
@@ -30,6 +33,18 @@ function ProjectPage() {
       }
     }
     fetchProjects();
+  }, []);
+
+  useEffect(() => {
+    async function fetchEmployees() {
+      try {
+        const orgUsers = await getUsersInOrganization();
+        setEmployees(orgUsers);
+      } catch (error) {
+        console.error("Error fetching organisation users:", error);
+      }
+    }
+    fetchEmployees();
   }, []);
 
   const currentProject =
@@ -58,19 +73,26 @@ function ProjectPage() {
               </button>
 
               <div className="avatar-group">
-                <div className="avatar">
-                  <img src="/placeholder-user1.jpg" alt="User 1" />
-                </div>
-                <div className="avatar">
-                  <img src="/placeholder-user2.jpg" alt="User 2" />
-                </div>
-                <div className="avatar">
-                  <img src="/placeholder-user3.jpg" alt="User 3" />
-                </div>
-                <div className="avatar">
-                  <img src="/placeholder-user4.jpg" alt="User 4" />
-                </div>
-                <div className="avatar-more">+2</div>
+                {employees.slice(0, 4).map((employee) => (
+                  <div key={employee._id} className="avatar">
+                    {employee.profilePicture ? (
+                      <img
+                        src={getProfilePictureUrl(employee.profilePicture)}
+                        alt={`${employee.firstName} ${employee.lastName}`}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <img
+                        src="/placeholder.svg?height=40&width=40"
+                        alt="User avatar"
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                    )}
+                  </div>
+                ))}
+                {employees.length > 4 && (
+                  <div className="avatar-more">+{employees.length - 4}</div>
+                )}
               </div>
 
               <DropdownMenu
