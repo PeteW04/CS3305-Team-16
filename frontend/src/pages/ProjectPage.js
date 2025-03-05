@@ -14,7 +14,7 @@ function ProjectPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
+  const isManager = user && user.role === 'manager';
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const { user } = useAuth();
 
@@ -51,13 +51,14 @@ function ProjectPage() {
             </div>
 
             <div className="header-actions">
-              <button
+              {isManager && <button
                 className="invite-button"
                 onClick={() => setIsAssignDialogOpen(true)}
               >
                 <User size={16} />
                 <span>Invite</span>
-              </button>
+              </button>}
+              
 
               <div className="avatar-group">
                 <div className="avatar">
@@ -74,12 +75,15 @@ function ProjectPage() {
                 </div>
                 <div className="avatar-more">+2</div>
               </div>
-
+              
+              {isManager &&
               <DropdownMenu
                 onEdit={() => setIsEditDialogOpen(true)}
                 onDelete={() => setIsDeleteDialogOpen(true)}
-              />
+              />}
+              
             </div>
+              
           </div>
 
           {/* Project Name Filter */}
