@@ -58,7 +58,7 @@ const MiniProgressGauge = () => {
   if (error) return <div className="h-full flex items-center justify-center text-red-500">Error: {error}</div>;
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg p-4">
+    <div className="h-full border border-2 flex flex-col border-indigo-400 bg-white rounded-lg p-4">
       <div className="mb-3">
         <h2 className="text-lg font-semibold">Overall Progress</h2>
       </div>

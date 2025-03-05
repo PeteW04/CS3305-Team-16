@@ -59,7 +59,7 @@ function ProjectPage() {
                 <span>Invite</span>
               </button>}
               
-
+              {isManager &&
               <div className="avatar-group">
                 <div className="avatar">
                   <img src="/placeholder-user1.jpg" alt="User 1" />
@@ -74,7 +74,7 @@ function ProjectPage() {
                   <img src="/placeholder-user4.jpg" alt="User 4" />
                 </div>
                 <div className="avatar-more">+2</div>
-              </div>
+              </div>}
               
               {isManager &&
               <DropdownMenu

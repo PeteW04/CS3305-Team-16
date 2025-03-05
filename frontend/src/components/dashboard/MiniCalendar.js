@@ -69,7 +69,7 @@ const MiniCalendar = () => {
   };
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg p-4">
+    <div className="h-full flex flex-col border border-2 border-indigo-400 bg-white rounded-lg p-4">
       <div className="flex justify-between items-center mb-2">
         <h2 className="text-lg font-semibold">Calendar</h2>
         <div className="flex space-x-1">

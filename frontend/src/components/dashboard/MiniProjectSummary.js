@@ -35,7 +35,7 @@ function MiniProjectSummary({ maxItems = 4 }) {
   if (loading) return <div className="h-full flex items-center justify-center">Loading projects...</div>;
 
   return (
-    <div className="h-full flex flex-col bg-white rounded-lg p-4">
+    <div className="h-full border border-2 flex flex-col border-indigo-400 bg-white rounded-lg p-4">
       <div className="flex justify-between items-center mb-3">
         <h2 className="text-lg font-semibold">Project Summary</h2>
         <Link to="/projects" className="text-sm text-indigo-600 hover:text-indigo-800 flex items-center">
