@@ -7,13 +7,15 @@ import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
 import "../CSS-files/ProjectPage.css";
 import { getProjects } from '../api/project.js'
+import { useAuth } from '../context/AuthContext';
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-
+  const { user } = useAuth();
+  const isManager = user && user.role === 'manager';
   const [selectedProjectName, setSelectedProjectName] = useState("");
 
   useEffect(() => {
@@ -49,13 +51,14 @@ function ProjectPage() {
             </div>
 
             <div className="header-actions">
-              <button
+              {isManager && <button
                 className="invite-button"
                 onClick={() => setIsAssignDialogOpen(true)}
               >
                 <User size={16} />
                 <span>Invite</span>
-              </button>
+              </button>}
+              
 
               <div className="avatar-group">
                 <div className="avatar">
@@ -72,12 +75,15 @@ function ProjectPage() {
                 </div>
                 <div className="avatar-more">+2</div>
               </div>
-
+              
+              {isManager &&
               <DropdownMenu
                 onEdit={() => setIsEditDialogOpen(true)}
                 onDelete={() => setIsDeleteDialogOpen(true)}
-              />
+              />}
+              
             </div>
+              
           </div>
 
           {/* Project Name Filter */}

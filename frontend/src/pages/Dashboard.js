@@ -10,7 +10,7 @@ function Dashboard() {
     <div className="p-6">
       <div className="outer-container" style={{
         padding: "1rem",
-        backgroundColor: "#f5f5f5",
+        backgroundColor: "#f9f9f9",
         borderRadius: "8px",
         boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
       }}>
