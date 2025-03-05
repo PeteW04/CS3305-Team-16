@@ -78,7 +78,7 @@ export const getTasks = async (req, res) => {
 // Get a users projects
 export const getProjectsByUser = async (req, res) => {
     try {
-        const {userId} = req.params;
+        const { userId } = req.params;
 
         // Ensure the user exists
         const user = await User.findById(userId);
@@ -87,10 +87,10 @@ export const getProjectsByUser = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const projects = await Project.find({ 
+        const projects = await Project.find({
             organization: req.user.organizationId,
             employees: userId
-         })
+        })
 
         res.status(200).json(projects);
     }
@@ -221,9 +221,9 @@ export const removeEmployee = async (req, res) => {
 export const addTask = async (req, res) => {
     try {
         const { projectId } = req.params;
-        const { title, description, deadline, priority } = req.body;
+        const { title, description, deadline, priority, user } = req.body;
         const task = { title: title, description: description, deadline: deadline, priority }
-        const userId = req.user._id;
+
 
         // Ensure a valid project id
         const project = await Project.findById(projectId);
@@ -232,7 +232,7 @@ export const addTask = async (req, res) => {
             return res.status(403).json({ message: 'Project not found in your organization' });
         }
 
-        const newTask = await createTask(projectId, task, userId, priority);
+        const newTask = await createTask(projectId, task, user, priority);
 
         // Ensure the new task exists
         if (!newTask) {
@@ -244,6 +244,7 @@ export const addTask = async (req, res) => {
 
         res.status(200).json({ message: 'Task added successfully', newTask });
     } catch (error) {
+        console.error("Error adding task: ", error.message);
         res.status(500).json({ error: error.message });
     }
 };

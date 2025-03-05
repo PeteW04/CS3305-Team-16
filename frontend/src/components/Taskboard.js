@@ -53,7 +53,7 @@ function Taskboard({ projectId }) {
     }
   };
 
-  const handleAddTask = async (taskData) => {
+  const handleAddTask = async (taskData, userId) => {
     try {
       // Update on Backend
       console.log("handleAddTask taskData: ", taskData);
