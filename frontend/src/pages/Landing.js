@@ -9,7 +9,8 @@ function Landing() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-6">
-              Welcome to Clack
+              Welcome to {''}
+              <span className="text-indigo-600">Clack</span>
             </h1>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
               Streamline your workflow, enhance team collaboration
