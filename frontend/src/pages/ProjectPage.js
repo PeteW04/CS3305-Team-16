@@ -6,9 +6,14 @@ import DeleteProjectDialog from "../components/DeleteProjectModal";
 import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
 import "../CSS-files/ProjectPage.css";
+<<<<<<< HEAD
 import { getProjects } from '../api/project.js'
 import { getUsersInOrganization, getProfilePictureUrl } from "../api/users";
 import { useAuth } from "../context/AuthContext";
+=======
+import { getProjects, gettingProjectByUser } from '../api/project.js'
+import { useAuth } from '../context/AuthContext';
+>>>>>>> 301498888963d74458b4dd567549114d0296aedb
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
@@ -16,13 +21,21 @@ function ProjectPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+<<<<<<< HEAD
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const { user } = useAuth();
+=======
+  
+  const [selectedProjectName, setSelectedProjectName] = useState("");
+  const { user } = useAuth();
+
+  const isManager = user && user.role === 'manager';
+>>>>>>> 301498888963d74458b4dd567549114d0296aedb
 
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const projects = await getProjects();
+        const projects = await gettingProjectByUser(user._id);  
         setProjects(projects);
         if (projects.length > 0) {
           setSelectedProjectName(projects[0].title);
@@ -64,13 +77,14 @@ function ProjectPage() {
             </div>
 
             <div className="header-actions">
-              <button
+              {isManager && <button
                 className="invite-button"
                 onClick={() => setIsAssignDialogOpen(true)}
               >
                 <User size={16} />
                 <span>Invite</span>
-              </button>
+              </button>}
+              
 
               <div className="avatar-group">
                 {employees.slice(0, 4).map((employee) => (
@@ -94,12 +108,15 @@ function ProjectPage() {
                   <div className="avatar-more">+{employees.length - 4}</div>
                 )}
               </div>
-
+              
+              {isManager &&
               <DropdownMenu
                 onEdit={() => setIsEditDialogOpen(true)}
                 onDelete={() => setIsDeleteDialogOpen(true)}
-              />
+              />}
+              
             </div>
+              
           </div>
 
           {/* Project Name Filter */}

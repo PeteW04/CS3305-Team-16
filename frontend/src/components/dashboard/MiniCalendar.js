@@ -1,24 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { getProjects } from '../../api/project';
+import { gettingProjectByUser } from '../../api/project';
+import { useAuth } from '../../context/AuthContext';
 
 const MiniCalendar = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [projects, setProjects] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const data = await getProjects();
-        setProjects(data);
+        if (user && user._id) {
+          const data = await gettingProjectByUser(user._id);
+          setProjects(data);
+        }
       } catch (err) {
         console.error(err);
       }
     };
     fetchProjects();
-  }, []);
+  }, [user]);
 
   const renderCalendar = () => {
     const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();

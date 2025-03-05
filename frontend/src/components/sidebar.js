@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Home, MessageSquare, ListChecks, Users, Settings, Layout, Menu, X, Calendar, Plus } from "lucide-react";
 import { Link } from 'react-router-dom';
-import { getProjects, creatingProject } from '../api/project.js'
+import { getProjects, creatingProject, gettingProjectByUser } from '../api/project.js'
 import CreateProjectModal from "./CreateProjectModal.js";
 import { useAuth } from '../context/AuthContext';
 
@@ -16,8 +16,13 @@ function Sidebar({ isMinimized, toggleSidebar }) {
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const projects = await getProjects();
-        setProjects(projects);
+        if (isManager) {
+          const projects = await getProjects();
+          setProjects(projects);
+        } else if (user && user._id) {
+          const userProjects = await gettingProjectByUser(user._id);
+          setProjects(userProjects);
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -26,7 +31,7 @@ function Sidebar({ isMinimized, toggleSidebar }) {
     }
 
     fetchProjects();
-  }, []);
+  }, [user, isManager]);
 
   const handleCreateProject = async (projectData) => {
     const newProject = await creatingProject(projectData);
@@ -63,12 +68,14 @@ function Sidebar({ isMinimized, toggleSidebar }) {
         <div className="mt-6 px-2">
           <div className="flex items-center justify-between mb-2">
             <h2 className="text-gray-500 text-sm uppercase font-semibold">My Projects</h2>
+            {isManager && (
             <button
               onClick={() => setIsModalOpen(true)}
               className="p-1 hover:bg-gray-100 rounded-full"
             >
               <Plus size={16} className="text-gray-500" />
             </button>
+            )}
           </div>
           <ul className="space-y-2">
             {projects.length > 0 ? (
