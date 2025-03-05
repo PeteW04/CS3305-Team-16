@@ -6,7 +6,8 @@ import DeleteProjectDialog from "../components/DeleteProjectModal";
 import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
 import "../CSS-files/ProjectPage.css";
-import { getProjects } from '../api/project.js'
+import { getProjects, gettingProjectByUser } from '../api/project.js'
+import { useAuth } from '../context/AuthContext';
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
@@ -15,11 +16,12 @@ function ProjectPage() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const [selectedProjectName, setSelectedProjectName] = useState("");
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const projects = await getProjects();
+        const projects = await gettingProjectByUser(user._id);
         setProjects(projects);
         if (projects.length > 0) {
           setSelectedProjectName(projects[0].title);
