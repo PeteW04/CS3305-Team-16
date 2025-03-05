@@ -75,7 +75,7 @@ function ProjectPage() {
                 <span>Invite</span>
               </button>}
               
-
+              {isManager &&
               <div className="avatar-group">
                 {employees.slice(0, 4).map((employee) => (
                   <div key={employee._id} className="avatar">
