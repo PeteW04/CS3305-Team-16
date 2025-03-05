@@ -6,14 +6,9 @@ import DeleteProjectDialog from "../components/DeleteProjectModal";
 import DropdownMenu from "../components/DropdownMenu";
 import ProjectSummary from "../components/ProjectOverview";
 import "../CSS-files/ProjectPage.css";
-<<<<<<< HEAD
-import { getProjects } from '../api/project.js'
 import { getUsersInOrganization, getProfilePictureUrl } from "../api/users";
-import { useAuth } from "../context/AuthContext";
-=======
 import { getProjects, gettingProjectByUser } from '../api/project.js'
 import { useAuth } from '../context/AuthContext';
->>>>>>> 301498888963d74458b4dd567549114d0296aedb
 
 function ProjectPage() {
   const [projects, setProjects] = useState([]);
@@ -21,16 +16,11 @@ function ProjectPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-<<<<<<< HEAD
-  const [selectedProjectName, setSelectedProjectName] = useState("");
-  const { user } = useAuth();
-=======
   
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const { user } = useAuth();
 
   const isManager = user && user.role === 'manager';
->>>>>>> 301498888963d74458b4dd567549114d0296aedb
 
   useEffect(() => {
     async function fetchProjects() {
