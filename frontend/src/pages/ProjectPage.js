@@ -97,7 +97,7 @@ function ProjectPage() {
                 {employees.length > 4 && (
                   <div className="avatar-more">+{employees.length - 4}</div>
                 )}
-              </div>
+              </div>}
               
               {isManager &&
               <DropdownMenu
