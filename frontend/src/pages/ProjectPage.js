@@ -14,14 +14,16 @@ function ProjectPage() {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const isManager = user && user.role === 'manager';
+  
   const [selectedProjectName, setSelectedProjectName] = useState("");
   const { user } = useAuth();
+
+  const isManager = user && user.role === 'manager';
 
   useEffect(() => {
     async function fetchProjects() {
       try {
-        const projects = await gettingProjectByUser(user._id);
+        const projects = await gettingProjectByUser(user._id);  
         setProjects(projects);
         if (projects.length > 0) {
           setSelectedProjectName(projects[0].title);
