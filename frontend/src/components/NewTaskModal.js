@@ -8,14 +8,15 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
     title: '',
     description: '',
     priority: 'Low',
-    status: 'todo'
+    status: 'todo',
+    user: ''
   });
-  
+
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUser, setSelectedUser] = useState(null);
-  
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -30,30 +31,22 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
     };
     fetchUsers();
   }, []);
-  
+
   const filteredUsers = users.filter(
     (user) =>
       user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // First create the task
     const newTask = await onSubmit(taskData);
-    
-    // If we have a selected user and the task creation was successful, assign the user
-    if (selectedUser && newTask && newTask._id) {
-      try {
-        await addEmployeeToTask(newTask._id, selectedUser._id);
-      } catch (error) {
-        console.error('Error assigning user to task:', error);
-      }
-    }
+
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white p-6 rounded-xl shadow-lg w-96">
@@ -101,7 +94,7 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
                 <option value="High">High</option>
               </select>
             </div>
-            
+
             {/* User Assignment Section */}
             <div>
               <label className="block text-sm font-medium mb-1">Assign To</label>
@@ -117,7 +110,7 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
                   className="pl-10 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-              
+
               {/* Selected User */}
               {selectedUser && (
                 <div className="mt-2 p-2 bg-gray-50 rounded-md flex justify-between items-center">
@@ -129,7 +122,7 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
                     </div>
                     <span>{selectedUser.firstName} {selectedUser.lastName}</span>
                   </div>
-                  <button 
+                  <button
                     type="button"
                     onClick={() => setSelectedUser(null)}
                     className="text-gray-500 hover:text-gray-700"
@@ -138,7 +131,7 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
                   </button>
                 </div>
               )}
-              
+
               {/* User Search Results */}
               {searchTerm && !selectedUser && (
                 <div className="mt-1 max-h-40 overflow-y-auto border border-gray-200 rounded-md shadow-sm">
@@ -146,13 +139,16 @@ function NewTaskModal({ onClose, onSubmit, projectId }) {
                     <div className="p-2 text-center">Loading...</div>
                   ) : filteredUsers.length > 0 ? (
                     filteredUsers.map(user => (
-                      <div 
-                        key={user._id} 
+                      <div
+                        key={user._id}
                         className="p-2 hover:bg-gray-50 cursor-pointer flex items-center"
+                        // In the user selection onClick handler
                         onClick={() => {
                           setSelectedUser(user);
+                          setTaskData(prev => ({ ...prev, user: user._id }));
                           setSearchTerm('');
                         }}
+
                       >
                         <div className="w-6 h-6 bg-indigo-100 rounded-full flex items-center justify-center mr-2">
                           <span className="text-xs text-indigo-600 font-medium">
